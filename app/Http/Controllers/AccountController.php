@@ -10,26 +10,6 @@ use Illuminate\View\View;
 
 class AccountController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
-    {
-        $accounts = Account::latest()->paginate(10);
-        return view('layouts.account.index', compact('accounts'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        return view('pages.addUser');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): RedirectResponse
     {
 
@@ -49,33 +29,24 @@ class AccountController extends Controller
             'position' => $validated['position'],
             'job' => $validated['job'],
             'roles' => $validated['role'],
-            'overtime_allowance' => 50
+            'overwork_allowance' => 50
         ]);
 
         return redirect()->route('home')->with('success', 'Account berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id): View
     {
         $account = Account::findOrFail($id);
         return view('layouts.account.show', compact('account'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id): View
     {
         $account = Account::findOrFail($id);
         return view('layouts.account.edit', compact('account'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id): RedirectResponse
     {
         $account = Account::findOrFail($id);
@@ -101,9 +72,6 @@ class AccountController extends Controller
         return redirect()->route('accounts.index')->with('success', 'Account berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id): RedirectResponse
     {
         $account = Account::findOrFail($id);

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('position', ['a', 'b', 'c', 'd']);
             $table->enum('job', ['a', 'b', 'c', 'd']);
             $table->enum('roles', ['admin', 'user']);
-            $table->integer('overtime_allowance');
+            $table->integer('overwork_allowance');
             $table->timestamps();
         });
     }
