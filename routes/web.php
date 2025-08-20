@@ -7,8 +7,12 @@ Route::get('/', function () {
     return view('/pages/dashboard');
 })->name('home');
 
-Route::get('/pages/login', function () {
-    return view('/pages/login');
-})->name('login-page');
+Route::get('/add-user', function () {
+    return view('/pages/addUser');
+})->name('page-addUser');
 
-Route::post('/login', [AccountController::class, 'store'])->name('login');
+Route::post('/insert', [AccountController::class, 'store'])->name('insert');
+
+Route::get('/login', function () {
+    return view('pages.login');
+})->name('page-login');
