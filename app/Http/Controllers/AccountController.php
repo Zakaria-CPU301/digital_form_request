@@ -34,7 +34,8 @@ class AccountController
             'email' => ['required'],
             'phone_number' => ['required'],
             'position' => ['required'],
-            'job' => ['required']
+            'job' => ['required'],
+            'role' => ['required']
         ]);
 
         Account::create([
@@ -43,6 +44,7 @@ class AccountController
             'phone_number' => $request->phone_number,
             'position' => $request->position,
             'job' => $request->job,
+            'role' => $request->role,
             'overtime_allowance' => 50
         ]);
 
