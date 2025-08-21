@@ -12,7 +12,6 @@
     <input type="time" name="start" id="">
     <input type="time" name="finish" id="">
     <textarea name="desc" id=""></textarea>
-
     <button type="submit">Submit</button>
 </form>
 @endsection

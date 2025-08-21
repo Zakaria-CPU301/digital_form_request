@@ -56,7 +56,7 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        return redirect()->route('home')->with('success', 'add data successfully');
+        return redirect()->route('home')->with('success', 'add data overwork successfully');
     }
 
     /**

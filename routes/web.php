@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\OverworkController;
 
@@ -25,4 +26,11 @@ Route::prefix('overwork')->name('overwork.')->group(function () {
         return view('pages.overwork_request');
     })->name('form-view');
     Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
+});
+
+Route::prefix('leave')->name('leave.')->group(function() {
+    Route::get('/form', function() {
+        return view('pages.leave_request');
+    })->name('form-view');
+    Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
 });

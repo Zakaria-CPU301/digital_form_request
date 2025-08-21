@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
+            $table->date('start_leave');
+            $table->date('finished_leave');
             $table->text('reason');
-            $table->date('start leave');
-            $table->date('finished leave');
             $table->enum('request_status', ['draft', 'submitted', 'accepted', 'rejected']);
 
             $table->foreignId('account_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
