@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leaves', function (Blueprint $table) {
+        Schema::create('overtimes', function (Blueprint $table) {
             $table->id();
-            $table->text('reason');
-            $table->date('start leave');
-            $table->date('finished leave');
+            $table->date('overtime_date');
+            $table->time('start_overtime');
+            $table->time('finished_overtime');
             $table->enum('request_status', ['draft', 'submitted', 'accepted', 'rejected']);
 
             $table->foreignId('account_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leaves');
+        Schema::dropIfExists('overtimes');
     }
 };

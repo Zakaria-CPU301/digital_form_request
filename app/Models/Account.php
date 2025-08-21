@@ -11,12 +11,4 @@ class Account extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-
-    public function overwork() {
-        return $this->hasMany(Overwork::class);
-    }
-
-    public function leave() {
-        return $this->hasMany(Leave::class);
-    }
 }

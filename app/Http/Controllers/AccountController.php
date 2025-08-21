@@ -2,81 +2,84 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Routing\Controller;
 use App\Models\Account;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 
-class AccountController extends Controller
+class AccountController
 {
-    public function store(Request $request): RedirectResponse
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('pages.login');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
     {
 
-        $validated = $request->validate([
-            'fullname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:100', 'unique:accounts,email'],
-            'phone_number' => ['required', 'string', 'max:30'],
-            'position' => ['required', 'in:a,b,c,d'],
-            'job' => ['required', 'in:a,b,c,d'],
-            'role' => ['required', 'in:admin,user']
+        $request->validate([
+            'fullname' => ['required'],
+            'email' => ['required'],
+            'phone_number' => ['required'],
+            'position' => ['required'],
+            'job' => ['required'],
+            'role' => ['required']
         ]);
 
         Account::create([
-            'fullname' => $validated['fullname'],
-            'email' => $validated['email'],
-            'phone_number' => $validated['phone_number'],
-            'position' => $validated['position'],
-            'job' => $validated['job'],
-            'roles' => $validated['role'],
-            'overwork_allowance' => 50
+            'fullname' => $request->fullname,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'position' => $request->position,
+            'job' => $request->job,
+            'role' => $request->role,
+            'overtime_allowance' => 50
         ]);
 
         return redirect()->route('home')->with('success', 'Account berhasil ditambahkan!');
     }
 
-    public function show(string $id): View
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        $account = Account::findOrFail($id);
-        return view('layouts.account.show', compact('account'));
+        //
     }
 
-    public function edit(string $id): View
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $account = Account::findOrFail($id);
-        return view('layouts.account.edit', compact('account'));
+        //
     }
 
-    public function update(Request $request, string $id): RedirectResponse
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $account = Account::findOrFail($id);
-
-        $validated = $request->validate([
-            'fullname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:100', 'unique:accounts,email,' . $id],
-            'phone_number' => ['required', 'string', 'max:30'],
-            'position' => ['required', 'in:a,b,c,d'],
-            'job' => ['required', 'in:a,b,c,d'],
-            'roles' => ['required', 'in:admin,user']
-        ]);
-
-        $account->update([
-            'fullname' => $validated['fullname'],
-            'email' => $validated['email'],
-            'phone_number' => $validated['phone_number'],
-            'position' => $validated['position'],
-            'job' => $validated['job'],
-            'roles' => $validated['roles']
-        ]);
-
-        return redirect()->route('accounts.index')->with('success', 'Account berhasil diperbarui!');
+        //
     }
 
-    public function destroy(string $id): RedirectResponse
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        $account = Account::findOrFail($id);
-        $account->delete();
-
-        return redirect()->route('accounts.index')->with('success', 'Account berhasil dihapus!');
+        //
     }
 }

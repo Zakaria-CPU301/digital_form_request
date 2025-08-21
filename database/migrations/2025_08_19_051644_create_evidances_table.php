@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('photo_evidance')->nullable();
             $table->string('video_evidance')->nullable();
 
-            $table->foreignId('overwork_id')->constrained();
+            $table->foreignId('overtime_id')->constrained();
             $table->timestamps();
         });
     }
