@@ -34,11 +34,13 @@ class LeaveController
             'reason' => ['required'],
         ]);
 
+        $status = $request->action === 'submit' ? 'submitted' : 'draft';
+
         Leave::create([
             'start_leave' => $validate['start'],
             'finished_leave' => $validate['finish'],
             'reason' => $validate['reason'],
-            'request_status' => 'draft',
+            'request_status' => $status,
             'account_id' => 1
         ]);
 
@@ -50,7 +52,7 @@ class LeaveController
      */
     public function show(Leave $leave)
     {
-        //
+        
     }
 
     /**

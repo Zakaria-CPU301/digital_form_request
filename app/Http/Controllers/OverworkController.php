@@ -36,6 +36,8 @@ class OverworkController
             'finish' => ['required'],
             'desc' => ['required'],
         ]);
+        
+        $status = $request->action === 'submit' ? 'submitted' : 'draft';
 
         try {
             DB::beginTransaction();
@@ -45,7 +47,7 @@ class OverworkController
                 'start_overwork' => $validate['start'],
                 'finished_overwork' => $validate['finish'],
                 'task_description' => $validate['desc'],
-                'request_status' => 'draft',
+                'request_status' => $status,
                 'account_id' => 1,
             ]);
 
@@ -64,7 +66,6 @@ class OverworkController
      */
     public function show(Overwork $overwork)
     {
-        //
     }
 
     /**
