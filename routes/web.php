@@ -27,7 +27,7 @@ Route::get('/add-user', function () {
 })->name('page-addUser');
 Route::post('/insert', [AccountController::class, 'store'])->name('insert_user');
 
-Route::middleware('auth')->group(function () {
+// Route::middleware('auth')->group(function () {
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', function () {
             return view('pages.overwork_request');
@@ -47,6 +47,6 @@ Route::middleware('auth')->group(function () {
         $leaves = [Leave::all(), 'leave'];
         return view('view.users.draft', compact('overworks', 'leaves'));
     })->name('draft');
-});
+// });
 
 require __DIR__ . '/auth.php';
