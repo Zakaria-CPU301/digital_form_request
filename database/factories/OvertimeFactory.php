@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Overtime>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\overwork>
  */
-class OvertimeFactory extends Factory
+class overworkFactory extends Factory
 {
     /**
      * Define the model's default state.
