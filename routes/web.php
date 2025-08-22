@@ -5,27 +5,17 @@ use App\Models\Overwork;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OverworkController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('/pages/dashboard');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
 Route::get('/add-user', function () {
-    return view('view.admin.add_user');
+    return view('/pages/addUser');
 })->name('page-addUser');
-Route::post('/insert', [AccountController::class, 'store'])->name('insert_user');
+
+Route::post('/insert', [AccountController::class, 'store'])->name('insert');
 
 // Route::middleware('auth')->group(function () {
     Route::prefix('overwork')->name('overwork.')->group(function () {

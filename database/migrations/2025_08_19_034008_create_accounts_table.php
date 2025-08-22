@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('email', 100);
             $table->string('phone_number', '30');
             $table->enum('position', ['a', 'b', 'c', 'd']);
-            $table->enum('departement', ['a', 'b', 'c', 'd']);
+            $table->enum('job', ['a', 'b', 'c', 'd']);
             $table->enum('roles', ['admin', 'user']);
-            $table->integer('overwork_allowance');
+            $table->integer('overtime_allowance');
             $table->timestamps();
         });
     }
