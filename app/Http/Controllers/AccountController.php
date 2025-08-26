@@ -10,17 +10,23 @@ use Illuminate\View\View;
 
 class AccountController extends Controller
 {
+    public function create() {
+        return view('view.admin.add_user');
+    }
+
     public function store(Request $request): RedirectResponse
     {
 
         $validated = $request->validate([
             'fullname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:100', 'unique:accounts,email'],
+            'email' => ['required', 'string', 'email:dns', 'max:100', 'unique:accounts,email'],
             'phone_number' => ['required', 'string', 'max:30'],
             'position' => ['required', 'in:a,b,c,d'],
             'job' => ['required', 'in:a,b,c,d'],
             'role' => ['required', 'in:admin,user']
         ]);
+
+        dd('ok');
 
         Account::create([
             'fullname' => $validated['fullname'],
@@ -32,7 +38,7 @@ class AccountController extends Controller
             'overwork_allowance' => 50
         ]);
 
-        return redirect()->route('home')->with('success', 'Account berhasil ditambahkan!');
+        return redirect()->route('welcome')->with('success', 'Account berhasil ditambahkan!');
     }
 
     public function show(string $id): View

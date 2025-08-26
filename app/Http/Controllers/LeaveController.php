@@ -20,7 +20,7 @@ class LeaveController
      */
     public function create()
     {
-        //
+        return view('pages.leave_request');
     }
 
     /**
@@ -44,7 +44,8 @@ class LeaveController
             'account_id' => 1
         ]);
 
-        return redirect()->route('home')->with('success', 'add data leave successfully');
+        if ($status === 'submitted') return redirect()->route('dashboard')->with('success', 'add data leave successfully');
+        else return redirect()->route('draft')->with('success', 'data leave is draft');
     }
 
     /**

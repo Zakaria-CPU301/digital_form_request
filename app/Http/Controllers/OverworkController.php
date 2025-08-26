@@ -22,7 +22,7 @@ class OverworkController
      */
     public function create()
     {
-        //
+        return view('pages.overwork_request');
     }
 
     /**
@@ -30,13 +30,14 @@ class OverworkController
      */
     public function store(Request $request)
     {
+
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
             'finish' => ['required'],
             'desc' => ['required'],
         ]);
-        
+
         $status = $request->action === 'submit' ? 'submitted' : 'draft';
 
         try {
@@ -52,21 +53,19 @@ class OverworkController
             ]);
 
             DB::commit();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        return redirect()->route('home')->with('success', 'add data overwork successfully');
+        if ($status === 'submitted') return redirect()->route('dashboard')->with('success', 'add data leave successfully');
+        else return redirect()->route('draft')->with('success', 'data leave is draft');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Overwork $overwork)
-    {
-    }
+    public function show(Overwork $overwork) {}
 
     /**
      * Show the form for editing the specified resource.

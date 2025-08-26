@@ -2,9 +2,9 @@
 
 @section('content')
 
-@if ($errors->has('err'))
+{{-- @if ($errors->has('err'))
     <p>{{$errors->first('err')}}</p>
-@endif
+@endif --}}
 <form action="{{route('overwork.insert')}}" method="post">
     @csrf
     {{-- overwork_request --}}
