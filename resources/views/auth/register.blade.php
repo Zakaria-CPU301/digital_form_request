@@ -14,7 +14,41 @@
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            </div>
+            
+        {{-- todo new field --}}
+        <!-- Phone Number -->
+        <div class="mt-4">
+            <x-input-label for="phone" :value="__('Phone Number')" />
+            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autocomplete="phone number" />
+            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
         </div>
+
+        <!-- Position -->
+        <div class="mt-4">
+            <x-input-label for="position" :value="__('Position')" />
+            <select name="position" id="position" name="position" class="block mt-1 w-full" :value="old('position')" required autocomplete="position">
+                <option disabled hidden selected>position</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+            </select>
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="departement" :value="__('Departement')" />
+            <select name="departement" id="departement" name="departement" class="block mt-1 w-full" :value="old('departement')" required autocomplete="departement">
+                <option disabled hidden selected>position</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+            </select>
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+        {{-- todo !!! --}}
 
         <!-- Password -->
         <div class="mt-4">
