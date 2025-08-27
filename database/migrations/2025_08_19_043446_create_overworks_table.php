@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('task_description');
             $table->enum('request_status', ['draft', 'submitted', 'accepted', 'rejected']);
 
-            $table->foreignId('account_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

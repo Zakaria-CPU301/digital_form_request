@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('reason');
             $table->enum('request_status', ['draft', 'submitted', 'accepted', 'rejected']);
 
-            $table->foreignId('account_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

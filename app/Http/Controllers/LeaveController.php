@@ -32,6 +32,7 @@ class LeaveController
             'start' => ['required'],
             'finish' => ['required'],
             'reason' => ['required'],
+            'user_id' => ['required'],
         ]);
 
         $status = $request->action === 'submit' ? 'submitted' : 'draft';
@@ -41,7 +42,7 @@ class LeaveController
             'finished_leave' => $validate['finish'],
             'reason' => $validate['reason'],
             'request_status' => $status,
-            'account_id' => 1
+            'user_id' => $validate['user_id']
         ]);
 
         if ($status === 'submitted') return redirect()->route('dashboard')->with('success', 'add data leave successfully');
