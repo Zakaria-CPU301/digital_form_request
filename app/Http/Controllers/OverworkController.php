@@ -22,7 +22,7 @@ class OverworkController
      */
     public function create()
     {
-        return view('pages.overwork_request');
+        return view('pages.overwork-request');
     }
 
     /**
@@ -30,15 +30,15 @@ class OverworkController
      */
     public function store(Request $request)
     {
-
+        // dd($request->all());
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
             'finish' => ['required'],
             'desc' => ['required'],
-            ''
+            'user_id' => ['required']
         ]);
-
+        
         $status = $request->action === 'submit' ? 'submitted' : 'draft';
 
         try {
@@ -50,7 +50,7 @@ class OverworkController
                 'finished_overwork' => $validate['finish'],
                 'task_description' => $validate['desc'],
                 'request_status' => $status,
-                'account_id' => 1,
+                'user_id' => $validate['user_id'],
             ]);
 
             DB::commit();

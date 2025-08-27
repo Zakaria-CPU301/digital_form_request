@@ -20,7 +20,7 @@ class LeaveController
      */
     public function create()
     {
-        return view('pages.leave_request');
+        return view('pages.leave-request');
     }
 
     /**

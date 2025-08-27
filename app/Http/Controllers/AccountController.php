@@ -11,7 +11,7 @@ use Illuminate\View\View;
 class AccountController extends Controller
 {
     public function create() {
-        return view('view.admin.add_user');
+        return view('view.admin.add-user');
     }
 
     public function store(Request $request): RedirectResponse
@@ -25,8 +25,6 @@ class AccountController extends Controller
             'job' => ['required', 'in:a,b,c,d'],
             'role' => ['required', 'in:admin,user']
         ]);
-
-        dd('ok');
 
         Account::create([
             'fullname' => $validated['fullname'],

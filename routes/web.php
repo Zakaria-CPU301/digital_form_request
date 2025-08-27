@@ -35,14 +35,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
     });
 
+    // leave
     Route::prefix('leave')->name('leave.')->group(function () {
         Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
         Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
     });
 
+    // draft
     Route::get('/draft', function () {
-        $overworks = [Overwork::all(), 'overwork'];
-        $leaves = [Leave::all(), 'leave'];
+        $overworks = [Overwork::where('request_status', 'draft')->get(), 'overwork'];
+        $leaves = [Leave::where('request_status', 'draft')->get(), 'leave'];
         return view('view.users.draft', compact('overworks', 'leaves'));
     })->name('draft');
 });

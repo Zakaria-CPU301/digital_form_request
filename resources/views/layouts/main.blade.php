@@ -23,6 +23,8 @@
         @endif
     </head>
     <body>
-        @yield('content')
+        <div class="container w-full min-h-screen flex justify-center items-center">
+            @yield('content')
+        </div>
     </body>
 </html>
