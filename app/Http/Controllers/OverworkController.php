@@ -38,7 +38,7 @@ class OverworkController
             'desc' => ['required'],
             'user_id' => ['required']
         ]);
-        
+
         $status = $request->action === 'submit' ? 'submitted' : 'draft';
 
         try {

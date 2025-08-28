@@ -3,6 +3,7 @@
 use App\Models\Leave;
 use App\Models\Account;
 use App\Models\Overwork;
+use App\Http\Controllers\Draft;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AccountController;
@@ -29,24 +30,20 @@ Route::prefix('account')->name('account.')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // overwork
+    //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
         Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
     });
 
-    // leave
+    //! leave
     Route::prefix('leave')->name('leave.')->group(function () {
         Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
         Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
     });
 
-    // draft
-    Route::get('/draft', function () {
-        $overworks = [Overwork::where('request_status', 'draft')->get(), 'overwork'];
-        $leaves = [Leave::where('request_status', 'draft')->get(), 'leave'];
-        return view('view.users.draft', compact('overworks', 'leaves'));
-    })->name('draft');
+    //! draft
+    Route::get('/draft', [Draft::class, 'index'])->name('draft');
 });
 
 require __DIR__ . '/auth.php';

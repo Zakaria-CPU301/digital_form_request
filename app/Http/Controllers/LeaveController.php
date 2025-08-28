@@ -52,10 +52,7 @@ class LeaveController
     /**
      * Display the specified resource.
      */
-    public function show(Leave $leave)
-    {
-        
-    }
+    public function show(Leave $leave) {}
 
     /**
      * Show the form for editing the specified resource.
