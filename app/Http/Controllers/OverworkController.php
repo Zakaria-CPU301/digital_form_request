@@ -39,7 +39,7 @@ class OverworkController
             'user_id' => ['required']
         ]);
 
-        $status = $request->action === 'submit' ? 'submitted' : 'draft';
+        $status = $request->action === 'submit' ? 'review' : 'draft';
 
         try {
             DB::beginTransaction();
@@ -59,7 +59,7 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        if ($status === 'submitted') return redirect()->route('dashboard')->with('success', 'add data leave successfully');
+        if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
         else return redirect()->route('draft')->with('success', 'data leave is draft');
     }
 

@@ -1,14 +1,10 @@
 <?php
 
-use App\Models\Leave;
-use App\Models\Account;
-use App\Models\Overwork;
-use App\Http\Controllers\Draft;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
-use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OverworkController;
+use App\Http\Controllers\RequestController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,11 +18,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-Route::prefix('account')->name('account.')->group(function () {
-    Route::get('/add', [AccountController::class, 'create'])->name('page-addUser');
-    Route::post('/insert', [AccountController::class, 'store'])->name('insert');
 });
 
 Route::middleware('auth')->group(function () {
@@ -43,7 +34,10 @@ Route::middleware('auth')->group(function () {
     });
 
     //! draft
-    Route::get('/draft', [Draft::class, 'index'])->name('draft');
+    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
+
+    //! recent 
+    Route::get('/recent-request', [RequestController::class, 'showRecent'])->name('recent');
 });
 
 require __DIR__ . '/auth.php';

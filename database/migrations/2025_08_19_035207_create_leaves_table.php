@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('start_leave');
             $table->date('finished_leave');
             $table->text('reason');
-            $table->enum('request_status', ['draft', 'submitted', 'accepted', 'rejected']);
+            $table->enum('request_status', ['draft', 'review', 'accepted', 'rejected']);
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

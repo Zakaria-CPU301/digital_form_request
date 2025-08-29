@@ -9,9 +9,13 @@
         
         {{-- overwork_request --}}
         <div class="flex flex-col">
+            <x-input-label>Tanggal Lembur</x-input-label>
             <x-text-input type="date" name="date" id="" />
+            <x-input-label>Mulai Lembur</x-input-label>
             <x-text-input type="time" name="start" id="" />
+            <x-input-label>Selesai Lembur</x-input-label>
             <x-text-input type="time" name="finish" id="" />
+            <x-input-label>Deskripsi</x-input-label>
             <textarea name="desc" id="" class=""></textarea>
             <div class="flex justify-evenly">
                 <button type="submit" name="action" value="draft">draft</button>

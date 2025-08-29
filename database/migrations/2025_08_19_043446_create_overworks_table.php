@@ -17,7 +17,7 @@ return new class extends Migration
             $table->time('start_overwork');
             $table->time('finished_overwork');
             $table->text('task_description');
-            $table->enum('request_status', ['draft', 'submitted', 'accepted', 'rejected']);
+            $table->enum('request_status', ['draft', 'review', 'accepted', 'rejected']);
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

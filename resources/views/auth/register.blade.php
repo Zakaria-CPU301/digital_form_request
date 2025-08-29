@@ -47,10 +47,10 @@
             <x-input-label for="position" :value="__('Position')" />
             <select name="position" id="position" name="position" class="block mt-1 w-full" :value="old('position')" required autocomplete="position">
                 <option disabled hidden selected>position</option>
-                <option value="a">a</option>
-                <option value="b">b</option>
-                <option value="c">c</option>
-                <option value="d">d</option>
+                <option value="Admin">Admin</option>
+                <option value="Concept Art and Illustration">Concept Art and Illustration</option>
+                <option value="Web Programmer">Web Programmer</option>
+                <option value="3D Artist">3D Artist</option>
             </select>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
@@ -59,10 +59,10 @@
             <x-input-label for="departement" :value="__('Departement')" />
             <select name="departement" id="departement" name="departement" class="block mt-1 w-full" :value="old('departement')" required autocomplete="departement">
                 <option disabled hidden selected>position</option>
-                <option value="a">a</option>
-                <option value="b">b</option>
-                <option value="c">c</option>
-                <option value="d">d</option>
+                <option value="Admin">Admin</option>
+                <option value="Digital Art">Digital Art</option>
+                <option value="IT">IT</option>
+                <option value="Animasi">Animasi</option>
             </select>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
@@ -70,7 +70,7 @@
         <div class="mt-4">
             <x-input-label for="role" :value="__('role')" />
             <select name="role" id="role" name="role" class="block mt-1 w-full" :value="old('role')" required autocomplete="departement">
-                <option disabled hidden selected>position</option>
+                <option disabled hidden selected>role</option>
                 <option value="admin">admin</option>
                 <option value="user">user</option>
             </select>
