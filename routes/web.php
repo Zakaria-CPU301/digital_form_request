@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth')->group(function () {
+Route::group(['middleware' => ['auth', 'Ensure:admin']], function () {
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
