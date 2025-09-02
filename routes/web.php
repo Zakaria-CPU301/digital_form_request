@@ -41,7 +41,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     //! draft
-    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
+    Route::prefix('draft')->name('draft.')->group(function () {
+        Route::get('', [RequestController::class, 'showDraft'])->name('all');
+        Route::get('overwork', [RequestController::class, 'showDraft'])->name('overwork');
+        Route::get('leave', [RequestController::class, 'showDraft'])->name('leave');
+    });
 
     //! recent 
     Route::get('/recent-request', [RequestController::class, 'showRecent'])->name('recent');
