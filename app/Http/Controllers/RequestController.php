@@ -10,17 +10,13 @@ class RequestController extends Controller
 {
     public function showDraft()
     {
-        $leaves = Leave::where('request_status', 'draft')
-            ->where('user_id', Auth::id())
-            ->get()
+        $leaves = Leave::where('request_status', 'draft')->where('user_id', Auth::id())->get()
             ->map(function ($item) {
                 $item->type = 'leave';
                 return $item;
             });
 
-        $overworks = Overwork::where('request_status', 'draft')
-            ->where('user_id', Auth::id())
-            ->get()
+        $overworks = Overwork::where('request_status', 'draft')->where('user_id', Auth::id())->get()
             ->map(function ($item) {
                 $item->type = 'overwork';
                 return $item;
