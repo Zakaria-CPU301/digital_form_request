@@ -1,7 +1,9 @@
 <div class="flex flex-col">
-    <x-text-input type="hidden" name="user_id" id="" value="{{auth()->user()->id}}" />
-    <x-text-input type="text" name="" id="" value="{{auth()->user()->name}}" disabled />
-    <x-text-input type="text" name="" id="" value="{{auth()->user()->position}}" disabled />
-    <x-text-input type="text" name="" id="" value="{{auth()->user()->departement}}" disabled />
-    <x-text-input type="text" name="" id="" value="{{auth()->user()->phone_number}}" disabled />
+    <x-text-input class="border-none font-medium shadow-none" type="hidden" name="user_id" id="" value="{{auth()->user()->id}}" />
+    <label for="name" class="font-bold">Name:</label>
+    <x-text-input class="border-none font-medium shadow-none" type="text" name="" id="" value="{{auth()->user()->name}}" disabled />
+    <label for="position" class="font-bold">Position:</label>
+    <x-text-input class="border-none font-medium shadow-none" type="text" name="" id="" value="{{auth()->user()->position}}" disabled />
+    <label for="department" class="font-bold">Department</label>
+    <x-text-input class="border-none font-medium shadow-none" type="text" name="" id="" value="{{auth()->user()->departement}}" disabled />
 </div>

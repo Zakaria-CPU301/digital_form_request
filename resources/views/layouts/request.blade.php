@@ -7,21 +7,25 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;600;700&display=swap" rel="stylesheet">
 
-        <!-- Scripts -->
+        <style>
+            body {
+                font-family: 'Geologica', sans-serif;
+            }
+        </style>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen w-full bg-blue-50">
+    <body class="font-geologica antialiased">
+        <div class="min-h-screen w-full bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]">
             @include('layouts.navbar')
 
-            <!-- Page Content -->
-            <main class="min-h-screen w-full flex flex-col justify-center items-center">
-                <div class="w-full max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white bg-opacity-70 mx-auto py-8">
-                        {{ $slot }}
+            <main class="min-h-screen w-full flex flex-col items-center mt-20 px-4 sm:px-6 lg:px-8">
+                <div class="w-full max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10">
+                    {{ $slot }}
                 </div>
             </main>
         </div>
