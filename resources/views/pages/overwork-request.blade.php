@@ -2,21 +2,21 @@
   <form action="{{ route('overwork.insert') }}" method="post">
     @csrf
 
-      <h2 class="text-center text-[#042E66] text-xl font-extrabold mb-8">Overwork Request</h2>
+      <h2 class="text-center text-[#042E66] text-3xl font-black mb-8">Overwork Request</h2>
 
-      <div class="flex flex-col md:flex-row gap-8 max-w-3xl mx-auto">
+      <div class="flex flex-col md:flex-row  justify-between max-w-5xl mx-auto">
         {{-- Submission Section --}}
         <div class="flex-1">
-          <h3 class="text-[#042E66] font-semibold mb-4">Submission Informations</h3>
+          <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
           <x-submisson />
         </div>
 
         {{-- Overwork Request Section --}}
         <div class="flex-1 flex flex-col space-y-4">
-          <h3 class="text-[#042E66] font-semibold mb-4">Overwork Informations</h3>
+          <h3 class="text-[#042E66] font-extrabold text-lg ">Overwork Informations</h3>
 
           <div class="max-w-xs">
-            <x-input-label for="date" class="font-bold text-sm mb-1">Tanggal Lembur</x-input-label>
+            <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date:</x-input-label>
             <x-text-input 
               type="date" 
               name="date" 
@@ -27,12 +27,12 @@
 
           <div class="flex items-center gap-2 max-w-xs">
             <div>
-              <x-input-label for="start" class="font-bold text-sm mb-1">Mulai Lembur</x-input-label>
+              <x-input-label for="start" class="font-black text-[16px] mb-1">Start From:</x-input-label>
               <x-text-input 
                 type="time" 
                 name="start" 
                 id="start" 
-                class="border border-gray-300 rounded px-2 py-1 text-sm w-[70px] cursor-pointer" 
+                class="border border-gray-300 rounded px-2 py-1 text-sm w-[80px] cursor-pointer" 
                 required />
             </div>
             <span class="mt-7 text-gray-500">-</span>
@@ -41,18 +41,18 @@
                 type="time" 
                 name="finish" 
                 id="finish" 
-                class="border border-gray-300 rounded px-2 py-1 text-sm w-[70px] cursor-pointer" 
+                class="border border-gray-300 rounded ml-3 px-2 py-1 text-sm w-[80px] cursor-pointer" 
                 required />
             </div>
           </div>
 
           <div>
-            <x-input-label for="desc" class="font-bold text-sm mb-1">Deskripsi</x-input-label>
+            <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description:</x-input-label>
             <textarea 
               name="desc" 
               id="desc" 
               rows="4" 
-              placeholder="Create Login Page Design:&#10;Design a responsive login page in Figma following the company’s branding guidelines. Include both light and dark mode variations."
+              placeholder="Task you did for this overwork"
               class="border border-gray-300 rounded p-2 text-xs w-full resize-none"
               required></textarea>
           </div>
