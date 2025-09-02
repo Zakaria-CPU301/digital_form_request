@@ -1,14 +1,21 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\OverworkController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\OverworkController;
+
 
 Route::get('/', function () {
-    return view('welcome');
+    $view = Auth::id() === null ? route('login') : route('dashboard');
+    return redirect($view);
 });
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -20,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::group(['middleware' => ['auth', 'Ensure:admin']], function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');

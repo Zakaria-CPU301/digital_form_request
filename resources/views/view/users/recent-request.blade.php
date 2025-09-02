@@ -14,19 +14,18 @@
             <th class="capitalize py-2 px-4 border">user id</th>
             <th class="capitalize py-2 px-4 border">action</th>
         </tr>
-        @foreach ($draft as $d)
-        {{-- {{dd($d)}} --}}
+        @foreach ($recent as $r)
+        {{-- {{dd($r)}} --}}
         <tr>
             <td class="py-5 px-3 border-2 border-collapse">{{$loop->iteration}}</td>
-            <td class="py-5 px-3 border-2 border-collapse">{{$d->created_at->diffForHumans()}}</td>
-            <td class="py-5 px-3 border-2 border-collapse">{{$d->type}}</td>
-            <td class="py-5 px-3 border-2 border-collapse">{{$d->reason ?? $d->task_description}}</td>
+            <td class="py-5 px-3 border-2 border-collapse">{{$r->created_at->diffForHumans()}}</td>
+            <td class="py-5 px-3 border-2 border-collapse">{{$r->type}}</td>
+            <td class="py-5 px-3 border-2 border-collapse">{{$r->reason ?? $r->task_description}}</td>
             <td class="py-5 px-3 border-2 border-collapse">3 data</td>
-            <td class="py-5 px-3 border-2 border-collapse">{{$d->request_status}}</td>
-            <td class="py-5 px-3 border-2 border-collapse">{{$d->user_id}}</td>
+            <td class="py-5 px-3 border-2 border-collapse">{{$r->request_status}}</td>
+            <td class="py-5 px-3 border-2 border-collapse">{{$r->user_id}}</td>
             <td class="py-5 px-3 border-2 border-collapse">
-                <button>edit</button>
-                <button>delete</button>
+                <button>show</button>
             </td>
         </tr>
         @endforeach
