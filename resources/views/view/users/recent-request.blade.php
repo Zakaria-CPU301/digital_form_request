@@ -3,6 +3,7 @@
 @section('content')
 <div class="container-draft">
     
+    <x-filter-data />
     <table border="1" class="border text-center">
         <tr>
             <th class="capitalize py-2 px-4 border">no</th>

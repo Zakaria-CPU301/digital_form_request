@@ -48,7 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     //! recent 
-    Route::get('/recent-request', [RequestController::class, 'showRecent'])->name('recent');
+    Route::prefix('recent')->name('recent.')->group(function () {
+        Route::get('', [RequestController::class, 'showRecent'])->name('all');
+        Route::get('/overwork', [RequestController::class, 'showRecent'])->name('overwork');
+        Route::get('/leave', [RequestController::class, 'showRecent'])->name('leave');
+    });
 });
 
 require __DIR__ . '/auth.php';

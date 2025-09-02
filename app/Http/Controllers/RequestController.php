@@ -43,23 +43,30 @@ class RequestController extends Controller
 
     public function showRecent()
     {
-        $leaves = Leave::where('request_status', '!=', 'draft')
-            ->where('user_id', Auth::id())
+        $routeName = Route::currentRouteName();
+
+        $leaves = Leave::where('request_status', '!=', 'draft')->where('user_id', Auth::id())
             ->get()
             ->map(function ($item) {
                 $item->type = 'leave';
                 return $item;
             });
 
-        $overworks = Overwork::where('request_status', '!=', 'draft')
-            ->where('user_id', Auth::id())
+        $overworks = Overwork::where('request_status', '!=', 'draft')->where('user_id', Auth::id())
             ->get()
             ->map(function ($item) {
                 $item->type = 'overwork';
                 return $item;
             });
-        $recent = $overworks->concat($leaves)->sortByDesc('created_at');
+        $all = $overworks->concat($leaves)->sortByDesc('created_at');
 
-        return view('view.users.recent-request', ['recent' => $recent]);
+        if ($routeName === 'recent.overwork') {
+            $recent = $overworks;
+        } elseif ($routeName === 'recent.leave') {
+            $recent = $leaves;
+        } else {
+            $recent = $all;
+        }
+        return view('view.users.recent-request', compact('recent'));
     }
 }
