@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\OverworkController;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use Symfony\Component\Routing\RequestContext;
 
 Route::get('/', function () {
     $view = Auth::id() === null ? route('login') : route('dashboard');
@@ -17,10 +19,6 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -28,6 +26,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    //! dashboard
+        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');

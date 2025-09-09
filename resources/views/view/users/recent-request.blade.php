@@ -3,7 +3,17 @@
 @section('content')
 <div class="container-draft">
     
-    <x-filter-data />
+    {{-- <x-filter-data /> --}}
+    <div class="action flex justify-between items-center">
+    <ul class="flex gap-5">
+        <li><a href="{{route('recent.all')}}" class="py-2 px-5 bg-blue-100 rounded-lg">All</a></li>
+        <li><a href="{{route('recent.overwork')}}" class="py-2 px-5 bg-blue-100 rounded-lg">Overwork</a></li>
+        <li><a href="{{route('recent.leave')}}" class="py-2 px-5 bg-blue-100 rounded-lg">Leave</a></li>
+    </ul>
+
+    <x-text-input type="text" name="search" id="search" placeholder="Search Data" />
+</div>
+
     <table border="1" class="border text-center">
         <tr>
             <th class="capitalize py-2 px-4 border">no</th>
