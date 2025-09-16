@@ -1,0 +1,127 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Hi ') . auth()->user()->name}}
+        </h2>
+    </x-slot>
+
+    {{-- !total --}}
+    <div class="max-w-7xl mx-auto lg:px-8">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div
+                class="grid grid-cols-3 gap-10 p-6 h-auto text-gray-900 bg-pink-300"
+            >
+                <div class="overwork bg-red-50">
+                    <b>{{ __('total overwork this month') }}</b>
+                    <h1>{{ __('5 hours') }}</h1>
+                    <span>{{ __('total lembur bulan ini') }}</span>
+                </div>
+                <div class="overwork bg-red-50">
+                    <b>{{ __('total leave this month') }}</b>
+                    <h1>{{ __('2 days') }}</h1>
+                    <span>{{ __('total cuti bulan ini') }}</span>
+                </div>
+                <div class="overwork bg-red-50">
+                    <b>{{ __('leave balence') }}</b>
+                    <h1>{{ __('3 days') }}</h1>
+                    <span>{{ __('sisa jatah cuti') }}</span>
+                </div>
+                <div class="overwork bg-red-50">
+                    <b>{{ __('approved request') }}</b>
+                    <h1>{{ $approved }}</h1>
+                    <span>{{ __('permintaan yang di setujui') }}</span>
+                </div>
+                <div class="overwork bg-red-50">
+                    <b>{{ __('rejected request') }}</b>
+                    <h1>{{ $rejected }}</h1>
+                    <span>{{ __('permintaan yang di tolak') }}</span>
+                </div>
+                <div class="overwork bg-red-50">
+                    <b>{{ __('pending request') }}</b>
+                    <h1>{{ $pending }}</h1>
+                    <span>{{ __('permintaan yang tertunda') }}</span>
+                </div>
+            </div>
+        </div>
+
+        {{-- !redirect --}}
+        <div class="bg-blue-300 flex justify-between">
+            <a href="{{route('leave.form-view')}}">apply for leave</a>
+            <a href="{{route('overwork.form-view')}}">apply for overwork</a>
+            <a href="{{route('draft.all')}}">my draft</a>
+        </div>
+    </div>
+
+    <div class="container-draft">
+        {{-- <x-filter-data /> --}}
+        <div class="action flex justify-between items-center">
+            <ul class="flex gap-5">
+                <li>
+                    <a
+                        href="{{route('recent.all')}}"
+                        class="py-2 px-5 bg-blue-100 rounded-lg"
+                        >All</a
+                    >
+                </li>
+                <li>
+                    <a
+                        href="{{route('recent.overwork')}}"
+                        class="py-2 px-5 bg-blue-100 rounded-lg"
+                        >Overwork</a
+                    >
+                </li>
+                <li>
+                    <a
+                        href="{{route('recent.leave')}}"
+                        class="py-2 px-5 bg-blue-100 rounded-lg"
+                        >Leave</a
+                    >
+                </li>
+            </ul>
+
+            <x-text-input
+                type="text"
+                name="search"
+                id="search"
+                placeholder="Search Data"
+            />
+        </div>
+
+        <table border="1" class="border text-center">
+            <tr>
+                <th class="capitalize py-2 px-4 border">no</th>
+                <th class="capitalize py-2 px-4 border">date</th>
+                <th class="capitalize py-2 px-4 border">type</th>
+                <th class="capitalize py-2 px-4 border">reason</th>
+                <th class="capitalize py-2 px-4 border">data detail</th>
+                <th class="capitalize py-2 px-4 border">status</th>
+                <th class="capitalize py-2 px-4 border">user id</th>
+                <th class="capitalize py-2 px-4 border">action</th>
+            </tr>
+            @foreach ($recent as $r) {{-- {{dd($r)}} --}}
+            <tr>
+                <td class="py-5 px-3 border-2 border-collapse">
+                    {{$loop->iteration}}
+                </td>
+                <td class="py-5 px-3 border-2 border-collapse">
+                    {{$r->created_at->diffForHumans()}}
+                </td>
+                <td class="py-5 px-3 border-2 border-collapse">{{$r->type}}</td>
+                <td class="py-5 px-3 border-2 border-collapse">
+                    {{$r->reason ?? $r->task_description}}
+                </td>
+                <td class="py-5 px-3 border-2 border-collapse">3 data</td>
+                <td class="py-5 px-3 border-2 border-collapse">
+                    {{$r->request_status}}
+                </td>
+                <td class="py-5 px-3 border-2 border-collapse">
+                    {{$r->user_id}}
+                </td>
+                <td class="py-5 px-3 border-2 border-collapse">
+                    <button>show</button>
+                </td>
+            </tr>
+            @endforeach
+        </table>
+    </div>
+</x-app-layout>

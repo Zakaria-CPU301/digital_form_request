@@ -9,8 +9,8 @@
     <div class="flex items-center mb-6">
         <ul class="flex space-x-6 text-[#012967] font-semibold">
             <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer">All Draft</li>
-            <li class="cursor-pointer">Overwork</li>
-            <li class="cursor-pointer">Leave</li>
+            <li class="cursor-pointer"><a href="{{ route('recent.overwork') }}" class="hover:text-cyan-600 transition">Overwork</a></li>
+            <li class="cursor-pointer"><a href="{{ route('recent.leave') }}" class="hover:text-cyan-600 transition">Leave</a></li>
         </ul>
         <div class="ml-auto">
             <input 
@@ -57,8 +57,7 @@
                     <td class="py-4 px-6">
                         @php
                             $statusClass = match($d->request_status) {
-                                'Approved'     => 'bg-cyan-400 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                                'Under Review' => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                'Approved'     => 'bg-cyan-400 text-white rounded-f                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                t-sm font-semibold',
                                 'Rejected'     => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                                 default        => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold',
                             };
@@ -74,12 +73,13 @@
                         >
                             <i class="bi bi-eye"></i>
                         </button>
-                        <button 
-                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                        <a 
+                            href="{{ $d->type === 'leave' ? route('leave.edit', $d->id) : route('overwork.edit', $d->id) }}" 
+                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
                             title="Edit"
                         >
                             <i class="bi bi-pencil-square"></i>
-                        </button>
+                        </a>
                         <button 
                             class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
                             title="Delete"

@@ -73,7 +73,7 @@ class OverworkController
      */
     public function edit(Overwork $overwork)
     {
-        //
+        return view('pages.overwork-request', compact('overwork'));
     }
 
     /**
@@ -81,7 +81,25 @@ class OverworkController
      */
     public function update(Request $request, Overwork $overwork)
     {
-        //
+        $validate = $request->validate([
+            'date' => ['required', 'date'],
+            'start' => ['required'],
+            'finish' => ['required'],
+            'desc' => ['required']
+        ]);
+
+        $status = $request->action === 'submit' ? 'review' : 'draft';
+
+        $overwork->update([
+            'overwork_date' => $validate['date'],
+            'start_overwork' => $validate['start'],
+            'finished_overwork' => $validate['finish'],
+            'task_description' => $validate['desc'],
+            'request_status' => $status,
+        ]);
+
+        if ($status === 'review') return redirect()->route('recent.overwork')->with('success', 'overwork updated successfully');
+        else return redirect()->route('draft.overwork')->with('success', 'overwork draft updated');
     }
 
     /**
