@@ -28,6 +28,7 @@
 <body class="bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6] min-h-screen flex flex-col">
     <!-- Navbar -->
     @include('layouts.navbar')
+    @include('layouts.sidebar')
 
     <!-- Page Content -->
     <main class="flex-1 w-full flex justify-center items-start px-4 sm:px-6 lg:px-8 py-10">

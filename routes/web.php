@@ -33,12 +33,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
         Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
+        Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
+        Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
     });
 
     //! leave
     Route::prefix('leave')->name('leave.')->group(function () {
         Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
         Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
+        Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
+        Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
     });
 
     //! draft

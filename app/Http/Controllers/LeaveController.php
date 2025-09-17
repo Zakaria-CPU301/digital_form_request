@@ -59,7 +59,7 @@ class LeaveController
      */
     public function edit(Leave $leave)
     {
-        //
+        return view('pages.leave-request', compact('leave'));
     }
 
     /**
@@ -67,7 +67,23 @@ class LeaveController
      */
     public function update(Request $request, Leave $leave)
     {
-        //
+        $validate = $request->validate([
+            'start' => ['required'],
+            'finish' => ['required'],
+            'reason' => ['required'],
+        ]);
+
+        $status = $request->action === 'submit' ? 'review' : 'draft';
+
+        $leave->update([
+            'start_leave' => $validate['start'],
+            'finished_leave' => $validate['finish'],
+            'reason' => $validate['reason'],
+            'request_status' => $status,
+        ]);
+
+        if ($status === 'review') return redirect()->route('recent.leave')->with('success', 'leave updated successfully');
+        else return redirect()->route('draft.leave')->with('success', 'leave draft updated');
     }
 
     /**

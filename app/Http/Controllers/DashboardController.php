@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\RequestController;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -25,11 +26,20 @@ class DashboardController extends Controller
         return compact('recent');
     }
 
+    public function draftCount() {
+        $controller = new RequestController;
+        $allData = $controller->requestData();
+        $drafts = $allData->where('request_status', 'draft')->where('user_id', Auth::id())->count();
+        return $drafts;
+    }
+
     public function dashboard() {
         $total = $this->total();
         $recent = $this->recent();
+        $draftCount = $this->draftCount();
+        $draft = ['count' => $draftCount];
 
-        return view('dashboard', compact('total', 'recent'));
+        return view('dashboard', compact('total', 'recent', 'draft'));
     }
 
 }
