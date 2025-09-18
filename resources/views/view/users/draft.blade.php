@@ -8,9 +8,9 @@
     <!-- Filter + Search -->
     <div class="flex items-center mb-6">
         <ul class="flex space-x-6 text-[#012967] font-semibold">
-            <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer">All Draft</li>
-            <li class="cursor-pointer"><a href="{{ route('recent.overwork') }}" class="hover:text-cyan-600 transition">Overwork</a></li>
-            <li class="cursor-pointer"><a href="{{ route('recent.leave') }}" class="hover:text-cyan-600 transition">Leave</a></li>
+            <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer"><a href="{{ route('draft.all') }}" class="hover:text-cyan-600 transition">All Draft</a></li>
+            <li class="cursor-pointer"><a href="{{ route('draft.overwork') }}" class="hover:text-cyan-600 transition">Overwork</a></li>
+            <li class="cursor-pointer"><a href="{{ route('draft.leave') }}" class="hover:text-cyan-600 transition">Leave</a></li>
         </ul>
         <div class="ml-auto">
             <input 
@@ -48,7 +48,7 @@
                     <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>
 
                     <!-- Reason / Task -->
-                    <td class="py-4 px-6">{{ $d->reason ?? $d->task_description }}</td>
+                    <td class="py-4 px-6" title="{{ $d->reason ?? $d->task_description }}">{{ Str::limit($d->reason ?? $d->task_description, 40) }}</td>
 
                     <!-- Data Detail -->
                     <td class="py-4 px-6 font-semibold">3 Data</td>

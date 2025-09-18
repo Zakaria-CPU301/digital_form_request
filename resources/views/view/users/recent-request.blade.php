@@ -7,9 +7,9 @@
 
     <div class="flex items-center mb-6">
         <ul class="flex space-x-6 text-[#012967] font-semibold">
-            <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer">All Data</li>
-            <li class="cursor-pointer">Overwork</li>
-            <li class="cursor-pointer">Leave</li>
+            <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer"><a href="{{ route('recent.all') }}" class="hover:text-cyan-600 transition">All Recent</a></li>
+            <li class="cursor-pointer"><a href="{{ route('recent.overwork') }}" class="hover:text-cyan-600 transition">Overwork</a></li>
+            <li class="cursor-pointer"><a href="{{ route('recent.leave') }}" class="hover:text-cyan-600 transition">Leave</a></li>
         </ul>
         <div class="ml-auto">
             <input 
@@ -42,8 +42,8 @@
                 <td class="py-4 px-6 font-semibold">
                     {{ $r->type }}
                 </td>
-                <td class="py-4 px-6">
-                    {{ $r->reason ?? $r->task_description }}
+                <td class="py-4 px-6" title="{{ $r->reason ?? $r->task_description }}">
+                    {{ Str::limit($r->reason ?? $r->task_description, 35) }}
                 </td>
                 <td class="py-4 px-6 font-semibold">
                     {{ $r->data_detail ?? '3 Data' }}

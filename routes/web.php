@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     //! dashboard
-        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {

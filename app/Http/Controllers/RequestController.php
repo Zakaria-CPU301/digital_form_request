@@ -11,11 +11,11 @@ class RequestController extends Controller
 {
     public function requestData()
     {
-        $leaves = Leave::all()->map(function ($item) {
+        $leaves = Leave::all()->sortByDesc('created_at')->map(function ($item) {
             $item->type = 'leave';
             return $item;
         });
-        $overwork = Overwork::all()->map(function ($item) {
+        $overwork = Overwork::all()->sortByDesc('created_at')->map(function ($item) {
             $item->type = 'overwork';
             return $item;
         });
@@ -58,7 +58,7 @@ class RequestController extends Controller
             ->where('request_status', '!=', 'draft')
             ->where('user_id', Auth::id());
 
-        $all = $overworks->concat($leaves)->sortByDesc('created_at')->values();
+        $all = $overworks->concat($leaves)->sortByDesc('created_at');
 
         $routeName === 'recent.overwork' ? $recent = $overworks
             : ($routeName === 'recent.leave' ? $recent = $leaves
