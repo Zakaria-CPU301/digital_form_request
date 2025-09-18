@@ -24,9 +24,9 @@
         </h2>
 
         <!-- Navigation Links -->
-        <nav class="w-full px-6 flex flex-col space-y-6">
+        <nav class="w-full flex flex-col">
             <!-- Contoh tiap menu dengan icon svg -->
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-4 hover:text-indigo-400 font-semibold">
+            <a href="{{ route('dashboard') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-slate-300 hover:text-indigo-400 font-semibold">
                 <!-- Icon Home -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
                 <span>Home</span>
             </a>
 
-            <a href="{{ route('leave.form-view') }}" class="flex items-center space-x-4 hover:text-indigo-400 font-semibold">
+            <a href="{{ route('leave.form-view') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-slate-300 hover:text-indigo-400  font-semibold">
                 <!-- Icon Apply Leave (Calendar) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
@@ -46,7 +46,7 @@
                 <span>Apply Leave</span>
             </a>
 
-            <a href="{{ route('overwork.form-view') }}" class="flex items-center space-x-4 hover:text-indigo-400 font-semibold">
+            <a href="{{ route('overwork.form-view') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-slate-300 hover:text-indigo-400 font-semibold">
                 <!-- Icon Apply Overwork (Plus Mark) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
@@ -55,7 +55,7 @@
                 <span>Apply Overwork</span>
             </a>
 
-            <a href="{{ route('draft.all') }}" class="flex items-center space-x-4 hover:text-indigo-400 font-semibold">
+            <a href="{{ route('draft.all') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-slate-300 hover:text-indigo-400 font-semibold">
                 <!-- Icon My Draft (File) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
@@ -65,7 +65,7 @@
                 <span>My Draft</span>
             </a>
 
-            <a href="{{ route('recent.all') }}" class="flex items-center space-x-4 hover:text-indigo-400 font-semibold">
+            <a href="{{ route('recent.all') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-slate-300 hover:text-indigo-400 font-semibold">
                 <!-- Icon My Application (List) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
@@ -74,7 +74,7 @@
                 <span>My Application</span>
             </a>
 
-            <a href="{{ route('profile.edit') }}" class="flex items-center space-x-4 hover:text-indigo-400 font-semibold">
+            <a href="{{ route('profile.edit') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-slate-300 hover:text-indigo-400 font-semibold">
                 <!-- Icon Profile (User) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
