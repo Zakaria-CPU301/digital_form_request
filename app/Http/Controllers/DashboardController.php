@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
         $pending = $allData->where('request_status', 'review')->count();
 
-        $recent = $controller->showRecent();
+        $recent = $controller->showRecent(request());
 
         // dd($recent);
 
@@ -37,8 +37,11 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
         $data = $this->dataSubmitted();
-        $request->has('leave') ? $data['recent'] = $data['recent']->where('type', 'leave')
-            : ($request->has('overwork') ? $data['recent'] = $data['recent']->where('type', 'overwork') : $data);
+        $filter = $request->input('type');
+
+        in_array($filter, ['leave', 'overwork']) ?
+            $data['recent'] = $data['recent']->where('type', $filter)->take(2)
+            : $data;
 
         $draftCount = $this->draftCount();
         $draft = ['count' => $draftCount];

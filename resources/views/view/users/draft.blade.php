@@ -6,15 +6,21 @@
     <h2 class="text-2xl font-bold text-[#012967] mb-4">Draft Request</h2>
 
     <!-- Filter + Search -->
-    <div class="flex items-center mb-6">
-        <ul class="flex space-x-6 text-[#012967] font-semibold">
-            <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer"><a href="{{ route('draft.all') }}" class="hover:text-cyan-600 transition">All Draft</a></li>
-            <li class="cursor-pointer"><a href="{{ route('draft.overwork') }}" class="hover:text-cyan-600 transition">Overwork</a></li>
-            <li class="cursor-pointer"><a href="{{ route('draft.leave') }}" class="hover:text-cyan-600 transition">Leave</a></li>
-        </ul>
+    <div id="filter" class="flex items-center mb-6">
+        @php
+            $activeToggle = request('type', 'all');
+        @endphp
+        {{-- Tabs --}}
+        <form id="type" action="{{route('draft', ['type' => $activeToggle])}}" method="get">
+            @include('components.filter-data-toggle')
+        </form>
+
+        {{-- Search --}}
         <div class="ml-auto">
             <input 
                 type="search" 
+                id="search" 
+                name="search" 
                 placeholder="Search..." 
                 class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400" 
             />
@@ -36,7 +42,7 @@
         </thead>
 
         <tbody>
-            @foreach($draft as $d)
+            @foreach($data as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
                     <!-- Number -->
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>

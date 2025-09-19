@@ -1,4 +1,8 @@
 <x-app-layout>
+    @php
+        $activeToggle = request('type', 'all');
+    @endphp
+    
     <x-slot name="header">
         <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-6 rounded-b-lg">
             <h2 class="text-white font-bold text-2xl leading-tight">
@@ -82,7 +86,7 @@
             <small class="mt-1 text-cyan-200">Create new overwork request</small>
         </a>
 
-        <a href="{{ route('draft.all') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+        <a href="{{ route('draft') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
             <div class="flex items-center gap-3">
                 <i class="bi bi-file-earmark-text text-2xl"></i>
                 <span class="font-semibold text-lg">My draft</span>
@@ -92,23 +96,17 @@
     </div>
 
     {{-- Recent Request --}}
-    <div class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
+
+<div class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
+   @php
+        $activeToggle = request('type', 'all');
+    @endphp
         <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
-        <div class="flex items-center mb-6">
+        <div id="data" class="flex items-center mb-6">
             {{-- Tabs --}}
-            <form action="{{route('dashboard')}}" method="post">
+            <form id="type" action="{{route('dashboard')}}#data" method="post">
                 @csrf
-                <ul class="flex space-x-6 text-[#012967] font-semibold">
-                    <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer">
-                        <button type="submit" name="">All Data</button>
-                    </li>
-                    <li class="cursor-pointer">
-                        <button type="submit" name="overwork" class="hover:text-cyan-600 transition">Overwork</button>
-                    </li>
-                    <li class="cursor-pointer">
-                        <button type="submit" name="leave" class="hover:text-cyan-600 transition">Leave</button>
-                    </li>
-                </ul>
+                @include('components.filter-data-toggle')
             </form>
 
             {{-- Search --}}
