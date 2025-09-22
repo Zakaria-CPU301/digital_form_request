@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone_number', '30')->after('password');
             $table->enum('position', ['Admin', 'Concept Art and Illustration', 'Web Programmer', '3D Artist'])->after('phone_number');
-            $table->enum('departement', ['Admin', 'Digital Art', 'IT', 'Animasi'])->after('position');
-            $table->enum('roles', ['admin', 'user'])->after('departement');
-            $table->integer('overwork_allowance')->after('roles');
+            $table->enum('department', ['Admin', 'Digital Art', 'IT', 'Animasi'])->after('position');
+            $table->enum('role', ['admin', 'user'])->after('department');
+            $table->integer('overwork_allowance')->after('role');
         });
     }
 
