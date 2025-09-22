@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //! dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     
-    Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::middleware(['auth', 'role:user'])->group(function () {
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
