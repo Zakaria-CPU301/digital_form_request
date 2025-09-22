@@ -28,7 +28,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     //! dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
+    
+    Route::middleware(['auth', 'role:admin'])->group(function () {
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
@@ -49,7 +50,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 
     //! recent 
-    Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
     });
 });
