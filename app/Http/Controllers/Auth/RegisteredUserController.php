@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($validate['password']),
             'phone_number' => $validate['phone_number'],
             'position' => $validate['position'],
-            'departement' => $validate['department'],
+            'department' => $validate['department'],
             'role' => $validate['role'],
             'overwork_allowance' => 40
         ]);
