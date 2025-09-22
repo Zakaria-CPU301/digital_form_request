@@ -33,10 +33,10 @@ class RegisteredUserController extends Controller
         $validate = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::default()],
             'phone_number' => ['required', 'string', 'max:30'],
             'position' => ['required'],
-            'departement' => ['required'],
+            'department' => ['required'],
             'role' => ['required', 'in:admin,user'],
         ]);
 
@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($validate['password']),
             'phone_number' => $validate['phone_number'],
             'position' => $validate['position'],
-            'departement' => $validate['departement'],
+            'department' => $validate['department'],
             'role' => $validate['role'],
             'overwork_allowance' => 40
         ]);
@@ -55,6 +55,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('login', absolute: false));
+        return redirect(route('dashboard', absolute: false));
     }
 }

@@ -27,8 +27,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     //! dashboard
-        Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
+    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    
+    Route::middleware(['auth', 'role:user'])->group(function () {
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
         Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
@@ -46,17 +47,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     //! draft
-    Route::prefix('draft')->name('draft.')->group(function () {
-        Route::get('', [RequestController::class, 'showDraft'])->name('all');
-        Route::get('overwork', [RequestController::class, 'showDraft'])->name('overwork');
-        Route::get('leave', [RequestController::class, 'showDraft'])->name('leave');
-    });
+    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 
     //! recent 
-    Route::prefix('recent')->name('recent.')->group(function () {
-        Route::get('', [RequestController::class, 'showRecent'])->name('all');
-        Route::get('/overwork', [RequestController::class, 'showRecent'])->name('overwork');
-        Route::get('/leave', [RequestController::class, 'showRecent'])->name('leave');
+        Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
     });
 });
 

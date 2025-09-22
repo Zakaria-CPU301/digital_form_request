@@ -1,4 +1,8 @@
 <x-app-layout>
+    @php
+        $activeToggle = request('type', 'all');
+    @endphp
+    
     <x-slot name="header">
         <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-6 rounded-b-lg">
             <h2 class="text-white font-bold text-2xl leading-tight">
@@ -26,14 +30,14 @@
             <h1 class="text-3xl font-extrabold text-gray-900 py-2">2 Days</h1>
             <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
         </div>
-
+        
         <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
             <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Pending Request') }}
-                <i class="bi bi-hourglass-split text-gray-500 text-lg animate-spin"></i>
+                {{ __('Leave Balance') }}
+                <i class="bi bi-journal-check text-gray-500 text-lg"></i>
             </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">5</h1>
-            <span class="text-sm text-gray-500">{{ __('Total submission which still under review') }}</span>
+            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ __('3 Days') }}</h1>
+            <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
         </div>
 
         <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -41,7 +45,7 @@
                 {{ __('Approved Request') }}
                 <i class="bi bi-check-circle-fill text-green-600 text-lg"></i>
             </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $total['approved'] }}</h1>
+            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['approved'] }}</h1>
             <span class="text-sm text-gray-500">{{ __('Request has been approved') }}</span>
         </div>
 
@@ -50,17 +54,17 @@
                 {{ __('Rejected Request') }}
                 <i class="bi bi-x-circle-fill text-red-600 text-lg"></i>
             </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $total['rejected'] }}</h1>
+            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['rejected'] }}</h1>
             <span class="text-sm text-gray-500">{{ __('Request rejected') }}</span>
         </div>
-
+        
         <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
             <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Leave Balance') }}
-                <i class="bi bi-journal-check text-gray-500 text-lg"></i>
+                {{ __('Pending Request') }}
+                <i class="bi bi-hourglass-split text-gray-500 text-lg animate-spin"></i>
             </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ __('3 Days') }}</h1>
-            <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
+            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['pending'] }}</h1>
+            <span class="text-sm text-gray-500">{{ __('Total submission which still under review') }}</span>
         </div>
     </div>
 
@@ -82,7 +86,7 @@
             <small class="mt-1 text-cyan-200">Create new overwork request</small>
         </a>
 
-        <a href="{{ route('draft.all') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+        <a href="{{ route('draft') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
             <div class="flex items-center gap-3">
                 <i class="bi bi-file-earmark-text text-2xl"></i>
                 <span class="font-semibold text-lg">My draft</span>
@@ -92,21 +96,18 @@
     </div>
 
     {{-- Recent Request --}}
-    <div class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
+
+<div class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
+   @php
+        $activeToggle = request('type', 'all');
+    @endphp
         <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
-        <div class="flex items-center mb-6">
+        <div id="data" class="flex items-center mb-6">
             {{-- Tabs --}}
-            <ul class="flex space-x-6 text-[#012967] font-semibold">
-                <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer">
-                    <a href="{{ route('recent.all') }}">All Data</a>
-                </li>
-                <li class="cursor-pointer">
-                    <a href="{{ route('recent.overwork') }}" class="hover:text-cyan-600 transition">Overwork</a>
-                </li>
-                <li class="cursor-pointer">
-                    <a href="{{ route('recent.leave') }}" class="hover:text-cyan-600 transition">Leave</a>
-                </li>
-            </ul>
+            <form id="type" action="{{route('dashboard')}}#data" method="post">
+                @csrf
+                @include('components.filter-data-toggle')
+            </form>
 
             {{-- Search --}}
             <div class="ml-auto">
@@ -142,7 +143,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($recent['recent'] as $r)
+                @foreach ($data['recent'] as $r)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $r->created_at->format('d - m - Y') }}</td>

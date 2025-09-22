@@ -274,7 +274,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="UJ_fGRWRy9vz6uX8Io1A-120" value="roles enum(&quot;admin&quot;, &quot;karyawan&quot;) NOT NULL" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" parent="UJ_fGRWRy9vz6uX8Io1A-118" vertex="1">
+        <mxCell id="UJ_fGRWRy9vz6uX8Io1A-120" value="role enum(&quot;admin&quot;, &quot;karyawan&quot;) NOT NULL" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" parent="UJ_fGRWRy9vz6uX8Io1A-118" vertex="1">
           <mxGeometry x="30" width="259" height="30" as="geometry">
             <mxRectangle width="259" height="30" as="alternateBounds" />
           </mxGeometry>

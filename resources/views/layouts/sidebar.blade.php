@@ -40,7 +40,6 @@
     <span>Home</span>
 </a>
 
-
             <a href="{{ route('leave.form-view') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10  font-semibold">
                 <!-- Icon Apply Leave (Calendar) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -60,7 +59,7 @@
                 <span>Apply Overwork</span>
             </a>
 
-            <a href="{{ route('draft.all') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+            <a href="{{ route('draft') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
                 <!-- Icon My Draft (File) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
@@ -70,7 +69,7 @@
                 <span>My Draft</span>
             </a>
 
-            <a href="{{ route('recent.all') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+            <a href="{{ route('recent') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
                 <!-- Icon My Application (List) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">

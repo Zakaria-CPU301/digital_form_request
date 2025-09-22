@@ -5,5 +5,5 @@
     <label for="position" class="font-bold">Position:</label>
     <x-text-input class="border-none font-medium shadow-none" type="text" name="" id="" value="{{auth()->user()->position}}" disabled />
     <label for="department" class="font-bold">Department</label>
-    <x-text-input class="border-none font-medium shadow-none" type="text" name="" id="" value="{{auth()->user()->departement}}" disabled />
+    <x-text-input class="border-none font-medium shadow-none" type="text" name="" id="" value="{{auth()->user()->department}}" disabled />
 </div>

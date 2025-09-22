@@ -9,6 +9,7 @@
             <style>
         body {
             font-family: 'Geologica', sans-serif;
+            scroll-behavior: smooth;
         }
     </style>
 

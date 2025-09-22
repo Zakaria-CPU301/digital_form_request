@@ -2,44 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\RequestController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\RequestController;
 
 class DashboardController extends Controller
 {
-    public function total() {
+    public function dataSubmitted()
+    {
         $controller = new RequestController;
         $allData = $controller->requestData();
 
         $approved = $allData->where('request_status', 'accepted')->count();
-        
+
         $rejected = $allData->where('request_status', 'rejected')->count();
 
         $pending = $allData->where('request_status', 'review')->count();
 
-        return compact('approved', 'rejected', 'pending');
-    }
-    
-    public function recent() {
-        $controller = new RequestController;
-        $recent = $controller->showRecent();
-        return compact('recent');
+        $recent = $controller->showRecent(request());
+
+        // dd($recent);
+
+        return compact('approved', 'rejected', 'pending', 'recent');
     }
 
-    public function draftCount() {
+    public function draftCount()
+    {
         $controller = new RequestController;
         $allData = $controller->requestData();
         $drafts = $allData->where('request_status', 'draft')->where('user_id', Auth::id())->count();
         return $drafts;
     }
 
-    public function dashboard() {
-        $total = $this->total();
-        $recent = $this->recent();
+    public function dashboard(Request $request)
+    {
+        $data = $this->dataSubmitted();
+        $filter = $request->input('type');
+
+        in_array($filter, ['leave', 'overwork']) ?
+            $data['recent'] = $data['recent']->where('type', $filter)->take(2)
+            : $data;
+
         $draftCount = $this->draftCount();
         $draft = ['count' => $draftCount];
 
-        return view('dashboard', compact('total', 'recent', 'draft'));
+        return view('dashboard', compact('data', 'draft'));
     }
-
 }

@@ -1,19 +1,25 @@
 @extends('layouts.tables')
 
 @section('content')
+
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
+    @php
+        $activeToggle = request('type', 'smua');
+    @endphp
     <h2 class="text-2xl font-bold text-[#012967] mb-4">Recent Request</h2>
 
-    <!-- Filter + Search -->
-    <div class="flex items-center mb-6">
-        <ul class="flex space-x-6 text-[#012967] font-semibold">
-            <li class="border-b-4 border-cyan-400 pb-1 cursor-pointer">All Data</li>
-            <li class="cursor-pointer">Overwork</li>
-            <li class="cursor-pointer">Leave</li>
-        </ul>
+    <div id="filter" class="flex items-center mb-6">
+        {{-- Tabs --}}
+        <form id="type" action="{{route('recent', ['type' => $activeToggle])}}" method="get">
+            @include('components.filter-data-toggle')
+        </form>
+
+        {{-- Search --}}
         <div class="ml-auto">
             <input 
                 type="search" 
+                id="search" 
+                name="search" 
                 placeholder="Search..." 
                 class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400" 
             />
@@ -24,6 +30,7 @@
     <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
             <tr>
+                <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
                 <th class="py-3 px-6 font-semibold">Type</th>
                 <th class="py-3 px-6 font-semibold">Reason</th>
@@ -34,16 +41,19 @@
         </thead>
 
         <tbody>
-            @foreach($recent as $r)
+            @foreach($data as $r)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
+                <td class="py-4 px-6">
+                    {{ $r->date ?? $loop->iteration }}
+                </td>
                 <td class="py-4 px-6">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
                 <td class="py-4 px-6 font-semibold">
                     {{ $r->type }}
                 </td>
-                <td class="py-4 px-6">
-                    {{ $r->reason ?? $r->task_description }}
+                <td class="py-4 px-6" title="{{ $r->reason ?? $r->task_description }}">
+                    {{ Str::limit($r->reason ?? $r->task_description, 35) }}
                 </td>
                 <td class="py-4 px-6 font-semibold">
                     {{ $r->data_detail ?? '3 Data' }}
