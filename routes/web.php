@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     //! dashboard
-        Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
@@ -49,7 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 
     //! recent 
-    Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
+    });
 });
 
 require __DIR__ . '/auth.php';

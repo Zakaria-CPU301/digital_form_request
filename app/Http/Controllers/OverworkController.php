@@ -59,7 +59,7 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        if ($status === 'review') return redirect()->route('recent.overwork')->with('success', 'add data leave successfully');
+        if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
         else return redirect()->route('draft.overwork')->with('success', 'data leave is draft');
     }
 

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('phone_number', '30')->after('password');
             $table->enum('position', ['Admin', 'Concept Art and Illustration', 'Web Programmer', '3D Artist'])->after('phone_number');
             $table->enum('departement', ['Admin', 'Digital Art', 'IT', 'Animasi'])->after('position');
-            $table->enum('roles', ['admin', 'user'])->after('departement');
-            $table->integer('overwork_allowance')->after('roles');
+            $table->enum('role', ['admin', 'user'])->after('departement');
+            $table->integer('overwork_allowance')->after('role');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['phone_number', 'position', 'departement', 'roles', 'overwork_allowance']);
+            $table->dropColumn(['phone_number', 'position', 'departement', 'role', 'overwork_allowance']);
         });
     }
 };
