@@ -1,4 +1,4 @@
-<div x-data="{ open: false }">
+<div x-data="{ open: {{ $sidebarOpen ?? 'false' }} }" x-on:open-sidebar.window="open = true" x-on:close-sidebar.window="open = false">
     <!-- Sidebar -->
     <aside
         :class="open ? 'translate-x-0' : '-translate-x-full'"
@@ -40,43 +40,22 @@
     <span>Home</span>
 </a>
 
-            <a href="{{ route('leave.form-view') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10  font-semibold">
-                <!-- Icon Apply Leave (Calendar) -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                <span>Apply Leave</span>
-            </a>
+            <a href="{{ route('overwork.data') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+    <!-- Icon Apply Overwork (Plus Mark) -->
+<i class="bi bi-alarm text-2xl"></i>
+    <span>Overwork Data</span>
+</a>
 
-            <a href="{{ route('overwork.form-view') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
-                <!-- Icon Apply Overwork (Plus Mark) -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    viewBox="0 0 24 24">
-                    <path d="M12 6v12M6 12h12" />
-                </svg>
-                <span>Apply Overwork</span>
-            </a>
+<a href="{{ route('leave.data') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+    <!-- Icon Apply Leave (Calendar) -->
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+    </svg>
+    <span>Leave Data</span>
+</a>
 
-            <a href="{{ route('draft') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
-                <!-- Icon My Draft (File) -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    viewBox="0 0 24 24">
-                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                    <path d="M14 2v6h6" />
-                </svg>
-                <span>My Draft</span>
-            </a>
-
-            <a href="{{ route('recent') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
-                <!-- Icon My Application (List) -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    viewBox="0 0 24 24">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-                <span>My Application</span>
-            </a>
 
             <a href="{{ route('profile.edit') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
                 <!-- Icon Profile (User) -->
@@ -92,7 +71,7 @@
 
     <!-- Toggle Button -->
     <button
-    @click="open = !open"
+    @click="open = !open; $dispatch(open ? 'open-sidebar' : 'close-sidebar')"
     :aria-expanded="open.toString()"
     aria-label="Toggle sidebar"
     class="fixed top-1/2 z-50 -translate-y-1/2 bg-[#1EB8CD] text-white w-7 h-[50px] rounded-r-full flex items-center justify-center shadow-lg transition-all duration-300"

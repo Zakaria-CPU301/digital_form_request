@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
+use Exception;
 use Illuminate\Http\Request;
 
 class LeaveController
@@ -46,7 +47,7 @@ class LeaveController
         ]);
 
         if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
-        else return redirect()->route('draft.leave')->with('success', 'data leave is draft');
+        else return redirect()->route('draft')->with('success', 'data leave is draft');
     }
 
     /**
@@ -82,8 +83,8 @@ class LeaveController
             'request_status' => $status,
         ]);
 
-        if ($status === 'review') return redirect()->route('recent.leave')->with('success', 'leave updated successfully');
-        else return redirect()->route('draft.leave')->with('success', 'leave draft updated');
+        if ($status === 'review') return redirect()->route('recent')->with('success', 'leave updated successfully');
+        else return redirect()->route('draft')->with('success', 'leave draft updated');
     }
 
     /**
@@ -91,6 +92,11 @@ class LeaveController
      */
     public function destroy(Leave $leave)
     {
-        //
+        try {
+            $leave->delete();
+            return redirect()->back()->with('success', 'Leave draft deleted successfully');
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to delete leave draft: ' . $e->getMessage()]);
+        }
     }
 }

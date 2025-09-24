@@ -1,8 +1,10 @@
 <x-app-layout>
     @php
         $activeToggle = request('type', 'all');
+        $currentMonth = request('month', 'all');
+        $currentSearch = request('search', '');
     @endphp
-    
+
     <x-slot name="header">
         <div class="bg-gradient-to-r from-cyan-600 to-blue-600 p-6 rounded-b-lg">
             <h2 class="text-white font-bold text-2xl leading-tight">
@@ -98,36 +100,60 @@
     {{-- Recent Request --}}
 
 <div class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
-   @php
-        $activeToggle = request('type', 'all');
-    @endphp
         <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
-        <div id="data" class="flex items-center mb-6">
-            {{-- Tabs --}}
-            <form id="type" action="{{route('dashboard')}}#data" method="post">
-                @csrf
-                @include('components.filter-data-toggle')
-            </form>
 
-            {{-- Search --}}
-            <div class="ml-auto">
-                <input 
-                    type="search" 
-                    id="search" 
-                    name="search" 
-                    placeholder="Search..." 
-                    class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400" 
-                />
+        {{-- Filter and Search Form --}}
+        <form action="{{ route('dashboard') }}" method="GET" class="mb-6">
+            <div id="data" class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
+                {{-- Tabs --}}
+                <div>
+                    <ul class="flex space-x-6 text-[#012967] font-semibold">
+                        <li class="{{ $activeToggle === 'all' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
+                            <button type="submit" name="type" value="all" class="hover:text-cyan-600 transition">All Data</button>
+                        </li>
+                        <li class="{{ $activeToggle === 'overwork' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
+                            <button type="submit" name="type" value="overwork" class="hover:text-cyan-600 transition">Overwork</button>
+                        </li>
+                        <li class="{{ $activeToggle === 'leave' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
+                            <button type="submit" name="type" value="leave" class="hover:text-cyan-600 transition">Leave</button>
+                        </li>
+                    </ul>
+                </div>
+
+                {{-- Month Filter --}}
+                
+                {{-- Search --}}
+                <div class="ml-auto">
+                    <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    placeholder="Search requests..."
+                    value="{{ $currentSearch }}"
+                    class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-64"
+                    />
+                </div>
+                <div>
+                    <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                        <option value="all" {{ $currentMonth === 'all' ? 'selected' : '' }}>All Months</option>
+                        @php
+                            $months = [];
+                            for ($i = 0; $i < 12; $i++) {
+                                $date = now()->subMonths($i);
+                                $value = $date->format('m-Y');
+                                $label = $date->format('F Y');
+                                $months[] = ['value' => $value, 'label' => $label];
+                            }
+                        @endphp
+                        @foreach($months as $monthOption)
+                            <option value="{{ $monthOption['value'] }}" {{ $currentMonth === $monthOption['value'] ? 'selected' : '' }}>
+                                {{ $monthOption['label'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
-
-        {{-- Filter dropdown --}}
-        <div>
-            <select name="filter" id="filter" class="border border-gray-300 rounded-lg py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                <option>All Months</option>
-                {{-- Add other months dynamically --}}
-            </select>
-        </div>
+        </form>
 
         {{-- Table --}}
         <table class="min-w-full text-left border-collapse border-b border-gray-300">
@@ -178,4 +204,31 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function clearFilters() {
+            // Reset all form fields
+            document.getElementById('search').value = '';
+            document.getElementById('month').value = 'all';
+
+            // Find and click the "All Data" button
+            const allDataButtons = document.querySelectorAll('button[name="type"][value="all"]');
+            if (allDataButtons.length > 0) {
+                allDataButtons[0].click();
+            }
+        }
+
+        // Auto-submit search on Enter key
+        document.getElementById('search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.closest('form').submit();
+            }
+        });
+
+        // Auto-submit on month change
+        document.getElementById('month').addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    </script>
 </x-app-layout>

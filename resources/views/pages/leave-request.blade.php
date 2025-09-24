@@ -16,38 +16,37 @@
 
       {{-- Leave Request Section --}}
       <div class="flex-1 flex flex-col space-y-4">
-        <h3 class="text-black font-extrabold text-lg mb-4">Leave Informations</h3>
-
-        <div class="max-w-xs">
-          <x-input-label for="start" class="font-bold text-sm mb-1">Mulai Cuti</x-input-label>
+        <h3 class="text-[#042E66] font-extrabold text-lg">Leave Informations</h3>
+        <div class="flex flex-col">
+        <x-input-label for="leave_type" class="font-bold text-md mb-1">Leave Duration:</x-input-label>
+        <div class="flex items-center space-x-2">
           <x-text-input
             type="date"
             name="start"
             id="start"
             value="{{ old('start', isset($leave) ? $leave->start_leave : '') }}"
-            class="border border-gray-300 rounded px-3 py-1 w-full text-sm cursor-pointer"
-            required />
-        </div>
-
-        <div class="max-w-xs">
-          <x-input-label for="finish" class="font-bold text-sm mb-1">Selesai Cuti</x-input-label>
+            class="flex-1 border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+            required
+          />
+          <span class="text-gray-500">-</span>
           <x-text-input
             type="date"
             name="finish"
             id="finish"
             value="{{ old('finish', isset($leave) ? $leave->finished_leave : '') }}"
-            class="border border-gray-300 rounded px-3 py-1 w-full text-sm cursor-pointer"
-            required />
+            class="flex-1 border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+            required
+          />
         </div>
-
+        </div>
         <div>
-          <x-input-label for="reason" class="font-bold text-sm mb-1">Alasan Cuti</x-input-label>
+          <x-input-label for="reason" class="font-bold text-md mb-1">Leave Reason:</x-input-label>
           <textarea
             name="reason"
             id="reason"
             rows="4"
-            placeholder="Tuliskan alasan cuti Anda di sini..."
-            class="border border-gray-300 rounded p-2 text-xs w-full resize-none"
+            placeholder="Write your leave reason here..."
+            class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
             required>{{ old('reason', isset($leave) ? $leave->reason : '') }}</textarea>
         </div>
 

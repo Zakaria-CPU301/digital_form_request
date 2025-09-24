@@ -38,14 +38,34 @@ class DashboardController extends Controller
     {
         $data = $this->dataSubmitted();
         $filter = $request->input('type');
+        $month = $request->input('month');
+        $search = $request->input('search');
 
-        in_array($filter, ['leave', 'overwork']) ?
-            $data['recent'] = $data['recent']->where('type', $filter)->take(2)
-            : $data;
+        // Apply type filter
+        if (in_array($filter, ['leave', 'overwork'])) {
+            $data['recent'] = $data['recent']->where('type', $filter);
+        }
+
+        // Apply month filter
+        if ($month && $month !== 'all') {
+            $data['recent'] = $data['recent']->filter(function ($item) use ($month) {
+                return $item->created_at->format('m-Y') === $month;
+            });
+        }
+
+        // Apply search filter
+        if ($search) {
+            $data['recent'] = $data['recent']->filter(function ($item) use ($search) {
+                $searchLower = strtolower($search);
+                $reason = $item->reason ?? $item->task_description ?? '';
+
+                return str_contains(strtolower($reason), $searchLower);
+            });
+        }
 
         $draftCount = $this->draftCount();
         $draft = ['count' => $draftCount];
 
-        return view('dashboard', compact('data', 'draft'));
+        return view('dashboard', compact('data', 'draft', 'filter', 'month', 'search'));
     }
 }

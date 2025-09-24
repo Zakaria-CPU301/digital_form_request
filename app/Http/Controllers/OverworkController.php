@@ -59,8 +59,8 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
-        else return redirect()->route('draft.overwork')->with('success', 'data leave is draft');
+        if ($status === 'review') return redirect()->route('recent')->with('success', 'add data overwork successfully');
+        else return redirect()->route('overwork.draft')->with('success', 'data overwork is draft');
     }
 
     /**
@@ -99,7 +99,7 @@ class OverworkController
         ]);
 
         if ($status === 'review') return redirect()->route('recent.overwork')->with('success', 'overwork updated successfully');
-        else return redirect()->route('draft.overwork')->with('success', 'overwork draft updated');
+        else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
     }
 
     /**
@@ -107,6 +107,11 @@ class OverworkController
      */
     public function destroy(Overwork $overwork)
     {
-        //
+        try {
+            $overwork->delete();
+            return redirect()->back()->with('success', 'Overwork draft deleted successfully');
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to delete overwork draft: ' . $e->getMessage()]);
+        }
     }
 }

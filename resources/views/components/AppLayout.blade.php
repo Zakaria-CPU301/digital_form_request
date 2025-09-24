@@ -24,14 +24,16 @@
     </head>
     <body>
         <div class="min-h-screen bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]" x-data="{ sidebarOpen: true }" x-on:open-sidebar.window="sidebarOpen = true" x-on:close-sidebar.window="sidebarOpen = false">
-                @include('layouts.navbar')
+                @include('layouts.navbar', ['sidebarOpen' => 'sidebarOpen'])
 
                 <!-- Include sidebar with state sharing -->
                 @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
             <!-- Page Content with reactive margin -->
-            <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 transition-all duration-300 ease-in-out pb-10">
-                {{ $slot }}
+            <main :class="sidebarOpen ? 'ml-72' : 'ml-0'" class="transition-all duration-300 ease-in-out">
+                <div :class="sidebarOpen ? 'max-w-5xl' : 'max-w-6xl'" class="w-full mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out">
+                    {{ $slot }}
+                </div>
             </main>
         </div>
     </body>

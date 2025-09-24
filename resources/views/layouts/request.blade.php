@@ -21,12 +21,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-geologica antialiased">
-        <div class="min-h-screen w-full bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]">
-            @include('layouts.navbar')
-            @include('layouts.sidebar')
+        <div class="min-h-screen w-full bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]" x-data="{ sidebarOpen: true }" x-on:open-sidebar.window="sidebarOpen = true" x-on:close-sidebar.window="sidebarOpen = false">
+            @include('layouts.navbar', ['sidebarOpen' => 'sidebarOpen'])
+            @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
-            <main class="min-h-screen w-full flex flex-col items-center mt-20 px-4 sm:px-6 lg:px-8">
-                <div class="w-full max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10">
+            <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 min-h-screen max-w-full flex flex-col items-center mt-20 px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out">
+                <div :class="sidebarOpen ? 'max-w-5xl' : 'max-w-6xl'" class="w-full max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10 transition-all duration-300 ease-in-out">
                     {{ $slot }}
                 </div>
             </main>
