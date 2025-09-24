@@ -33,6 +33,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function leave() {
+        return $this->hasMany(leave::class);
+    }
+
+    public function overwork() {
+        return $this->hasMany(Overwork::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

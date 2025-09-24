@@ -141,7 +141,7 @@
                                 <option value="Admin">Admin</option>
                                 <option value="Digital Art">Digital Art</option>
                                 <option value="IT">IT</option>
-                                <option value="Animation">Animation</option>
+                                <option value="Animasi">Animation</option>
                             </select>
                             <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600" />
                         </div>

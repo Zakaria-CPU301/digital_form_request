@@ -1,6 +1,10 @@
 <x-app-layout>
     @php
-        $activeToggle = request('type', 'all');
+        if (auth()->user()->role === 'user') {
+            $activeToggle = request('type', 'all');
+        } else {
+            $activeToggle = request('status', 'review');
+        }
     @endphp
     
     <x-slot name="header">
@@ -70,42 +74,67 @@
 
     {{-- Buttons --}}
     <div class="mx-10 px-6 lg:px-8 flex flex-col sm:flex-row gap-6 mb-8">
-        <a href="{{ route('leave.form-view') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
-            <div class="flex items-center gap-3">
-                <i class="bi bi-calendar-plus text-2xl"></i>
-                <span class="font-semibold text-lg">Apply for leave</span>
-            </div>
-            <small class="mt-1 text-cyan-200">Create new leave request</small>
-        </a>
+        @auth
+            @if (auth()->user()->role === 'user')
+                <a href="{{ route('leave.form-view') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="bi bi-calendar-plus text-2xl"></i>
+                        <span class="font-semibold text-lg">Apply for leave</span>
+                    </div>
+                    <small class="mt-1 text-cyan-200">Create new leave request</small>
+                </a>
 
-        <a href="{{ route('overwork.form-view') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
-            <div class="flex items-center gap-3">
-                <i class="bi bi-alarm text-2xl"></i>
-                <span class="font-semibold text-lg">Apply for overwork</span>
-            </div>
-            <small class="mt-1 text-cyan-200">Create new overwork request</small>
-        </a>
+                <a href="{{ route('overwork.form-view') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="bi bi-alarm text-2xl"></i>
+                        <span class="font-semibold text-lg">Apply for overwork</span>
+                    </div>
+                    <small class="mt-1 text-cyan-200">Create new overwork request</small>
+                </a>
 
-        <a href="{{ route('draft') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
-            <div class="flex items-center gap-3">
-                <i class="bi bi-file-earmark-text text-2xl"></i>
-                <span class="font-semibold text-lg">My draft</span>
-            </div>
-            <small class="mt-1 text-cyan-200">Request that hasn't submitted yet</small>
-        </a>
+                <a href="{{ route('draft') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="bi bi-file-earmark-text text-2xl"></i>
+                        <span class="font-semibold text-lg">My draft</span>
+                    </div>
+                    <small class="mt-1 text-cyan-200">Request that hasn't submitted yet</small>
+                </a>
+                    
+            @elseif (auth()->user()->role === 'admin')
+                <a href="{{ route('register') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="bi bi-calendar-plus text-2xl"></i>
+                        <span class="font-semibold text-lg">Add Employee</span>
+                    </div>
+                    <small class="mt-1 text-cyan-200">Create new employee account</small>
+                </a>
+
+                <a href="{{ route('account.show') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="bi bi-alarm text-2xl"></i>
+                        <span class="font-semibold text-lg">Manage Account</span>
+                    </div>
+                    <small class="mt-1 text-cyan-200">Manage employee account</small>
+                </a>
+
+                <a href="{{ route('request.show') }}" class="flex flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <div class="flex items-center gap-3">
+                        <i class="bi bi-file-earmark-text text-2xl"></i>
+                        <span class="font-semibold text-lg">All Request</span>
+                    </div>
+                    <small class="mt-1 text-cyan-200">See all request</small>
+                </a>
+            @endif
+        @endauth
     </div>
 
     {{-- Recent Request --}}
 
 <div class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
-   @php
-        $activeToggle = request('type', 'all');
-    @endphp
         <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
         <div id="data" class="flex items-center mb-6">
             {{-- Tabs --}}
-            <form id="type" action="{{route('dashboard')}}#data" method="post">
-                @csrf
+            <form id="type" action="{{route('dashboard', ['type' => $activeToggle])}}#data" method="get">
                 @include('components.filter-data-toggle')
             </form>
 
@@ -136,6 +165,9 @@
                     <th class="py-3 px-6 font-semibold w-12">No</th>
                     <th class="py-3 px-6 font-semibold w-15">Date</th>
                     <th class="py-3 px-6 font-semibold">Type</th>
+                    @if (auth()->user()->role === 'admin')
+                        <th class="py-3 px-6 font-semibold">Name</th>
+                    @endif
                     <th class="py-3 px-6 font-semibold w-30">Reason</th>
                     <th class="py-3 px-6 font-semibold">Data Detail</th>
                     <th class="py-3 px-6 font-semibold">Status</th>
@@ -143,18 +175,21 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data['recent'] as $r)
+                @foreach ($data['requestData'] as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ $r->created_at->format('d - m - Y') }}</td>
-                    <td class="py-4 px-6 font-semibold">{{ $r->type }}</td>
-                    <td class="py-4 px-6 truncate max-w-xs" title="{{ $r->reason ?? $r->task_description }}">
-                        {{ Str::limit($r->reason ?? $r->task_description, 40) }}
+                    <td class="py-4 px-6">{{ $d->created_at->format('d - m - Y') }}</td>
+                    <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>
+                    @if (auth()->user()->role === "admin")
+                        <td class="py-4 px-6 font-semibold">{{ $d->user->name }}</td>
+                    @endif
+                    <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
+                        {{ Str::limit($d->reason ?? $d->task_description, 40) }}
                     </td>
-                    <td class="py-4 px-6 font-semibold">{{ $r->data_detail ?? '3 Data' }}</td>
+                    <td class="py-4 px-6 font-semibold">{{ $d->data_detail ?? '3 Data' }}</td>
                     <td class="py-4 px-6">
                         @php
-                            $statusClass = match(strtolower($r->request_status)) {
+                            $statusClass = match(strtolower($d->request_status)) {
                                 'approved', 'accepted' => 'bg-cyan-500 text-white',
                                 'under review', 'pending' => 'bg-gray-400 text-white',
                                 'rejected' => 'bg-red-500 text-white',
@@ -162,16 +197,50 @@
                             };
                         @endphp
                         <span class="rounded-full px-3 py-1 text-sm font-semibold {{ $statusClass }}">
-                            {{ ucfirst($r->request_status) }}
+                            {{ ucfirst($d->request_status) }}
                         </span>
                     </td>
                     <td class="py-4 px-6 text-center">
-                        <button 
-                            class="text-gray-500 hover:text-gray-700" 
-                            title="Show Details"
-                        >
-                            <i class="bi bi-eye text-xl"></i>
-                        </button>
+                        @if (auth()->user()->role === 'user')
+                            <button 
+                                class="text-gray-500 hover:text-gray-700" 
+                                title="Show Details"
+                            >
+                                <i class="bi bi-eye text-xl"></i>
+                            </button>
+                        @else
+                            @php
+                                $status = request('status');
+                            @endphp
+
+                            <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between space-x-2">
+                                <button 
+                                    type="submit" name="type" value="show-dialog"
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    title="Show"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                                <button
+                                    type="submit" name="accepted" value="{{$d->type}}"
+                                    class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                                    title="Accepted"
+                                    onclick="return confirm('yakin di terima?')"
+                                >
+                                    <i class="bi bi-check2-square"></i>
+                                </button>
+
+                                <button
+                                    type="submit" name="rejected" value="{{$d->type}}"
+                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    title="Rejected"
+                                    onclick="return confirm('yakin di tolak?')"
+                                >
+                                <i class="bi bi-x"></i>
+                                </button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

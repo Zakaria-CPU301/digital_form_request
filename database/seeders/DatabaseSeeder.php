@@ -17,13 +17,24 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
+            'name' => 'Super Admin',
             'email' => 'superadmin@sangnila.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('asd'),
             'phone_number' => '087732466235',
             'position' => 'Admin',
             'department' => 'Admin',
             'role' => 'admin',
+            'overwork_allowance' => 40,
+        ]);
+
+        User::factory()->create([
+            'name' => 'User Employee',
+            'email' => 'employee@sangnila.com',
+            'password' => Hash::make('asd'),
+            'phone_number' => '087732466235',
+            'position' => 'Web Programmer',
+            'department' => 'IT',
+            'role' => 'user',
             'overwork_allowance' => 40,
         ]);
     }

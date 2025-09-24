@@ -11,41 +11,31 @@ class DashboardController extends Controller
     public function dataSubmitted()
     {
         $controller = new RequestController;
-        $allData = $controller->requestData();
+        $requestData = $controller->showRecent(request());
 
-        $approved = $allData->where('request_status', 'accepted')->count();
+        $approved = $requestData->where('request_status', 'accepted')->count();
 
-        $rejected = $allData->where('request_status', 'rejected')->count();
+        $rejected = $requestData->where('request_status', 'rejected')->count();
 
-        $pending = $allData->where('request_status', 'review')->count();
+        $pending = $requestData->where('request_status', 'review')->count();
 
-        $recent = $controller->showRecent(request());
 
-        // dd($recent);
-
-        return compact('approved', 'rejected', 'pending', 'recent');
-    }
-
-    public function draftCount()
-    {
-        $controller = new RequestController;
-        $allData = $controller->requestData();
-        $drafts = $allData->where('request_status', 'draft')->where('user_id', Auth::id())->count();
-        return $drafts;
+        return compact('approved', 'rejected', 'pending', 'requestData');
     }
 
     public function dashboard(Request $request)
     {
         $data = $this->dataSubmitted();
-        $filter = $request->input('type');
+        if (Auth::user()->role === 'user') {
+            $filter = $request->input('type');
+            in_array($filter, ['leave', 'overwork']) ?
+                $data['requestData'] = $data['requestData']->where('type', $filter)->take(4)
+                : $data['requestData'] = $data['requestData']->take(4);
+        } elseif (Auth::user()->role === 'admin') {
+            $filter = $request->input('status');
+            $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
+        }
 
-        in_array($filter, ['leave', 'overwork']) ?
-            $data['recent'] = $data['recent']->where('type', $filter)->take(2)
-            : $data;
-
-        $draftCount = $this->draftCount();
-        $draft = ['count' => $draftCount];
-
-        return view('dashboard', compact('data', 'draft'));
+        return view('dashboard', compact('data'));
     }
 }

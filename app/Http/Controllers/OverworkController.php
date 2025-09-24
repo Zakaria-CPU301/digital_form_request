@@ -30,7 +30,6 @@ class OverworkController
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
@@ -60,7 +59,7 @@ class OverworkController
         }
 
         if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
-        else return redirect()->route('draft.overwork')->with('success', 'data leave is draft');
+        else return redirect()->route('draft')->with('success', 'data leave is draft');
     }
 
     /**
@@ -98,8 +97,8 @@ class OverworkController
             'request_status' => $status,
         ]);
 
-        if ($status === 'review') return redirect()->route('recent.overwork')->with('success', 'overwork updated successfully');
-        else return redirect()->route('draft.overwork')->with('success', 'overwork draft updated');
+        if ($status === 'review') return redirect()->route('recent')->with('success', 'overwork updated successfully');
+        else return redirect()->route('draft')->with('success', 'overwork draft updated');
     }
 
     /**
