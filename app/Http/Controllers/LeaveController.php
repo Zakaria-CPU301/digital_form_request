@@ -47,7 +47,7 @@ class LeaveController
         ]);
 
         if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
-        else return redirect()->route('draft')->with('success', 'data leave is draft');
+        else return redirect()->route('leave.draft')->with('success', 'data leave is draft');
     }
 
     /**
@@ -83,8 +83,8 @@ class LeaveController
             'request_status' => $status,
         ]);
 
-        if ($status === 'review') return redirect()->route('recent')->with('success', 'leave updated successfully');
-        else return redirect()->route('draft')->with('success', 'leave draft updated');
+        if ($status === 'review') return redirect()->route('leave.pending')->with('success', 'leave updated successfully');
+        else return redirect()->route('leave.draft')->with('success', 'leave draft updated');
     }
 
     /**

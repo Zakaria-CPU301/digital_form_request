@@ -58,7 +58,7 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        if ($status === 'review') return redirect()->route('recent')->with('success', 'add data overwork successfully');
+        if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'add data overwork successfully');
         else return redirect()->route('overwork.draft')->with('success', 'data overwork is draft');
     }
 
@@ -97,7 +97,7 @@ class OverworkController
             'request_status' => $status,
         ]);
 
-        if ($status === 'review') return redirect()->route('recent.overwork')->with('success', 'overwork updated successfully');
+        if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'overwork updated successfully');
         else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
     }
 
