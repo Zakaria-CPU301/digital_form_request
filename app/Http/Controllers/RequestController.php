@@ -70,7 +70,6 @@ class RequestController extends Controller
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
         
-        // Hanya tampilkan data overwork
         $data = $data->where('type', 'overwork')
             ->where('request_status', '!=', 'draft')
             ->where('user_id', Auth::id());
@@ -83,7 +82,6 @@ class RequestController extends Controller
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
         
-        // Hanya tampilkan data leave
         $data = $data->where('type', 'leave')
             ->where('request_status', '!=', 'draft')
             ->where('user_id', Auth::id());
@@ -95,7 +93,6 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
         
-        // Hanya tampilkan draft overwork
         $data = $data->where('type', 'overwork')
             ->where('request_status', 'draft')
             ->where('user_id', Auth::id());
@@ -107,7 +104,6 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
 
-        // Hanya tampilkan draft leave
         $data = $data->where('type', 'leave')
             ->where('request_status', 'draft')
             ->where('user_id', Auth::id());
@@ -119,7 +115,6 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
 
-        // Hanya tampilkan accepted overwork
         $data = $data->where('type', 'overwork')
             ->where('request_status', 'accepted')
             ->where('user_id', Auth::id());
@@ -131,7 +126,6 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
 
-        // Hanya tampilkan review overwork
         $data = $data->where('type', 'overwork')
             ->where('request_status', 'review')
             ->where('user_id', Auth::id());
@@ -143,7 +137,6 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
 
-        // Hanya tampilkan accepted leave
         $data = $data->where('type', 'leave')
             ->where('request_status', 'accepted')
             ->where('user_id', Auth::id());
@@ -155,7 +148,6 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
 
-        // Hanya tampilkan review leave
         $data = $data->where('type', 'leave')
             ->where('request_status', 'review')
             ->where('user_id', Auth::id());

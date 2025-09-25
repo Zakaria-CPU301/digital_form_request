@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RequestController;
+use App\Models\Leave;
+use App\Models\Overwork;
 
 class DashboardController extends Controller
 {
@@ -13,14 +15,20 @@ class DashboardController extends Controller
         $controller = new RequestController;
         $requestData = $controller->showRecent(request());
 
-        $approved = $requestData->where('request_status', 'accepted')->count();
+        $totalOverwork = Overwork::selectRaw('SUM(TIMESTAMPDIFF(HOUR, start_overwork, finished_overwork)) AS total_hours')
+        ->where('user_id', Auth::id())
+        ->get();
 
-        $rejected = $requestData->where('request_status', 'rejected')->count();
+        $totalLeave = Leave::selectRaw('SUM(TIMESTAMPDIFF(DAY, start_leave, finished_leave)) AS total_days')
+        ->where('user_id', Auth::id())
+        ->get();
 
-        $pending = $requestData->where('request_status', 'review')->count();
+        $approved = $requestData->where('request_status', 'accepted');
+        $rejected = $requestData->where('request_status', 'rejected');
+        $pending = $requestData->where('request_status', 'review');
 
-
-        return compact('approved', 'rejected', 'pending', 'requestData');
+        $result = $approved->concat($rejected)->concat($pending);
+        return compact('totalOverwork', 'totalLeave', 'approved', 'rejected', 'pending', 'requestData', 'result');
     }
 
     public function dashboard(Request $request)
@@ -29,7 +37,6 @@ class DashboardController extends Controller
         $month = $request->input('month');
         $search = $request->input('search');
 
-        // Apply type filter
         if (Auth::user()->role === 'user') {
             $filter = $request->input('type');
             if (in_array($filter, ['leave', 'overwork'])) {
@@ -42,14 +49,12 @@ class DashboardController extends Controller
             $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
         }
 
-        // Apply month filter
         if ($month && $month !== 'all') {
             $data['requestData'] = $data['requestData']->filter(function ($item) use ($month) {
                 return $item->created_at->format('m-Y') === $month;
             });
         }
 
-        // Apply search filter
         if ($search) {
             $data['requestData'] = $data['requestData']->filter(function ($item) use ($search) {
                 $searchLower = strtolower($search);

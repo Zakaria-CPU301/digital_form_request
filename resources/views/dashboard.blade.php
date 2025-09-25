@@ -18,59 +18,83 @@
     </x-slot>
 
     {{-- Cards --}}
-    <div class="mx-10 px-6 lg:px-8 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-            <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Total Overwork') }}
-                <i class="bi bi-clock-history text-gray-500 text-lg"></i>
-            </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">5 Hours</h1>
-            <span class="text-sm text-gray-500">{{ __('Total Overwork') }}</span>
+    <div class="flex flex-col space-y-7">
+        <div class="mx-10 px-6 lg:px-8 pt-8 grid grid-cols-1 {{auth()->user()->role === 'user' ? 'sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-2' }} gap-8">
+            @if (auth()->user()->role === 'user')
+                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                        {{ __('Total Overwork') }}
+                        <i class="bi bi-clock-history text-gray-500 text-lg"></i>
+                    </small>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalOverwork'][0]->total_hours}} {{__('Hours')}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total Overwork') }}</span>
+                </div>
+
+                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                        {{ __('Leave Balance') }}
+                        <i class="bi bi-journal-check text-gray-500 text-lg"></i>
+                    </small>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days}} {{__('Days')}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
+                </div>
+
+                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                        {{ __('Leave Balance') }}
+                        <i class="bi bi-journal-check text-gray-500 text-lg"></i>
+                    </small>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ __('3 Days') }}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
+                </div>
+            @elseif (auth()->user()->role === 'admin')
+                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                        {{ __('Total Overwork') }}
+                        <i class="bi bi-clock-history text-gray-500 text-lg"></i>
+                    </small>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['result']->where('type', 'overwork')->count()}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total Overwork') }}</span>
+                </div>
+
+                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                        {{ __('Total Leave ') }}
+                        <i class="bi bi-calendar-check text-gray-500 text-lg"></i>
+                    </small>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['result']->where('type', 'leave')->count()}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
+                </div>
+            @endif
         </div>
 
-        <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-            <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Total Leave ') }}
-                <i class="bi bi-calendar-check text-gray-500 text-lg"></i>
-            </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">2 Days</h1>
-            <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
-        </div>
-        
-        <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-            <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Leave Balance') }}
-                <i class="bi bi-journal-check text-gray-500 text-lg"></i>
-            </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ __('3 Days') }}</h1>
-            <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
-        </div>
+        <div class="mx-10 px-6 lg:px-8 pb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                    {{ __('Approved Request') }}
+                    <i class="bi bi-check-circle-fill text-green-600 text-lg"></i>
+                </small>
+                <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['approved']->count() }}</h1>
+                <span class="text-sm text-gray-500">{{ __('Request has been approved') }}</span>
+            </div>
 
-        <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-            <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Approved Request') }}
-                <i class="bi bi-check-circle-fill text-green-600 text-lg"></i>
-            </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['approved'] }}</h1>
-            <span class="text-sm text-gray-500">{{ __('Request has been approved') }}</span>
-        </div>
-
-        <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-            <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Rejected Request') }}
-                <i class="bi bi-x-circle-fill text-red-600 text-lg"></i>
-            </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['rejected'] }}</h1>
-            <span class="text-sm text-gray-500">{{ __('Request rejected') }}</span>
-        </div>
-        
-        <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-            <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                {{ __('Pending Request') }}
-                <i class="bi bi-hourglass-split text-gray-500 text-lg animate-spin"></i>
-            </small>
-            <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['pending'] }}</h1>
-            <span class="text-sm text-gray-500">{{ __('Total submission which still under review') }}</span>
+            <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                    {{ __('Rejected Request') }}
+                    <i class="bi bi-x-circle-fill text-red-600 text-lg"></i>
+                </small>
+                <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['rejected']->count() }}</h1>
+                <span class="text-sm text-gray-500">{{ __('Request rejected') }}</span>
+            </div>
+            
+            <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
+                    {{ __('Pending Request') }}
+                    <i class="bi bi-hourglass-split text-gray-500 text-lg animate-spin"></i>
+                </small>
+                <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['pending'] ->count() }}</h1>
+                <span class="text-sm text-gray-500">{{ __('Total submission which still under review') }}</span>
+            </div>
         </div>
     </div>
 
@@ -101,7 +125,6 @@
                     </div>
                     <small class="mt-1 text-cyan-200">Request that hasn't submitted yet</small>
                 </a>
-                    
             @elseif (auth()->user()->role === 'admin')
                 <a href="{{ route('register') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
                     <div class="flex items-center gap-3">
@@ -141,8 +164,6 @@
                 <div>
                     @include('components.filter-data-toggle')
                 </div>
-
-                {{-- Month Filter --}}
                 
                 {{-- Search --}}
                 <div class="ml-auto">
@@ -164,7 +185,6 @@
                                 $date = now()->subMonths($i);
                                 $value = $date->format('m-Y');
                                 $label = $date->format('F Y');
-                                $months[] = ['value' => $value, 'label' => $label];
                             }
                         @endphp
                         @foreach($months as $monthOption)
@@ -268,18 +288,15 @@
 
     <script>
         function clearFilters() {
-            // Reset all form fields
             document.getElementById('search').value = '';
             document.getElementById('month').value = 'all';
 
-            // Find and click the "All Data" button
             const allDataButtons = document.querySelectorAll('button[name="type"][value="all"]');
             if (allDataButtons.length > 0) {
                 allDataButtons[0].click();
             }
         }
 
-        // Auto-submit search on Enter key
         document.getElementById('search').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -287,7 +304,6 @@
             }
         });
 
-        // Auto-submit on month change
         document.getElementById('month').addEventListener('change', function() {
             this.closest('form').submit();
         });

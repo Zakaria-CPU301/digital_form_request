@@ -31,7 +31,6 @@
     <table class="min-w-full text-left justify-center border-b border-gray-400">
         <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
             <tr>
-                <th class="py-3 px-6 font-semibold">Id (Debugging)</th>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Name</th>
                 <th class="py-3 px-6 font-semibold">Position</th>
@@ -45,8 +44,6 @@
         <tbody>
             @foreach($data as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
-                    
-                    <td class="py-4 px-6">{{ $d->id }}</td>
                     
                     <!-- Number -->
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
