@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\OverworkController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\DashboardController;
 use Symfony\Component\Routing\RequestContext;
+use App\Http\Controllers\ManageDataController;
+use App\Http\Controllers\ManageAccountController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 //! overwork data (khusus untuk menampilkan data overwork)
 Route::get('/overwork-data', [RequestController::class, 'showOverworkData'])->name('overwork.data');
@@ -36,6 +38,18 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     //! dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::prefix('request')->name('request.')->group(function () {
+            Route::get('/data', [ManageDataController::class, 'show'])->name('show');
+            Route::get('edit/{id}', [ManageDataController::class, 'edit'])->name('edit');
+        });
+        Route::prefix('account')->name('account.')->group(function () {
+            Route::get('/', [ManageAccountController::class, 'show'])->name('show');
+            Route::get('edit/{id}', [ManageAccountController::class, 'edit'])->name('edit');
+            Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
+        });
+    });
     
     Route::middleware(['auth', 'role:user'])->group(function () {
     //! overwork

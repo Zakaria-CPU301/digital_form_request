@@ -8,7 +8,7 @@ class Leave extends Model
 {
     protected $guarded = ['id'];
 
-    public function account() {
-        return $this->belongsTo(Account::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }

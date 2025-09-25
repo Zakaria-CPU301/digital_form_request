@@ -30,7 +30,6 @@ class OverworkController
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],

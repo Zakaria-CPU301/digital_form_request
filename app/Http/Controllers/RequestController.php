@@ -47,18 +47,22 @@ class RequestController extends Controller
         $routeName = Route::currentRouteName();
         $keyValue = $request->input('type');
 
-        if (in_array($keyValue, ['leave', 'overwork'])) {
-            $data = $data->where('type', $keyValue)
+        if (Auth::user()->role === 'user') {
+            if (in_array($keyValue, ['leave', 'overwork'])) {
+                $data = $data->where('type', $keyValue)
                 ->where('request_status', '!=', 'draft')
                 ->where('user_id', Auth::id());
-        } else {
-            $data = $data->where('request_status', '!=', 'draft')
+            } else {
+                $data = $data->where('request_status', '!=', 'draft')
                 ->where('user_id', Auth::id())
                 ->sortByDesc('created_at');
+            }
+            return $routeName != 'dashboard' 
+            ? view('view.users.recent-request', compact('data')) 
+            : $data;
+        } elseif (Auth::user()->role === 'admin') {
+            return $data;
         }
-
-        if ($routeName != 'dashboard') return view('view.users.recent-request', compact('data'));
-        return $data->take(4);
     }
 
     public function showOverworkData(Request $request)

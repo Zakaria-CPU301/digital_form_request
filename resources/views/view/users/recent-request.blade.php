@@ -4,7 +4,7 @@
 
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
     @php
-        $activeToggle = request('type', 'smua');
+        $activeToggle = request('type', 'all');
     @endphp
     <h2 class="text-2xl font-bold text-[#012967] mb-4">Recent Request</h2>
 

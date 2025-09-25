@@ -3,15 +3,15 @@
 @section('content')
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
     <!-- Title -->
-    <h2 class="text-2xl font-bold text-[#012967] mb-4">Submission</h2>
+    <h2 class="text-2xl font-bold text-[#012967] mb-4">Manage Account</h2>
 
     <!-- Filter + Search -->
     <div id="filter" class="flex items-center mb-6">
         @php
-            $activeToggle = request('status', 'review');
+            $activeToggle = request('status', 'pending');
         @endphp
         {{-- Tabs --}}
-        <form id="type" action="{{route('request.show', ['type' => $activeToggle])}}" method="get">
+        <form id="type" action="{{route('account.show', ['type' => $activeToggle])}}" method="get">
             @include('components.filter-data-toggle')
         </form>
 
@@ -31,11 +31,12 @@
     <table class="min-w-full text-left justify-center border-b border-gray-400">
         <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
             <tr>
+                <th class="py-3 px-6 font-semibold">Id (Debugging)</th>
                 <th class="py-3 px-6 font-semibold">No</th>
-                <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Type</th>
                 <th class="py-3 px-6 font-semibold">Name</th>
-                <th class="py-3 px-6 font-semibold">Reason</th>
+                <th class="py-3 px-6 font-semibold">Position</th>
+                <th class="py-3 px-6 font-semibold">Department</th>
+                <th class="py-3 px-6 font-semibold">Role</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
@@ -44,30 +45,33 @@
         <tbody>
             @foreach($data as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
+                    
+                    <td class="py-4 px-6">{{ $d->id }}</td>
+                    
                     <!-- Number -->
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
 
                     <!-- Date -->
-                    <td class="py-4 px-6">{{ $d->created_at->format('d - m - Y') }}</td>
+                    <td class="py-4 px-6">{{ $d->name }}</td>
                     
                     <!-- Type -->
-                    <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>
+                    <td class="py-4 px-6 font-semibold">{{ $d->position }}</td>
                     
                     <!-- Status -->
-                    <td class="py-4 px-6"> {{ $d->user->name }} </td>
+                    <td class="py-4 px-6"> {{ $d->department }} </td>
                     
-                    <!-- Reason / Task -->
-                    <td class="py-4 px-6" title="{{ $d->reason ?? $d->task_description }}">{{ Str::limit($d->reason ?? $d->task_description, 40) }}</td>
+                    <!-- Status -->
+                    <td class="py-4 px-6 font-semibold">{{$d->role}}</td>
 
                     <!-- Status -->
-                    <td class="py-4 px-6 font-semibold">{{$d->request_status}}</td>
+                    <td class="py-4 px-6 font-semibold">{{$d->status_account}}</td>
                     
                     <!-- Action -->
-                    <td id="data" class="flex py-4 px-6 text-center space-x-2 items-center justify-center">
+                    <td class="py-4 px-6 text-center space-x-2 flex">
                         @php
                             $status = request()->query('status');
                         @endphp
-                        <form action="{{route('request.edit', ['id' => $d->id])}}" method="get" class="flex space-x-2">
+                        <form action="{{route('account.edit', ['id' => $d->id])}}" method="get" class="flex justify-between space-x-2">
                             <button 
                                 type="submit" name="type" value="show-dialog"
                                 class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
@@ -75,25 +79,24 @@
                             >
                                 <i class="bi bi-eye"></i>
                             </button>
-
-                            <button
-                                type="submit" name="accepted" value="{{$d->type}}"
-                                class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
-                                title="Accepted"
-                                onclick="return confirm('yakin di terima?')"
-                            >
-                                <i class="bi bi-check2-square"></i>
-                            </button>
-
-                            <button
-                                type="submit" name="rejected" value="{{$d->type}}"
-                                class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
-                                title="Rejected"
-                                onclick="return confirm('yakin di tolak?')"
-                            >
-                            <i class="bi bi-x"></i>
-                            </button>
                         </form>
+
+                        <a href="{{route('account.edit', ['id' => $d->id])}}"
+                            type="submit" name="status" value="ban"
+                            class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                            title="Accepted"
+                            onclick="return confirm('yakin di ban?')"
+                        >
+                            <i class="bi bi-ban"></i>
+                        </a>
+
+                        <a href="{{route('account.delete', ['id' => $d->id])}}"
+                            class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                            title="Rejected"
+                            onclick="return confirm('yakin di hapus?')"
+                        >
+                            <i class="bi bi-trash"></i>
+                        </a>
                     </td>
                 </tr>
             @endforeach
