@@ -64,4 +64,102 @@ class RequestController extends Controller
             return $data;
         }
     }
+
+    public function showOverworkData(Request $request)
+    {
+        $data = $this->requestData();
+        $routeName = Route::currentRouteName();
+        
+        // Hanya tampilkan data overwork
+        $data = $data->where('type', 'overwork')
+            ->where('request_status', '!=', 'draft')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.overwork-data', compact('data'));
+    }
+
+    public function showLeaveData(Request $request)
+    {
+        $data = $this->requestData();
+        $routeName = Route::currentRouteName();
+        
+        // Hanya tampilkan data leave
+        $data = $data->where('type', 'leave')
+            ->where('request_status', '!=', 'draft')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.leave-data', compact('data'));
+    }
+
+    public function showOverworkDraft(Request $request)
+    {
+        $data = $this->requestData();
+        
+        // Hanya tampilkan draft overwork
+        $data = $data->where('type', 'overwork')
+            ->where('request_status', 'draft')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.overwork-draft', compact('data'));
+    }
+
+    public function showLeaveDraft(Request $request)
+    {
+        $data = $this->requestData();
+
+        // Hanya tampilkan draft leave
+        $data = $data->where('type', 'leave')
+            ->where('request_status', 'draft')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.leave-draft', compact('data'));
+    }
+
+    public function showOverworkAccepted(Request $request)
+    {
+        $data = $this->requestData();
+
+        // Hanya tampilkan accepted overwork
+        $data = $data->where('type', 'overwork')
+            ->where('request_status', 'accepted')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.overwork-accepted', compact('data'));
+    }
+
+    public function showOverworkPending(Request $request)
+    {
+        $data = $this->requestData();
+
+        // Hanya tampilkan review overwork
+        $data = $data->where('type', 'overwork')
+            ->where('request_status', 'review')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.overwork-pending', compact('data'));
+    }
+
+    public function showLeaveAccepted(Request $request)
+    {
+        $data = $this->requestData();
+
+        // Hanya tampilkan accepted leave
+        $data = $data->where('type', 'leave')
+            ->where('request_status', 'accepted')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.leave-accepted', compact('data'));
+    }
+
+    public function showLeavePending(Request $request)
+    {
+        $data = $this->requestData();
+
+        // Hanya tampilkan review leave
+        $data = $data->where('type', 'leave')
+            ->where('request_status', 'review')
+            ->where('user_id', Auth::id());
+
+        return view('view.users.leave-pending', compact('data'));
+    }
 }

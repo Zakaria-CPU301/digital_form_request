@@ -12,6 +12,14 @@ use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
+//! overwork data (khusus untuk menampilkan data overwork)
+Route::get('/overwork-data', [RequestController::class, 'showOverworkData'])->name('overwork.data');
+
+//! leave data (khusus untuk menampilkan data leave)
+Route::get('/leave-data', [RequestController::class, 'showLeaveData'])->name('leave.data');
+
+
+
 Route::get('/', function () {
     $view = Auth::id() === null ? route('login') : route('dashboard');
     return redirect($view);
@@ -50,6 +58,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
         Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
         Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
+        Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
+        Route::get('/accepted', [RequestController::class, 'showOverworkAccepted'])->name('accepted');
+        Route::get('/pending', [RequestController::class, 'showOverworkPending'])->name('pending');
+        Route::get('/draft', [RequestController::class, 'showOverworkDraft'])->name('draft');
     });
 
     //! leave
@@ -58,12 +70,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
         Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
         Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
+        Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
+        Route::get('/accepted', [RequestController::class, 'showLeaveAccepted'])->name('accepted');
+        Route::get('/pending', [RequestController::class, 'showLeavePending'])->name('pending');
+        Route::get('/draft', [RequestController::class, 'showLeaveDraft'])->name('draft');
     });
 
     //! draft
     Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 
-    //! recent 
+    //! recent
         Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
     });
 });

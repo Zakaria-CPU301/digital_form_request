@@ -25,17 +25,47 @@ class DashboardController extends Controller
 
     public function dashboard(Request $request)
     {
+        // // aing
         $data = $this->dataSubmitted();
-        if (Auth::user()->role === 'user') {
-            $filter = $request->input('type');
-            in_array($filter, ['leave', 'overwork']) ?
-                $data['requestData'] = $data['requestData']->where('type', $filter)->take(4)
-                : $data['requestData'] = $data['requestData']->take(4);
-        } elseif (Auth::user()->role === 'admin') {
-            $filter = $request->input('status');
-            $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
+        // if (Auth::user()->role === 'user') {
+        //     $filter = $request->input('type');
+        //     in_array($filter, ['leave', 'overwork']) ?
+        //         $data['requestData'] = $data['requestData']->where('type', $filter)->take(4)
+        //         : $data['requestData'] = $data['requestData']->take(4);
+        // } elseif (Auth::user()->role === 'admin') {
+        //     $filter = $request->input('status');
+        //     $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
+        // }
+
+        // return view('dashboard', compact('data'));
+
+        // dika
+        $filter = $request->input('type');
+        $month = $request->input('month');
+        $search = $request->input('search');
+
+        // Apply type filter
+        if (in_array($filter, ['leave', 'overwork'])) {
+            $data['requestData'] = $data['requestData']->where('type', $filter);
         }
 
-        return view('dashboard', compact('data'));
+        // Apply month filter
+        if ($month && $month !== 'all') {
+            $data['requestData'] = $data['requestData']->filter(function ($item) use ($month) {
+                return $item->created_at->format('m-Y') === $month;
+            });
+        }
+
+        // Apply search filter
+        if ($search) {
+            $data['requestData'] = $data['requestData']->filter(function ($item) use ($search) {
+                $searchLower = strtolower($search);
+                $reason = $item->reason ?? $item->task_description ?? '';
+
+                return str_contains(strtolower($reason), $searchLower);
+            });
+        }
+
+        return view('dashboard', compact('data', 'filter', 'month', 'search'));
     }
 }

@@ -31,12 +31,12 @@
         x-on:open-sidebar.window="sidebarOpen = true"
         x-on:close-sidebar.window="sidebarOpen = false"
     >
-        @include('layouts.navbar', ['sidebarOpen' => 'sidebarOpen'])
+        @include('components.leave-navbar', ['sidebarOpen' => 'sidebarOpen'])
         @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
         <main 
-            class="min-h-screen max-w-full flex flex-col items-center mt-5 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out"
-            :class="sidebarOpen ? 'ml-72' : 'ml-0'"
+            class="min-h-screen max-w-full ml-72 flex flex-col items-center mt-5 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out"
+            :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'"
         >
             <div 
                 class="w-full max-w-[1400px] rounded-xl overflow-hidden bg-transparent mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10 transition-all duration-300 ease-in-out"

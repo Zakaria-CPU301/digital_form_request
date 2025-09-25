@@ -16,7 +16,7 @@
 
       {{-- Overwork Request Section --}}
       <div class="flex-1 flex flex-col space-y-4">
-        <h3 class="text-black font-extrabold text-lg my-4">Overwork Informations</h3>
+        <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
 
         <div class="max-w-xs">
           <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date:</x-input-label>
@@ -59,7 +59,7 @@
             id="desc"
             rows="4"
             placeholder="Task you did for this overwork"
-            class="border border-gray-300 rounded p-2 text-xs w-full resize-none"
+            class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
             required>{{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea>
         </div>
 

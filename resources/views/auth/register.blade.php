@@ -15,7 +15,7 @@
 <form method="POST" action="{{ route('register') }}">
     @csrf
 
-    <div class="p-6 bg-[#F0F3F8] rounded-2xl shadow-lg max-w-6xl mx-auto text-black">
+    <div class="p-6 bg-[#F0F3F8] rounded-2xl shadow-lg max-w-6xl mx-auto text-black" :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'max-w-full' : 'max-w-6xl'">
         <!-- Title -->
         <h2 class="text-2xl font-bold text-center text-[#042E66] mb-6">
             Add Employee Account
@@ -26,11 +26,12 @@
             Employee Information
         </h3>
 
-        <table class="w-full border-collapse">
-            <tbody>
-                <tr>
-                    <!-- Left Column -->
-                    <td class="pr-8 w-1/2 align-top">
+        <div :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'overflow-x-auto' : ''" class="w-full">
+            <table class="w-full border-collapse min-w-[800px]">
+                <tbody>
+                    <tr>
+                        <!-- Left Column -->
+                        <td class="pr-8 w-1/2 align-top" :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'pr-4' : 'pr-8'">
                         <!-- Name -->
                         <div class="mb-4">
                             <label for="name" class="font-semibold text-sm block mb-1">Name</label>
@@ -106,8 +107,8 @@
                         </div>
                     </td>
 
-                    <!-- Right Column -->
-                    <td class="align-top w-1/2">
+                        <!-- Right Column -->
+                        <td class="align-top w-1/2" :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'pl-4' : ''">
                         <!-- Position -->
                         <div class="mb-4">
                             <label for="position" class="font-semibold text-sm block mb-1">Position</label>
@@ -165,7 +166,8 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+            </table>
+        </div>
 
         <!-- Submit Button -->
         <div class="text-right mt-6">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
+use Exception;
 use Illuminate\Http\Request;
 
 class LeaveController
@@ -91,6 +92,11 @@ class LeaveController
      */
     public function destroy(Leave $leave)
     {
-        //
+        try {
+            $leave->delete();
+            return redirect()->back()->with('success', 'Leave draft deleted successfully');
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to delete leave draft: ' . $e->getMessage()]);
+        }
     }
 }
