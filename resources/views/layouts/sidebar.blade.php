@@ -26,10 +26,10 @@
         <!-- Navigation Links -->
         <nav class="w-full flex flex-col">
             <!-- Contoh tiap menu dengan icon svg -->
-            <a href="{{ route('dashboard') }}" 
-   class="flex items-center space-x-4 px-5 py-3 
-          font-semibold transition-all duration-300 
-          hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10">
+            <a href="{{ route('dashboard') }}"
+   class="flex items-center space-x-4 px-5 py-3
+          font-semibold transition-all duration-300
+          {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
     <!-- Icon Home -->
     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" 
          stroke-linecap="round" stroke-linejoin="round"
@@ -40,13 +40,13 @@
     <span>Home</span>
 </a>
 
-            <a href="{{ route('overwork.data') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+            <a href="{{ route('overwork.data') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ request()->routeIs('overwork.data') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
     <!-- Icon Apply Overwork (Plus Mark) -->
 <i class="bi bi-alarm text-2xl"></i>
     <span>Overwork Data</span>
 </a>
 
-<a href="{{ route('leave.data') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+<a href="{{ route('leave.data') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ request()->routeIs('leave.data') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
     <!-- Icon Apply Leave (Calendar) -->
     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         viewBox="0 0 24 24">
@@ -57,7 +57,7 @@
 </a>
 
 
-            <a href="{{ route('profile.edit') }}" class="flex items-center space-x-4 px-5 py-3 hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 font-semibold">
+            <a href="{{ route('profile.edit') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ request()->routeIs('profile.edit') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
                 <!-- Icon Profile (User) -->
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     viewBox="0 0 24 24">
