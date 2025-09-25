@@ -25,28 +25,21 @@ class DashboardController extends Controller
 
     public function dashboard(Request $request)
     {
-        // // aing
         $data = $this->dataSubmitted();
-        // if (Auth::user()->role === 'user') {
-        //     $filter = $request->input('type');
-        //     in_array($filter, ['leave', 'overwork']) ?
-        //         $data['requestData'] = $data['requestData']->where('type', $filter)->take(4)
-        //         : $data['requestData'] = $data['requestData']->take(4);
-        // } elseif (Auth::user()->role === 'admin') {
-        //     $filter = $request->input('status');
-        //     $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
-        // }
-
-        // return view('dashboard', compact('data'));
-
-        // dika
-        $filter = $request->input('type');
         $month = $request->input('month');
         $search = $request->input('search');
 
         // Apply type filter
-        if (in_array($filter, ['leave', 'overwork'])) {
-            $data['requestData'] = $data['requestData']->where('type', $filter);
+        if (Auth::user()->role === 'user') {
+            $filter = $request->input('type');
+            if (in_array($filter, ['leave', 'overwork'])) {
+                $data['requestData'] = $data['requestData']->where('type', $filter)->take(4);
+            } else {
+                $data['requestData'] = $data['requestData']->take(4);
+            }
+        } elseif (Auth::user()->role === 'admin') {
+            $filter = $request->input('status');
+            $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
         }
 
         // Apply month filter

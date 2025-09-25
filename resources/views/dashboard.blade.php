@@ -189,7 +189,6 @@
                         <th class="py-3 px-6 font-semibold">Name</th>
                     @endif
                     <th class="py-3 px-6 font-semibold w-30">Reason</th>
-                    <th class="py-3 px-6 font-semibold">Data Detail</th>
                     <th class="py-3 px-6 font-semibold">Status</th>
                     <th class="py-3 px-6 font-semibold text-center w-16">Action</th>
                 </tr>
@@ -206,7 +205,6 @@
                     <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
                         {{ Str::limit($d->reason ?? $d->task_description, 40) }}
                     </td>
-                    <td class="py-4 px-6 font-semibold">{{ $d->data_detail ?? '3 Data' }}</td>
                     <td class="py-4 px-6">
                         @php
                             $statusClass = match(strtolower($d->request_status)) {
