@@ -17,9 +17,15 @@
            class="px-5 rounded-md font-semibold text-white hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 transition">
             Pending
         </a>
-        <a href="{{ route('overwork.draft') }}"
+        <a href="{{ route('overwork.rejected') }}"
            class="px-5 rounded-md font-semibold text-white hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 transition">
-            Draft
+            Rejected
         </a>
+        @if (auth()->user()->role === 'user')
+            <a href="{{ route('overwork.draft') }}"
+            class="px-5 rounded-md font-semibold text-white hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10 transition">
+                Draft
+            </a>
+        @endif
     </div>
 </div>

@@ -60,7 +60,17 @@
                     <td class="py-4 px-6" title="{{ $d->reason ?? $d->task_description }}">{{ Str::limit($d->reason ?? $d->task_description, 40) }}</td>
 
                     <!-- Status -->
-                    <td class="py-4 px-6 font-semibold">{{$d->request_status}}</td>
+                    <td class="py-4 px-6">
+                        @php
+                            $statusClass = match($d->request_status) {
+                                'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
+                                'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            };
+                        @endphp
+                        <span class="{{ $statusClass }}">{{ $d->request_status }}</span>
+                    </td>
                     
                     <!-- Action -->
                     <td id="data" class="flex py-4 px-6 text-center space-x-2 items-center justify-center">

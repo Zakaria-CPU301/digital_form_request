@@ -17,13 +17,15 @@
     </div>
 
             <!-- New Data Button -->
+    @if (auth()->user()->role === 'user')
         <a href="{{ route('overwork.form-view') }}" 
-           class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
+            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
             </svg>
             <span>New Data</span>
         </a>
+    @endif
 
     <!-- Overwork Table -->
     <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
@@ -32,7 +34,13 @@
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
                 <th class="py-3 px-6 font-semibold">Task Description</th>
-                <th class="py-3 px-6 font-semibold">Duration</th>
+                <th class="py-3 px-6 font-semibold">
+                    @if (auth()->user()->role === 'admin')
+                        Name
+                    @else
+                        Duration
+                    @endif
+                </th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
@@ -48,21 +56,25 @@
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
-                    {{ Str::limit($r->task_description, 50) }}
+                    {{ Str::limit($r->task_description, 25) }}
                 </td>
                 <td class="py-4 px-6 font-semibold">
-                    {{ $r->duration ?? 'N/A' }}
+                    @if (auth()->user()->role === 'admin')
+                        {{ Str::words($r->user->name, 2) ?? 'N/A' }}
+                    @else
+                        {{ $r->duration ?? 'N/A' }}
+                    @endif
                 </td>
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'Approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'Under Review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            default => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold',
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                         };
                     @endphp
-                    <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
+                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <button 

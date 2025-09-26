@@ -12,12 +12,6 @@ use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-//! overwork data (khusus untuk menampilkan data overwork)
-Route::get('/overwork-data', [RequestController::class, 'showOverworkData'])->name('overwork.data');
-
-//! leave data (khusus untuk menampilkan data leave)
-Route::get('/leave-data', [RequestController::class, 'showLeaveData'])->name('leave.data');
-
 
 
 Route::get('/', function () {
@@ -59,11 +53,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
         Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
         Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
-        Route::get('/accepted', [RequestController::class, 'showOverworkAccepted'])->name('accepted');
         Route::get('/pending', [RequestController::class, 'showOverworkPending'])->name('pending');
+        Route::get('/accepted', [RequestController::class, 'showOverworkAccepted'])->name('accepted');
+        Route::get('/rejected', [RequestController::class, 'showOverworkRejected'])->name('rejected');
         Route::get('/draft', [RequestController::class, 'showOverworkDraft'])->name('draft');
     });
-
+    
     //! leave
     Route::prefix('leave')->name('leave.')->group(function () {
         Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
@@ -71,8 +66,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
         Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
         Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
-        Route::get('/accepted', [RequestController::class, 'showLeaveAccepted'])->name('accepted');
         Route::get('/pending', [RequestController::class, 'showLeavePending'])->name('pending');
+        Route::get('/accepted', [RequestController::class, 'showLeaveAccepted'])->name('accepted');
+        Route::get('/rejected', [RequestController::class, 'showLeaveRejected'])->name('rejected');
         Route::get('/draft', [RequestController::class, 'showLeaveDraft'])->name('draft');
     });
 
@@ -82,6 +78,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //! recent
         Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
     });
+
+    //! overwork data (khusus untuk menampilkan data overwork)
+    Route::get('/overwork-data', [RequestController::class, 'showOverworkData'])->name('overwork.data');
+    
+    //! leave data (khusus untuk menampilkan data leave)
+    Route::get('/leave-data', [RequestController::class, 'showLeaveData'])->name('leave.data');
+    
 });
 
 require __DIR__ . '/auth.php';
