@@ -87,96 +87,34 @@
 
                         <!-- Show Details Button -->
                         <button
-                            type="button"
-                            class="text-gray-500 hover:text-gray-700"
+                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                             title="Show Details"
+                            data-date="{{ $r->date ?? $r->created_at->format('d - m - Y') }}"
+                            data-description="{{ $r->task_description }}"
+                            data-duration="{{ $r->duration ?? 'N/A' }}"
+                            data-status="{{ $r->request_status }}"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0
-                                    8.268 2.943 9.542 7-1.274 4.057-5.065
-                                    7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                />
-                            </svg>
+                            <i class="bi bi-eye"></i>
                         </button>
-
-                        <!-- Edit Draft Button -->
-                        <form
-                            action="{{ route('overwork.edit', $r->id) }}"
-                            method="GET"
-                            class="inline"
-                            onsubmit="return confirm('Are you sure you want to delete this leave draft?')"
+                        <a
+                            href="{{ route('overwork.edit', $r->id) }}"
+                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                            title="Edit"
                         >
-                            <button
-                                type="submit"
-                                class="text-blue-500 hover:text-blue-700"
-                                title="Edit Draft"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
-                                    />
-                                </svg>
-                            </button>
-                        </form>
-
-                        <!-- Delete Draft Button -->
-                        <form
-                            action="{{ route('overwork.delete', $r->id) }}"
-                            method="POST"
-                            class="inline"
-                            onsubmit="return confirm('Are you sure you want to delete this overwork draft?')"
-                        >
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ route('overwork.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
                             @csrf
                             @method('DELETE')
                             <button
                                 type="submit"
-                                class="text-red-500 hover:text-red-700"
-                                title="Delete Draft"
+                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                title="Delete"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                    />
-                                </svg>
+                                <i class="bi bi-trash"></i>
                             </button>
                         </form>
-
                     </div>
-                </td>
-
             </tr>
             @empty
             <tr>
@@ -193,4 +131,80 @@
         </tbody>
     </table>
 </div>
+
+<x-modal name="overwork-preview-modal" maxWidth="lg">
+    <div class="p-6">
+        <div class="flex justify-center items-center mb-4 relative">
+            <h3 class="text-xl font-extrabold text-[#012967] text-center">
+                Overwork Preview
+            </h3>
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'overwork-preview-modal' }))"
+                class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+            >
+                &times;
+            </button>
+        </div>
+        <div id="overwork-preview-body" class="space-y-3">
+            <!-- content -->
+        </div>
+    </div>
+</x-modal>
+
+<script>
+document.getElementById('search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        if (row.cells.length > 2) {
+            const taskDesc = row.cells[2].textContent.toLowerCase();
+            if (taskDesc.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+});
+
+document.querySelectorAll('.eye-preview-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const date = this.dataset.date;
+        const description = this.dataset.description;
+        const duration = this.dataset.duration;
+        const status = this.dataset.status;
+        const statusClass = getStatusClass(status);
+        const body = `
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Date:</span>
+                <span class="text-gray-900 mt-2">${date}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Task Description:</span>
+                <span class="text-gray-900 mt-2">${description}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Duration:</span>
+                <span class="text-gray-900 mt-2">${duration}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Status:</span>
+                <span class="${statusClass}">${status}</span>
+            </div>
+        `;
+        document.getElementById('overwork-preview-body').innerHTML = body;
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'overwork-preview-modal' }));
+    });
+});
+
+function getStatusClass(status) {
+    switch(status) {
+        case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+    }
+}
+</script>
 @endsection

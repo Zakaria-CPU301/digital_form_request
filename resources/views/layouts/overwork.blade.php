@@ -19,6 +19,7 @@
     <style>
         body {
             font-family: 'Geologica', sans-serif;
+            overflow-x: hidden;
         }
     </style>
 

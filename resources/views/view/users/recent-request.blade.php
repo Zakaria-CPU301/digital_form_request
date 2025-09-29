@@ -70,32 +70,11 @@
                     <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
-                    <button 
-                        class="text-gray-500 hover:text-gray-700" 
+                    <button
+                        class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                         title="Show Details"
                     >
-                        <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            class="inline h-6 w-6" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke="currentColor"
-                        >
-                            <path 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
-                            />
-                            <path 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 
-                                   8.268 2.943 9.542 7-1.274 4.057-5.065 
-                                   7-9.542 7-4.477 0-8.268-2.943-9.542-7z" 
-                            />
-                        </svg>
+                        <i class="bi bi-eye"></i>
                     </button>
                 </td>
             </tr>
@@ -103,4 +82,23 @@
         </tbody>
     </table>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('search').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            if (row.cells.length > 3) {
+                const reason = row.cells[3].textContent.toLowerCase();
+                if (reason.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    });
+});
+</script>
 @endsection

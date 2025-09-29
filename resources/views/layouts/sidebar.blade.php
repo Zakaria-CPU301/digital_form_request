@@ -34,19 +34,19 @@
     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" 
          stroke-linecap="round" stroke-linejoin="round"
          viewBox="0 0 24 24">
-        <path d="M3 9.75L12 3l9 6.75V21a1.5 1.5 0 01-1.5 1.5H4.5A1.5 1.5 0 013 21V9.75z" />
+        <path d="M3 9.75L12 3l9 6.75V21a1.5 1.5 0 01-1.5 1.5H4.5A1.5 1.5 0 013 21V9.75z"/>
         <path d="M9 22.5V12h6v10.5" />
     </svg>
     <span>Home</span>
 </a>
 
-            <a href="{{ route('overwork.data') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ request()->routeIs('overwork.data') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
+            <a href="{{ route('overwork.data') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'overwork') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
     <!-- Icon Apply Overwork (Plus Mark) -->
 <i class="bi bi-alarm text-2xl"></i>
     <span>Overwork Data</span>
 </a>
 
-<a href="{{ route('leave.data') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ request()->routeIs('leave.data') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
+<a href="{{ route('leave.data') }}" class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'leave') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}">
     <!-- Icon Apply Leave (Calendar) -->
     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         viewBox="0 0 24 24">

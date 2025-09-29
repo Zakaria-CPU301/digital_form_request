@@ -105,32 +105,15 @@
                 </td>
 
                 <td class="py-4 px-6 text-center">
-                    <button 
-                        class="text-gray-500 hover:text-gray-700" 
+                    <button
+                        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                         title="Show Details"
+                        data-date="{{ $r->date ?? $r->created_at->format('d - m - Y') }}"
+                        data-description="{{ $r->task_description }}"
+                        data-duration="{{ $r->duration ?? 'N/A' }}"
+                        data-status="{{ $r->request_status }}"
                     >
-                        <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            class="inline h-6 w-6" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke="currentColor"
-                        >
-                            <path 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
-                            />
-                            <path 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 
-                                   8.268 2.943 9.542 7-1.274 4.057-5.065 
-                                   7-9.542 7-4.477 0-8.268-2.943-9.542-7z" 
-                            />
-                        </svg>
+                        <i class="bi bi-eye"></i>
                     </button>
                 </td>
             </tr>
@@ -151,5 +134,93 @@
             @endforelse
         </tbody>
     </table>
+
+<x-modal name="overworkPreviewModal" :show="false" max-width="lg">
+    <div class="p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Overwork Preview</h3>
+        <div class="space-y-4">
+            <p><strong>Date:</strong> <span id="preview-date"></span></p>
+            <p><strong>Task Description:</strong> <span id="preview-description"></span></p>
+            <p><strong>Duration:</strong> <span id="preview-duration"></span></p>
+            <p><strong>Status:</strong> <span id="preview-status"></span></p>
+        </div>
+    </div>
+</x-modal>
 </div>
+
+<x-modal name="overwork-preview-modal" maxWidth="lg">
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-extrabold text-[#012967] flex-1 text-center">
+                Overwork Preview
+            </h3>
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'overwork-preview-modal' }))"
+                class="text-gray-400 hover:text-gray-600 text-xl"
+            >
+                &times;
+            </button>
+        </div>
+        <div id="overwork-preview-body" class="space-y-3">
+            <!-- content -->
+        </div>
+    </div>
+</x-modal>
+
+<script>
+document.getElementById('search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        if (row.cells.length > 2) {
+            const taskDesc = row.cells[2].textContent.toLowerCase();
+            if (taskDesc.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+});
+
+document.querySelectorAll('.eye-preview-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const date = this.dataset.date;
+        const description = this.dataset.description;
+        const duration = this.dataset.duration;
+        const status = this.dataset.status;
+        const statusClass = getStatusClass(status);
+        const body = `
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Date:</span>
+                <span class="text-gray-900 mt-2">${date}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700 mr-4">Task Description:</span>
+                <span class="text-gray-900 mt-2">${description}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Duration:</span>
+                <span class="text-gray-900 mt-2">${duration}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Status:</span>
+                <span class="${statusClass}">${status}</span>
+            </div>
+        `;
+        document.getElementById('overwork-preview-body').innerHTML = body;
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'overwork-preview-modal' }));
+    });
+});
+
+function getStatusClass(status) {
+    switch(status) {
+        case 'Approved': return 'bg-[#57B5CA] text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Under Review': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Rejected': return 'bg-[#DC5249] text-white rounded-full px-3 py-1 text-sm font-semibold';
+        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+    }
+}
+</script>
 @endsection
