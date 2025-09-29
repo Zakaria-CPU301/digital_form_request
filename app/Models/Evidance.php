@@ -9,4 +9,14 @@ class Evidance extends Model
 {
     /** @use HasFactory<\Database\Factories\EvidanceFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'path',
+        'overwork_id',
+    ];
+
+    public function overwork()
+    {
+        return $this->belongsTo(Overwork::class);
+    }
 }

@@ -6,7 +6,7 @@
     <h2 class="text-2xl font-bold text-[#012967] mb-4">Manage Account</h2>
 
     <!-- Filter + Search -->
-    <div id="filter" class="flex items-center mb-6">
+    <div id="filter" class="flex items-center">
         @php
             $activeToggle = request('status', 'pending');
         @endphp
@@ -29,6 +29,13 @@
 
     <!-- Draft Table -->
     <table class="min-w-full text-left justify-center border-b border-gray-400">
+        <a href="{{ route('register') }}" 
+            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px] my-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M12 6v12M6 12h12" />
+            </svg>
+            <span>Add User</span>
+        </a>
         <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>

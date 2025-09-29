@@ -14,8 +14,7 @@ return new class extends Migration
     {
         Schema::create('evidances', function (Blueprint $table) {
             $table->id();
-            $table->string('photo_evidance')->nullable();
-            $table->string('video_evidance')->nullable();
+            $table->string('path')->nullable();
 
             $table->foreignId('overwork_id')->constrained();
             $table->timestamps();

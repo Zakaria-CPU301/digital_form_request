@@ -41,6 +41,7 @@
                         Duration
                     @endif
                 </th>
+                <th class="py-3 px-6 font-semibold">Evidance</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
@@ -48,23 +49,49 @@
 
         <tbody>
             @forelse($data as $r)
-            <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
+            <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 items-center justify-center">
                 <td class="py-4 px-6">
                     {{ $loop->iteration }}
                 </td>
+
                 <td class="py-4 px-6">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
+
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
                     {{ Str::limit($r->task_description, 25) }}
                 </td>
-                <td class="py-4 px-6 font-semibold">
-                    @if (auth()->user()->role === 'admin')
+
+                @if (auth()->user()->role === 'admin')
+                    <td class="py-4 px-6 font-semibold">
                         {{ Str::words($r->user->name, 2) ?? 'N/A' }}
-                    @else
-                        {{ $r->duration ?? 'N/A' }}
-                    @endif
+                    </td>
+                @endif
+
+                <td class="py-4 px-6 font-semibold">
+                    @php
+                        $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
+                        echo $duration->format('%h hours %i minutes');
+                    @endphp
                 </td>
+
+                <td class="py-4 px-6 font-semibold flex-col">
+                    @foreach ($r->evidance as $e)
+                        @if (pathinfo($e->path, PATHINFO_EXTENSION) === 'jpg' || pathinfo($e->path, PATHINFO_EXTENSION) === 'png' || pathinfo($e->path, PATHINFO_EXTENSION) === 'jpeg' || pathinfo($e->path, PATHINFO_EXTENSION) === 'webp')
+                            <div class="flex">
+                                <img src="{{asset('storage/' . $e->path)}}" alt="" width="50" class="inline-block mr-2 mb-2">
+                            </div>
+                        @endif
+                    @endforeach
+                    @foreach ($r->evidance as $e)
+                        <div class="flex">
+                            @if (pathinfo($e->path, PATHINFO_EXTENSION) === 'mp4' || pathinfo($e->path, PATHINFO_EXTENSION) === 'mov' || pathinfo($e->path, PATHINFO_EXTENSION) === 'avi')
+                                <video autoplay loop muted src="{{asset('storage/' . $e->path)}}" alt="evidance-image" width="50" class="inline-block mr-2 mb-2"></video>
+                            @endif
+                        </div>
+                    @endforeach
+                </td>
+
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
@@ -76,6 +103,7 @@
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
+
                 <td class="py-4 px-6 text-center">
                     <button 
                         class="text-gray-500 hover:text-gray-700" 

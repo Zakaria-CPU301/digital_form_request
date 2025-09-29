@@ -1,5 +1,5 @@
 <x-request-layout>
-  <form action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}" method="post">
+  <form action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}" method="post" enctype="multipart/form-data">
     @csrf
     @if(isset($overwork))
       @method('PUT')
@@ -9,9 +9,38 @@
 
     <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto">
       {{-- Submission Section --}}
-      <div class="flex-1">
-        <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
-        <x-submisson />
+        <div class="flex-1">
+          <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
+          <x-submisson />
+
+          @if (isset($evidance) && count($evidance) > 0)
+            <div class="p-2 py-5">
+              <div class="flex flex-wrap mb-4">
+                @foreach ($evidance as $e)
+                  @php
+                    $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
+                  @endphp
+                  @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                    <img src="{{ asset('storage/' . $e->path) }}" alt="" width="100" class="mr-2 mb-2 rounded">
+                  @endif
+                @endforeach
+              </div>
+
+              <div class="flex flex-wrap">
+                @foreach ($evidance as $e)
+                  @php
+                    $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
+                  @endphp
+                  @if (in_array($ext, ['mp4', 'mov', 'avi']))
+                    <video autoplay loop muted playsinline width="100" class="mr-2 mb-2 rounded">
+                      <source src="{{ asset('storage/' . $e->path) }}" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                  @endif
+                @endforeach
+              </div>
+            </div>
+          @endif
       </div>
 
       {{-- Overwork Request Section --}}
@@ -61,6 +90,22 @@
             placeholder="Task you did for this overwork"
             class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
             required>{{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea>
+        </div>
+
+        <div>
+            <label>Foto (jpg/png):</label>
+            <input type="file" name="photo[]" multiple value="{{ old('photo[]') }}">
+            @error('photo')
+                <div style="color: red;">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div>
+            <label>Video (mp4/avi):</label>
+            <input type="file" name="video[]" multiple>
+            @error('video')
+                <div style="color: red;">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="flex justify-end space-x-4 mt-6">

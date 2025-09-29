@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Leave;
 use App\Models\Overwork;
+use App\Models\Evidance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -17,10 +18,12 @@ class RequestController extends Controller
             $item->type = 'leave';
             return $item;
         });
-        $overwork = Overwork::all()->sortByDesc('created_at')->map(function ($item) {
+
+        $overwork = Overwork::with('evidance')->orderByDesc('created_at')->get()->map(function ($item) {
             $item->type = 'overwork';
             return $item;
         });
+
         return $leaves->concat($overwork)->sortByDesc('created_at');
     }
 
@@ -87,6 +90,7 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
+
 
         if (Auth::user()->role === 'user') {
             $data = $data->where('type', 'leave')

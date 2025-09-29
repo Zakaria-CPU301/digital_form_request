@@ -46,7 +46,7 @@ class LeaveController
             'user_id' => $validate['user_id']
         ]);
 
-        if ($status === 'review') return redirect()->route('recent')->with('success', 'add data leave successfully');
+        if ($status === 'review') return redirect()->route('leave.pending')->with('success', 'add data leave successfully');
         else return redirect()->route('leave.draft')->with('success', 'data leave is draft');
     }
 

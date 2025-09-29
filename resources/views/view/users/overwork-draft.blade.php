@@ -31,6 +31,7 @@
                 <th class="py-3 px-6 font-semibold">Date</th>
                 <th class="py-3 px-6 font-semibold">Task Description</th>
                 <th class="py-3 px-6 font-semibold">Duration</th>
+                <th class="py-3 px-6 font-semibold">Evidance</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
@@ -48,8 +49,27 @@
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
                     {{ Str::limit($r->task_description, 50) }}
                 </td>
-                <td class="py-4 px-6 font-semibold">
-                    {{ $r->duration ?? 'N/A' }}
+                <td class="py-4 px-6" title="{{ $r->task_description }}">
+                    @php
+                        $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
+                        echo $duration->format('%h hours %i minutes');
+                    @endphp
+                </td>
+                <td class="py-4 px-6 font-semibold flex-col">
+                    @foreach ($r->evidance as $e)
+                    <div class="flex">
+                        @if (pathinfo($e->path, PATHINFO_EXTENSION) === 'jpg' || pathinfo($e->path, PATHINFO_EXTENSION) === 'png' || pathinfo($e->path, PATHINFO_EXTENSION) === 'jpeg' || pathinfo($e->path, PATHINFO_EXTENSION) === 'webp')
+                            <img src="{{asset('storage/' . $e->path)}}" alt="" width="50" class="inline-block mr-2 mb-2">
+                        @endif
+                    </div>
+                    @endforeach
+                    @foreach ($r->evidance as $e)
+                    <div class="flex">
+                        @if (pathinfo($e->path, PATHINFO_EXTENSION) === 'mp4' || pathinfo($e->path, PATHINFO_EXTENSION) === 'mov' || pathinfo($e->path, PATHINFO_EXTENSION) === 'avi')
+                            <video autoplay loop muted src="{{asset('storage/' . $e->path)}}" alt="evidance-image" width="50" class="inline-block mr-2 mb-2"></video>
+                        @endif
+                    </div>
+                    @endforeach
                 </td>
                 <td class="py-4 px-6">
                     @php

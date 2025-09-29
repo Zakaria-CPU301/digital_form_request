@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Evidance;
 use App\Models\Overwork;
 use Exception;
 use Illuminate\Http\Request;
@@ -30,12 +31,13 @@ class OverworkController
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
             'finish' => ['required'],
             'desc' => ['required'],
-            'user_id' => ['required']
+            'user_id' => ['required'],
         ]);
 
         $status = $request->action === 'submit' ? 'review' : 'draft';
@@ -43,7 +45,7 @@ class OverworkController
         try {
             DB::beginTransaction();
 
-            Overwork::create([
+            $overwork = Overwork::create([
                 'overwork_date' => $validate['date'],
                 'start_overwork' => $validate['start'],
                 'finished_overwork' => $validate['finish'],
@@ -56,6 +58,26 @@ class OverworkController
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
+        }
+
+        $path = [];
+
+        if ($request->hasFile('photo')) {
+            foreach ($request->file('photo') as $photo) {
+                $path[] = $photo->store('evidance/photo', 'public');
+            }
+        }
+        if ($request->hasFile('video')) {
+            foreach ($request->file('video') as $photo) {
+                $path[] = $photo->store('evidance/video', 'public');
+            }
+        }
+
+        foreach ($path as $p) {
+            Evidance::create([
+                'path' => $p,
+                'overwork_id' => $overwork->id,
+            ]);
         }
 
         if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'add data overwork successfully');
@@ -72,7 +94,17 @@ class OverworkController
      */
     public function edit(Overwork $overwork)
     {
-        return view('pages.overwork-request', compact('overwork'));
+        $request = new RequestController;
+        $evidance = [];
+        foreach ($request->requestData() as $item) {
+            if ($item->id === $overwork->id && $item->type === 'overwork') {
+                foreach ($item->evidance as $e) {
+                    $evidance[] = $e;
+                }
+                break;
+            }
+        }
+        return view('pages.overwork-request', compact('evidance', 'overwork'));
     }
 
     /**

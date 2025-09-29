@@ -26,7 +26,7 @@
                         {{ __('Total Overwork') }}
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalOverwork'][0]->total_hours}} {{__('Hours')}}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalOverwork'][0]->total_hours ?? 0}} {{__('Hours')}}</h1>
                     <span class="text-sm text-gray-500">{{ __('Total Overwork') }}</span>
                 </div>
 
@@ -35,7 +35,7 @@
                         {{ __('Leave Balance') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days}} {{__('Days')}}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days ?? 0}} {{__('Days')}}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
 
@@ -44,7 +44,7 @@
                         {{ __('Leave Balance') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ __('3 Days') }}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance }} {{ __('Hours') }}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
             @elseif (auth()->user()->role === 'admin')
