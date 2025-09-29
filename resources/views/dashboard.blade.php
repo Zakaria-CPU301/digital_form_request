@@ -67,7 +67,7 @@
         <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
             <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                 {{ __('Pending Request') }}
-                <i class="bi bi-hourglass-split text-gray-500 text-lg animate-spin"></i>
+                <i class="bi bi-hourglass-split text-gray-500 text-lg"></i>
             </small>
             <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['pending'] }}</h1>
             <span class="text-sm text-gray-500">{{ __('Total submission which still under review') }}</span>
@@ -220,11 +220,16 @@
                     </td>
                     <td class="py-4 px-6 text-center">
                         @if (auth()->user()->role === 'user')
-                            <button 
-                                class="text-gray-500 hover:text-gray-700" 
+                            <button
+                                class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                 title="Show Details"
+                                data-id="{{ $d->id }}"
+                                data-date="{{ $d->created_at->format('d - m - Y') }}"
+                                data-type="{{ $d->type }}"
+                                data-description="{{ $d->reason ?? $d->task_description }}"
+                                data-status="{{ $d->request_status }}"
                             >
-                                <i class="bi bi-eye text-xl"></i>
+                                <i class="bi bi-eye"></i>
                             </button>
                         @else
                             @php
@@ -266,6 +271,25 @@
         </table>
     </div>
 
+    <x-modal name="dashboard-preview-modal" maxWidth="lg">
+        <div class="p-6">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h3 class="text-xl font-extrabold text-[#012967] text-center">
+                    Request Preview
+                </h3>
+                <button
+                    @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'dashboard-preview-modal' }))"
+                    class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+                >
+                    &times;
+                </button>
+            </div>
+            <div id="dashboard-preview-body" class="space-y-3">
+                <!-- content -->
+            </div>
+        </div>
+    </x-modal>
+
     <script>
         function clearFilters() {
             // Reset all form fields
@@ -277,19 +301,81 @@
             if (allDataButtons.length > 0) {
                 allDataButtons[0].click();
             }
+
+            // Reset table visibility
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
         }
 
-        // Auto-submit search on Enter key
-        document.getElementById('search').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.closest('form').submit();
-            }
+        // Client-side search filtering
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('search').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+                const isAdmin = '{{ auth()->user()->role }}' === 'admin';
+                const reasonIndex = isAdmin ? 4 : 3; // Reason column index
+
+                rows.forEach(row => {
+                    if (row.cells.length > reasonIndex) {
+                        const reason = row.cells[reasonIndex].textContent.toLowerCase();
+                        if (reason.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            });
+
+            // Modal preview for eye buttons
+            document.querySelectorAll('.eye-preview-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const date = this.dataset.date;
+                    const type = this.dataset.type;
+                    const description = this.dataset.description;
+                    const status = this.dataset.status;
+                    const statusClass = getStatusClass(status);
+                    const body = `
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Date:</span>
+                            <span class="text-gray-900 mt-2">${date}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Type:</span>
+                            <span class="text-gray-900 mt-2">${type}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Description:</span>
+                            <span class="text-gray-900 mt-2">${description}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Status:</span>
+                            <span class="${statusClass}">${status}</span>
+                        </div>
+                    `;
+                    document.getElementById('dashboard-preview-body').innerHTML = body;
+                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'dashboard-preview-modal' }));
+                });
+            });
         });
 
         // Auto-submit on month change
         document.getElementById('month').addEventListener('change', function() {
             this.closest('form').submit();
         });
+
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case 'approved':
+                case 'accepted': return 'bg-cyan-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+                case 'under review':
+                case 'pending': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
+                case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+                default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+            }
+        }
     </script>
 </x-app-layout>

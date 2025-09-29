@@ -69,60 +69,36 @@
                     @endphp
                     <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
                 </td>
-                <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center items-center">
+                <td class="py-4 px-6 text-center space-x-2">
+                    <button
+                        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                        title="Show"
+                        data-date="{{ $r->date ?? $r->created_at->format('d - m - Y') }}"
+                        data-leave-type="{{ $r->leave_type ?? 'N/A' }}"
+                        data-reason="{{ $r->reason }}"
+                        data-duration="{{ $r->duration ?? 'N/A' }}"
+                        data-status="{{ $r->request_status }}"
+                    >
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <a
+                        href="{{ route('leave.edit', $r->id) }}"
+                        class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                        title="Edit"
+                    >
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <form action="{{ route('leave.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
+                        @csrf
+                        @method('DELETE')
                         <button
-                            class="text-gray-500 hover:text-gray-700 mb-1"
-                            title="Show Details"
+                            type="submit"
+                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                            title="Delete"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="inline h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0
-                                       8.268 2.943 9.542 7-1.274 4.057-5.065
-                                       7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                />
-                            </svg>
+                            <i class="bi bi-trash"></i>
                         </button>
-                        <form action="{{ route('leave.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
-                            @csrf
-                            @method('DELETE')
-                            <button
-                                type="submit"
-                                class="text-red-500 hover:text-red-700"
-                                title="Delete Draft"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                    />
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
+                    </form>
                 </td>
             </tr>
             @empty
@@ -141,4 +117,85 @@
         </tbody>
     </table>
 </div>
+
+<x-modal name="leave-preview-modal" maxWidth="lg">
+    <div class="p-6">
+        <div class="flex justify-center items-center mb-4 relative">
+            <h3 class="text-xl font-extrabold text-[#012967] text-center">
+                Leave Preview
+            </h3>
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'leave-preview-modal' }))"
+                class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+            >
+                &times;
+            </button>
+        </div>
+        <div id="leave-preview-body" class="space-y-3">
+            <!-- content -->
+        </div>
+    </div>
+</x-modal>
+
+<script>
+document.getElementById('search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        if (row.cells.length > 3) {
+            const reason = row.cells[3].textContent.toLowerCase();
+            if (reason.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+});
+
+document.querySelectorAll('.eye-preview-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const date = this.dataset.date;
+        const leaveType = this.dataset.leaveType;
+        const reason = this.dataset.reason;
+        const duration = this.dataset.duration;
+        const status = this.dataset.status;
+        const statusClass = getStatusClass(status);
+        const body = `
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Date:</span>
+                <span class="text-gray-900 mt-2">${date}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Leave Type:</span>
+                <span class="text-gray-900 mt-2">${leaveType}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Reason:</span>
+                <span class="text-gray-900 mt-2">${reason}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Duration:</span>
+                <span class="text-gray-900 mt-2">${duration}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Status:</span>
+                <span class="${statusClass}">${status}</span>
+            </div>
+        `;
+        document.getElementById('leave-preview-body').innerHTML = body;
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'leave-preview-modal' }));
+    });
+});
+
+function getStatusClass(status) {
+    switch(status) {
+        case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+    }
+}
+</script>
 @endsection
