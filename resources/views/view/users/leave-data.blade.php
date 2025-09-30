@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-[#012967]">Leave Data</h2>
         
-        <form action="{{ route('leave.data') }}" method="GET" class="flex items-center space-x-4 mb-6">
+        <form action="{{ route('leave.submitted') }}" method="GET" class="flex items-center space-x-4 mb-6">
             <div>
                 <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
@@ -73,22 +73,11 @@
                 <td class="py-4 px-6 text-center">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
-<<<<<<< HEAD
-=======
-                <td class="py-4 px-6">
-                    {{ $r->leave_type ?? 'N/A' }}
-                </td>
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
                 </td>
-<<<<<<< HEAD
-                @if (auth()->user()->role === 'admin')
-                    <td class="py-4 px-6 font-semibold capitalize">
-=======
                 <td class="py-4 px-6">
                     @if (auth()->user()->role === 'admin')
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                         {{ Str::words($r->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif

@@ -5,7 +5,7 @@
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-[#012967]">Overwork Data</h2>
-        <form action="{{ route('overwork.data') }}" method="GET" class="flex items-center space-x-4 mb-6">
+        <form action="{{ route('overwork.submitted') }}" method="GET" class="flex items-center space-x-4 mb-6">
             <div>
                 <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
@@ -87,11 +87,7 @@
                     </td>
                 @endif
 
-<<<<<<< HEAD
-                <td class="py-4 px-6 font-semibold capitalize">
-=======
                 <td class="py-4 px-6">
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
                         echo $duration->format('%h hours %i minutes');
