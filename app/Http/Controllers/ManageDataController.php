@@ -16,11 +16,28 @@ class ManageDataController extends Controller
     {
         $requestData = new RequestController;
         $filter = $request->input('status');
+        $month = $request->input('month');
+        $search = $request->input('search');
         $data = $requestData->requestData()
             ->where('request_status', '!=', 'draft')
             ->where('request_status', $filter ?? 'review');
 
-        return view('view.admin.manage-data', compact('data'));
+        // Apply filters
+        if ($month && $month !== 'all') {
+            $data = $data->filter(function ($item) use ($month) {
+                return $item->created_at->format('m-Y') === $month;
+            });
+        }
+
+        if ($search) {
+            $searchLower = strtolower($search);
+            $data = $data->filter(function ($item) use ($searchLower) {
+                $reason = $item->reason ?? $item->task_description ?? '';
+                return str_contains(strtolower($reason), $searchLower);
+            });
+        }
+
+        return view('view.admin.manage-data', compact('data', 'month', 'search'));
     }
 
     /**

@@ -10,20 +10,40 @@
 
     <div id="filter" class="flex items-center mb-6">
         {{-- Tabs --}}
-        <form id="type" action="{{route('recent', ['type' => $activeToggle])}}" method="get">
+        <form id="type" action="{{route('recent', ['type' => $activeToggle])}}" method="get" class="flex items-center space-x-4">
             @include('components.filter-data-toggle')
-        </form>
 
-        {{-- Search --}}
-        <div class="ml-auto">
-            <input 
-                type="search" 
-                id="search" 
-                name="search" 
-                placeholder="Search..." 
-                class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400" 
-            />
-        </div>
+            {{-- Month Filter --}}
+            <div>
+                <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                    <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
+                    @php
+                        $months = [];
+                        for ($i = 0; $i < 12; $i++) {
+                            $date = now()->subMonths($i);
+                            $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
+                        }
+                    @endphp
+                    @foreach($months as $monthOption)
+                        <option value="{{ $monthOption['value'] }}" {{ request('month') === $monthOption['value'] ? 'selected' : '' }}>
+                            {{ $monthOption['label'] }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Search --}}
+            <div>
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    placeholder="Search..."
+                    value="{{ request('search') }}"
+                    class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                />
+            </div>
+        </form>
     </div>
 
     <!-- Recent Table -->
@@ -85,6 +105,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('month').addEventListener('change', function() {
+        this.closest('form').submit();
+    });
+
     document.getElementById('search').addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
         const rows = document.querySelectorAll('tbody tr');

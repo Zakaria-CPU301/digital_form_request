@@ -183,8 +183,7 @@
                             $months = [];
                             for ($i = 0; $i < 12; $i++) {
                                 $date = now()->subMonths($i);
-                                $value = $date->format('m-Y');
-                                $label = $date->format('F Y');
+                                $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
                             }
                         @endphp
                         @foreach($months as $monthOption)
@@ -218,9 +217,9 @@
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->created_at->format('d - m - Y') }}</td>
-                    <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>
+                    <td class="py-4 px-6">{{ $d->type }}</td>
                     @if (auth()->user()->role === "admin")
-                        <td class="py-4 px-6 font-semibold">{{ $d->user->name }}</td>
+                        <td class="py-4 px-6">{{ $d->user->name }}</td>
                     @endif
                     <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
                         {{ Str::limit($d->reason ?? $d->task_description, 40) }}
@@ -234,7 +233,7 @@
                                 default => 'bg-gray-300 text-gray-700',
                             };
                         @endphp
-                        <span class="rounded-full px-3 py-1 text-sm font-semibold {{ $statusClass }}">
+                        <span class="rounded-full px-3 py-1 text-sm {{ $statusClass }}">
                             {{ ucfirst($d->request_status) }}
                         </span>
                     </td>
