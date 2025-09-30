@@ -27,6 +27,25 @@ class RequestController extends Controller
         return $leaves->concat($overwork)->sortByDesc('created_at');
     }
 
+    private function applyFilters($data, $month, $search)
+    {
+        if ($month && $month !== 'all') {
+            $data = $data->filter(function ($item) use ($month) {
+                return $item->created_at->format('m-Y') === $month;
+            });
+        }
+
+        if ($search) {
+            $searchLower = strtolower($search);
+            $data = $data->filter(function ($item) use ($searchLower) {
+                $reason = $item->reason ?? $item->task_description ?? '';
+                return str_contains(strtolower($reason), $searchLower);
+            });
+        }
+
+        return $data;
+    }
+
     public function showDraft(Request $request)
     {
         $data = $this->requestData();
@@ -50,6 +69,8 @@ class RequestController extends Controller
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
         $keyValue = $request->input('type');
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'user') {
             if (in_array($keyValue, ['leave', 'overwork'])) {
@@ -61,10 +82,12 @@ class RequestController extends Controller
                     ->where('user_id', Auth::id())
                     ->sortByDesc('created_at');
             }
+            $data = $this->applyFilters($data, $month, $search);
             return $routeName != 'dashboard'
-                ? view('view.users.recent-request', compact('data'))
+                ? view('view.users.recent-request', compact('data', 'month', 'search'))
                 : $data;
         } elseif (Auth::user()->role === 'admin') {
+            $data = $this->applyFilters($data, $month, $search);
             return $data;
         }
     }
@@ -73,6 +96,8 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'user') {
             $data = $data->where('type', 'overwork')
@@ -83,14 +108,17 @@ class RequestController extends Controller
                 ->where('request_status', '!=', 'draft');
         }
 
-        return view('view.users.overwork-data', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.overwork-data', compact('data', 'month', 'search'));
     }
 
     public function showLeaveData(Request $request)
     {
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
-
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'user') {
             $data = $data->where('type', 'leave')
@@ -101,34 +129,46 @@ class RequestController extends Controller
                 ->where('request_status', '!=', 'draft');
         }
 
-        return view('view.users.leave-data', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.leave-data', compact('data', 'month', 'search'));
     }
 
     public function showOverworkDraft(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         $data = $data->where('type', 'overwork')
             ->where('request_status', 'draft')
             ->where('user_id', Auth::id());
 
-        return view('view.users.overwork-draft', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.overwork-draft', compact('data', 'month', 'search'));
     }
 
     public function showLeaveDraft(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         $data = $data->where('type', 'leave')
             ->where('request_status', 'draft')
             ->where('user_id', Auth::id());
 
-        return view('view.users.leave-draft', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.leave-draft', compact('data', 'month', 'search'));
     }
 
     public function showOverworkPending(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'admin') {
             $data = $data->where('type', 'overwork')
@@ -139,12 +179,16 @@ class RequestController extends Controller
                 ->where('user_id', Auth::id());
         }
 
-        return view('view.users.overwork-pending', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.overwork-pending', compact('data', 'month', 'search'));
     }
 
     public function showOverworkAccepted(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'admin') {
             $data = $data->where('type', 'overwork')
@@ -155,12 +199,16 @@ class RequestController extends Controller
                 ->where('user_id', Auth::id());
         }
 
-        return view('view.users.overwork-accepted', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.overwork-accepted', compact('data', 'month', 'search'));
     }
 
     public function showOverworkRejected(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'admin') {
             $data = $data->where('type', 'overwork')
@@ -171,12 +219,16 @@ class RequestController extends Controller
                 ->where('user_id', Auth::id());
         }
 
-        return view('view.users.overwork-pending', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.overwork-pending', compact('data', 'month', 'search'));
     }
 
     public function showLeavePending(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'admin') {
             $data = $data->where('type', 'leave')
@@ -187,12 +239,16 @@ class RequestController extends Controller
                 ->where('user_id', Auth::id());
         }
 
-        return view('view.users.leave-pending', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.leave-pending', compact('data', 'month', 'search'));
     }
 
     public function showLeaveAccepted(Request $request)
     {
         $data = $this->requestData();
+        $month = $request->input('month');
+        $search = $request->input('search');
 
         if (Auth::user()->role === 'admin') {
             $data = $data->where('type', 'leave')
@@ -203,7 +259,9 @@ class RequestController extends Controller
                 ->where('user_id', Auth::id());
         }
 
-        return view('view.users.leave-accepted', compact('data'));
+        $data = $this->applyFilters($data, $month, $search);
+
+        return view('view.users.leave-accepted', compact('data', 'month', 'search'));
     }
 
     public function showLeaveRejected(Request $request)

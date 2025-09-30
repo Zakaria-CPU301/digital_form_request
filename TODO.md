@@ -1,66 +1,38 @@
-# TODO: Implement Eye Icon Modal for Overwork Tables
+# Task: Update Evidence Display in Overwork Tables
 
-## Tasks
-- [x] Edit resources/views/view/users/overwork-data.blade.php: Add modal include, data attrs to eye button, JS for modal handling
-- [x] Edit resources/views/view/users/overwork-accepted.blade.php: Add modal include, data attrs to eye button, JS for modal handling
-- [x] Edit resources/views/view/users/overwork-pending.blade.php: Add modal include, data attrs to eye button, JS for modal handling
-- [x] Edit resources/views/view/users/overwork-draft.blade.php: Add modal include, update eye button with data attrs and SVG, JS for modal handling
+## Overview
+Modify the evidence column in overwork-related table views to display only the first image (or video if no image) compactly inline with the count of additional items. If multiple evidences exist, show the first one followed by a creative indicator like "+X more" in a styled badge on the same row for a neater, organized display. When clicking the preview button, show all evidences in the modal popup. This applies to four files. Changes are UI-only in Blade views.
 
-## Information Gathered
-- All four overwork table views have similar structure with eye icon in Action column (non-functional).
-- Modal component uses Alpine.js for show/hide via events.
-- Preview will display Date, Task Description (full), Duration, Status with badge.
-- Client-side population using data attributes on buttons.
+## Steps
+- [x] Step 1: Edit `resources/views/view/users/overwork-pending.blade.php`
+  - Locate the evidence `<td class="py-4 px-6 font-semibold flex-col">`.
+  - Replace the double `@foreach` loops with logic to:
+    - Count total: `$totalEvidance = $r->evidance->count();`
+    - Find first image: `$firstImage = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));`
+    - If `$firstImage`, display: `<img src="{{ asset('storage/' . $firstImage->path) }}" alt="Evidence" width="50" class="inline-block mr-2 mb-2 rounded shadow-sm">`
+    - Else, find first video: `$firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));`
+    - If `$firstVideo`, display: `<video src="{{ asset('storage/' . $firstVideo->path) }}" width="50" class="inline-block mr-2 mb-2 rounded shadow-sm" muted loop></video>`
+    - If `$totalEvidance > 1`, append: `<div class="flex items-center text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full mt-1"><svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>{{ $totalEvidance - 1 }} more</div>`
+    - If no evidence: Show "No evidence" in gray text.
+  - Ensure the column remains flex-col for vertical alignment.
 
-## Dependent Files
-- resources/views/view/users/overwork-data.blade.php
-- resources/views/view/users/overwork-accepted.blade.php
-- resources/views/view/users/overwork-pending.blade.php
-- resources/views/view/users/overwork-draft.blade.php
+- [x] Step 2: Edit `resources/views/view/users/overwork-draft.blade.php`
+  - Apply the same logic as Step 1 to the evidence `<td>`.
 
-## Followup Steps
-- Test modal functionality in browser after edits.
-- Verify data population and close behavior.
+- [x] Step 3: Edit `resources/views/view/users/overwork-data.blade.php`
+  - Apply the same logic as Step 1 to the evidence `<td>`.
 
-# TODO: Update Leave Tables to Use Consistent Modal System
+- [x] Step 4: Edit `resources/views/view/users/overwork-accepted.blade.php`
+  - Apply the same logic as Step 1 to the evidence `<td>`.
 
-## Tasks
-- [x] Edit resources/views/view/users/leave-accepted.blade.php: Replace @include modal with <x-modal>, update JS for cleaner layout
-- [x] Edit resources/views/view/users/leave-pending.blade.php: Replace @include modal with <x-modal>, update JS for cleaner layout
-- [x] Edit resources/views/view/users/leave-draft.blade.php: Replace @include modal with <x-modal>, update JS for cleaner layout
+- [ ] Step 5: Verify changes
+  - Run `php artisan serve`.
+  - Navigate to overwork pages (e.g., pending, draft, data, accepted) and check tables.
+  - Test with data having 0, 1, and multiple evidences (images/videos).
+  - Update TODO.md by marking steps as [x] upon completion.
 
-## Information Gathered
-- Leave tables were using @include('components.modal') which is inconsistent with overwork tables using <x-modal>.
-- Updated to use <x-modal name="leave-preview-modal" maxWidth="lg"> for consistency.
-- Updated modal content layout to use flexbox for better alignment and spacing.
-- Updated JS to populate modal with structured divs instead of paragraphs.
-
-## Dependent Files
-- resources/views/view/users/leave-accepted.blade.php
-- resources/views/view/users/leave-pending.blade.php
-- resources/views/view/users/leave-draft.blade.php
-
-## Followup Steps
-- Test modal functionality in browser after edits.
-- Verify data population and close behavior.
-
-# TODO: Update Leave Modal Content to Include Leave Type
-
-## Tasks
-- [x] Edit resources/views/view/users/leave-accepted.blade.php: Add data-leave-type attribute to eye button, update JS body to include Leave Type field
-- [x] Edit resources/views/view/users/leave-pending.blade.php: Add data-leave-type attribute to eye button, update JS body to include Leave Type field
-- [x] Edit resources/views/view/users/leave-draft.blade.php: Add data-leave-type attribute to eye button, update JS body to include Leave Type field
-
-## Information Gathered
-- The modal content was missing the Leave Type field, which is displayed in the table.
-- Added data-leave-type attribute to the eye preview buttons.
-- Updated the JS body to include a new div for Leave Type using the new vertical layout style (flex flex-col items-start).
-
-## Dependent Files
-- resources/views/view/users/leave-accepted.blade.php
-- resources/views/view/users/leave-pending.blade.php
-- resources/views/view/users/leave-draft.blade.php
-
-## Followup Steps
-- Test modal functionality in browser after edits.
-- Verify that Leave Type is now displayed in the modal preview.
+## Notes
+- Prioritize images over videos for the first display.
+- Creative styling: Rounded images/videos with subtle shadow; "more" indicator as a blue badge with plus icon for visual appeal.
+- No changes to leave views, as they lack evidence columns.
+- If issues arise (e.g., empty collection errors), add `@if($r->evidance)` checks.

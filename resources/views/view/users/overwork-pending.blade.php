@@ -5,15 +5,35 @@
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-[#012967]">Overwork Data</h2>
-        <div class="mb-6">
-        <input 
-            type="search" 
-            id="search" 
-            name="search" 
-            placeholder="Search overwork data..." 
-            class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md" 
-        />
-    </div>
+        <form action="{{ route('overwork.pending') }}" method="GET" class="flex items-center space-x-4">
+            <div>
+                <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                    <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
+                    @php
+                        $months = [];
+                        for ($i = 0; $i < 12; $i++) {
+                            $date = now()->subMonths($i);
+                            $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
+                        }
+                    @endphp
+                    @foreach($months as $monthOption)
+                        <option value="{{ $monthOption['value'] }}" {{ request('month') === $monthOption['value'] ? 'selected' : '' }}>
+                            {{ $monthOption['label'] }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    placeholder="Search overwork data..."
+                    value="{{ request('search') }}"
+                    class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
+                />
+            </div>
+        </form>
     </div>
 
             <!-- New Data Button -->
@@ -62,42 +82,52 @@
                 </td>
 
                 @if (auth()->user()->role === 'admin')
-                    <td class="py-4 px-6 font-semibold">
+                    <td class="py-4 px-6">
                         {{ Str::words($r->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif
 
+<<<<<<< HEAD
                 <td class="py-4 px-6 font-semibold capitalize">
+=======
+                <td class="py-4 px-6">
+>>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
                         echo $duration->format('%h hours %i minutes');
                     @endphp
                 </td>
 
-                <td class="py-4 px-6 font-semibold flex-col">
-                    @foreach ($r->evidance as $e)
-                        @if (pathinfo($e->path, PATHINFO_EXTENSION) === 'jpg' || pathinfo($e->path, PATHINFO_EXTENSION) === 'png' || pathinfo($e->path, PATHINFO_EXTENSION) === 'jpeg' || pathinfo($e->path, PATHINFO_EXTENSION) === 'webp')
-                            <div class="flex">
-                                <img src="{{asset('storage/' . $e->path)}}" alt="" width="50" class="inline-block mr-2 mb-2">
-                            </div>
-                        @endif
-                    @endforeach
-                    @foreach ($r->evidance as $e)
-                        <div class="flex">
-                            @if (pathinfo($e->path, PATHINFO_EXTENSION) === 'mp4' || pathinfo($e->path, PATHINFO_EXTENSION) === 'mov' || pathinfo($e->path, PATHINFO_EXTENSION) === 'avi')
-                                <video autoplay loop muted src="{{asset('storage/' . $e->path)}}" alt="evidance-image" width="50" class="inline-block mr-2 mb-2"></video>
-                            @endif
-                        </div>
-                    @endforeach
+                <td class="py-4 px-6 flex items-center">
+                    @php
+                        $totalEvidance = $r->evidance->count();
+                        $firstImage = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
+                        $firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
+                    @endphp
+                    @if($firstImage)
+                        <img src="{{ asset('storage/' . $firstImage->path) }}" alt="Evidence" width="50" class="inline-block mr-2 rounded shadow-sm">
+                    @elseif($firstVideo)
+                        <video src="{{ asset('storage/' . $firstVideo->path) }}" width="50" class="inline-block mr-2 rounded shadow-sm" muted loop></video>
+                    @else
+                        <span class="text-gray-500 text-sm">No evidence</span>
+                    @endif
+                    @if($totalEvidance > 1)
+                        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full ml-2 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ $totalEvidance - 1 }} more
+                        </span>
+                    @endif
                 </td>
 
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
@@ -111,6 +141,7 @@
                         data-description="{{ $r->task_description }}"
                         data-duration="{{ $r->duration ?? 'N/A' }}"
                         data-status="{{ $r->request_status }}"
+                        data-evidences="{{ $r->evidance->toJson() }}"
                     >
                         <i class="bi bi-eye"></i>
                     </button>
@@ -135,7 +166,7 @@
     </table>
 </div>
 
-<x-modal name="overwork-preview-modal" maxWidth="lg">
+<x-modal name="overwork-preview-modal" maxWidth="3xl">
     <div class="p-6">
         <div class="flex justify-center items-center mb-4 relative">
             <h3 class="text-xl font-extrabold text-[#012967] text-center">
@@ -150,6 +181,33 @@
         </div>
         <div id="overwork-preview-body" class="space-y-3">
             <!-- content -->
+        </div>
+    </div>
+</x-modal>
+
+<x-modal name="evidence-viewer-modal" maxWidth="6xl">
+    <div class="p-6">
+        <div class="flex justify-center items-center mb-4 relative">
+            <h3 class="text-xl font-extrabold text-[#012967] text-center">
+                Evidence Viewer
+            </h3>
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
+                class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+            >
+                &times;
+            </button>
+        </div>
+        <div id="evidence-viewer-body" class="flex items-center justify-center">
+            <!-- media content -->
+        </div>
+        <div class="flex justify-between mt-4">
+            <button id="prev-evidence" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                &larr; Previous
+            </button>
+            <button id="next-evidence" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                Next &rarr;
+            </button>
         </div>
     </div>
 </x-modal>
@@ -170,6 +228,9 @@ document.getElementById('search').addEventListener('input', function() {
     });
 });
 
+let currentEvidences = [];
+let currentIndex = 0;
+
 document.querySelectorAll('.eye-preview-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const id = this.dataset.id;
@@ -177,6 +238,7 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
         const description = this.dataset.description;
         const duration = this.dataset.duration;
         const status = this.dataset.status;
+        const evidences = JSON.parse(this.dataset.evidences);
         const statusClass = getStatusClass(status);
         const body = `
             <div class="flex flex-col items-start">
@@ -195,19 +257,75 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                 <span class="font-extrabold text-gray-700">Status:</span>
                 <span class="${statusClass}">${status}</span>
             </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Evidences:</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    ${evidences.map((e, index) => {
+                        const ext = e.path.split('.').pop().toLowerCase();
+                        if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
+                            return `<img src="/storage/${e.path}" alt="Evidence" width="200" class="rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
+                        } else if (['mp4', 'mov', 'avi'].includes(ext)) {
+                            return `<video src="/storage/${e.path}" width="200" class="rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" muted loop controls></video>`;
+                        }
+                        return '';
+                    }).join('')}
+                </div>
+            </div>
         `;
         document.getElementById('overwork-preview-body').innerHTML = body;
+        currentEvidences = evidences;
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'overwork-preview-modal' }));
     });
 });
 
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('evidence-item')) {
+        const index = parseInt(e.target.dataset.index);
+        currentIndex = index;
+        showEvidence(currentIndex);
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
+    }
+});
+
+function showEvidence(index) {
+    const e = currentEvidences[index];
+    const ext = e.path.split('.').pop().toLowerCase();
+    let mediaHtml = '';
+    if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
+        mediaHtml = `<img src="/storage/${e.path}" alt="Evidence" class="max-w-full max-h-[600px] rounded shadow-lg">`;
+    } else if (['mp4', 'mov', 'avi'].includes(ext)) {
+        mediaHtml = `<video src="/storage/${e.path}" class="max-w-full max-h-[600px] rounded shadow-lg" controls autoplay></video>`;
+    }
+    document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
+    document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
+    document.getElementById('next-evidence').style.display = index < currentEvidences.length - 1 ? 'block' : 'none';
+}
+
+document.getElementById('prev-evidence').addEventListener('click', function() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        showEvidence(currentIndex);
+    }
+});
+
+document.getElementById('next-evidence').addEventListener('click', function() {
+    if (currentIndex < currentEvidences.length - 1) {
+        currentIndex++;
+        showEvidence(currentIndex);
+    }
+});
+
 function getStatusClass(status) {
     switch(status) {
-        case 'Approved': return 'bg-[#57B5CA] text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'Under Review': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'Rejected': return 'bg-[#DC5249] text-white rounded-full px-3 py-1 text-sm font-semibold';
-        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Approved': return 'bg-[#57B5CA] text-white rounded-full px-3 py-1 text-sm';
+        case 'Under Review': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
+        case 'Rejected': return 'bg-[#DC5249] text-white rounded-full px-3 py-1 text-sm';
+        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm';
     }
 }
+
+document.getElementById('month').addEventListener('change', function() {
+    this.closest('form').submit();
+});
 </script>
 @endsection

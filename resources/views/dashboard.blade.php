@@ -216,15 +216,28 @@
             </thead>
             <tbody>
                 @foreach ($data['requestData'] as $d)
-                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition ">
-                    <td class="py-4 px-6 text-center">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6 text-center">{{ $d->created_at->format('d - m - Y') }}</td>
-                    <td class="py-4 px-6 font-semibold capitalize text-center">{{ $d->type }}</td>
+                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
+                    <td class="py-4 px-6">{{ $loop->iteration }}</td>
+                    <td class="py-4 px-6">{{ $d->created_at->format('d - m - Y') }}</td>
+                    <td class="py-4 px-6">{{ $d->type }}</td>
                     @if (auth()->user()->role === "admin")
-                        <td class="py-4 px-6 font-semibold capitalize text-center">{{ $d->user->name }}</td>
+                        <td class="py-4 px-6">{{ $d->user->name }}</td>
                     @endif
                     <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
                         {{ ucfirst(strtolower(Str::limit($d->reason ?? $d->task_description, 40))) }}
+                    </td>
+                    <td class="py-4 px-6">
+                        @php
+                            $statusClass = match(strtolower($d->request_status)) {
+                                'approved', 'accepted' => 'bg-cyan-500 text-white',
+                                'under review', 'pending' => 'bg-gray-400 text-white',
+                                'rejected' => 'bg-red-500 text-white',
+                                default => 'bg-gray-300 text-gray-700',
+                            };
+                        @endphp
+                        <span class="rounded-full px-3 py-1 text-sm {{ $statusClass }}">
+                            {{ ucfirst($d->request_status) }}
+                        </span>
                     </td>
                     <td class="py-4 px-6 text-center">
                     @php

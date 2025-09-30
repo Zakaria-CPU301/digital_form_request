@@ -7,15 +7,35 @@
         <h2 class="text-2xl font-bold text-[#012967]">Leave Accepted</h2>
 
         <!-- New Data Button -->
-        <div class="mb-6">
-            <input
-                type="search"
-                id="search"
-                name="search"
-                placeholder="Search accepted leave..."
-                class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
-            />
-        </div>
+        <form action="{{ route('leave.accepted') }}" method="GET" class="flex items-center space-x-4 mb-6">
+            <div>
+                <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                    <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
+                    @php
+                        $months = [];
+                        for ($i = 0; $i < 12; $i++) {
+                            $date = now()->subMonths($i);
+                            $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
+                        }
+                    @endphp
+                    @foreach($months as $monthOption)
+                        <option value="{{ $monthOption['value'] }}" {{ request('month') === $monthOption['value'] ? 'selected' : '' }}>
+                            {{ $monthOption['label'] }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    placeholder="Search accepted leave..."
+                    value="{{ request('search') }}"
+                    class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
+                />
+            </div>
+        </form>
         
     </div>
 
@@ -50,22 +70,40 @@
                 <td class="py-4 px-6">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
+<<<<<<< HEAD
+=======
+                <td class="py-4 px-6">
+                    {{ $r->leave_type ?? 'N/A' }}
+                </td>
+>>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 50))) }}
                 </td>
+<<<<<<< HEAD
                 <td class="py-4 px-6 font-semibold capitalize">
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
                         echo $duration->format('%d days');
                     @endphp
+=======
+                <td class="py-4 px-6">
+                    {{ $r->duration ?? 'N/A' }}
+>>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 </td>
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
+<<<<<<< HEAD
                             'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                             'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
                             'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                             default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+=======
+                            'Approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Under Review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm',
+>>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
@@ -173,11 +211,30 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
 
 function getStatusClass(status) {
     switch(status) {
-        case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+        case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
+        case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm';
+        case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
+        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm';
     }
 }
+
+document.getElementById('month').addEventListener('change', function() {
+    this.closest('form').submit();
+});
+
+document.getElementById('search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        if (row.cells.length > 3) {
+            const reason = row.cells[3].textContent.toLowerCase();
+            if (reason.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+});
 </script>
 @endsection
