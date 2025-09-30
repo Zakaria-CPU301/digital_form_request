@@ -70,40 +70,22 @@
                 <td class="py-4 px-6">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
-<<<<<<< HEAD
-=======
-                <td class="py-4 px-6">
-                    {{ $r->leave_type ?? 'N/A' }}
-                </td>
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 50))) }}
                 </td>
-<<<<<<< HEAD
-                <td class="py-4 px-6 font-semibold capitalize">
+                <td class="py-4 px-6">
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
                         echo $duration->format('%d days');
                     @endphp
-=======
-                <td class="py-4 px-6">
-                    {{ $r->duration ?? 'N/A' }}
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 </td>
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-<<<<<<< HEAD
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-=======
-                            'Approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'Under Review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
-                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm',
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
