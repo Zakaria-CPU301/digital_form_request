@@ -4,13 +4,13 @@
 >
     <!-- Left: My Leave Title -->
     <h1 class="text-white text-2xl font-bold">
-        {{ auth()->user()->name . ("'s") . (' Leave')}}
+        {{ __('Leave') }}
     </h1>
 
     <!-- Right: Navigation Menu -->
     <div class="flex">
-        <a href="{{ route('leave.data') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.data') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
+        <a href="{{ route('leave.submitted') }}"
+           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.submitted') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
             Submitted
         </a>
         <a href="{{ route('leave.accepted') }}"

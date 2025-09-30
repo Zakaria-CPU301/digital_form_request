@@ -37,7 +37,7 @@
             <span>Add User</span>
         </a>
         <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
-            <tr>
+            <tr class="text-center">
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Name</th>
                 <th class="py-3 px-6 font-semibold">Position</th>
@@ -68,7 +68,11 @@
                     <td class="py-4 px-6 font-semibold">{{$d->role}}</td>
 
                     <!-- Status -->
-                    <td class="py-4 px-6 font-semibold">{{$d->status_account}}</td>
+                    <td class="py-4 px-6 font-semibold text-center">
+                        <span class="{{$d->status_account === 'active' ? 'bg-blue-500' : 'bg-red-500'}} text-white rounded-full px-3 py-1 text-sm font-semibold">
+                            {{$d->status_account}}
+                        </span>
+                    </td>
                     
                     <!-- Action -->
                     <td class="py-4 px-6 text-center space-x-2 flex">

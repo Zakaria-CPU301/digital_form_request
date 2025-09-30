@@ -32,11 +32,11 @@
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                        {{ __('Leave Balance') }}
+                        {{ __('Total Leave') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days ?? 0}} {{__('Days')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -44,7 +44,7 @@
                         {{ __('Leave Balance') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance }} {{ __('Hours') }}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance - (int) $data['totalOverwork'][0]->total_hours }} {{ __('Hours') }}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
             @elseif (auth()->user()->role === 'admin')
@@ -154,7 +154,6 @@
     </div>
 
     {{-- Recent Request --}}
-
 <div id="data"  class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
         <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
 
@@ -183,10 +182,12 @@
                             $months = [];
                             for ($i = 0; $i < 12; $i++) {
                                 $date = now()->subMonths($i);
-                                $value = $date->format('m-Y');
-                                $label = $date->format('F Y');
+                                $months[] = [
+                                    'value' => $date->format('m-Y'),
+                                    'label' => $date->format('F Y')
+                                ];
                             }
-                        @endphp
+                            @endphp
                         @foreach($months as $monthOption)
                             <option value="{{ $monthOption['value'] }}" {{ $currentMonth === $monthOption['value'] ? 'selected' : '' }}>
                                 {{ $monthOption['label'] }}
@@ -200,7 +201,7 @@
 
         {{-- Table --}}
         <table class="min-w-full text-left border-collapse border-b border-gray-300">
-            <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
+            <thead class="bg-transparent text-[#1e293b] border-b border-gray-300 text-center">
                 <tr>
                     <th class="py-3 px-6 font-semibold w-12">No</th>
                     <th class="py-3 px-6 font-semibold w-15">Date</th>
@@ -215,29 +216,27 @@
             </thead>
             <tbody>
                 @foreach ($data['requestData'] as $d)
-                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
-                    <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ $d->created_at->format('d - m - Y') }}</td>
-                    <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>
+                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition ">
+                    <td class="py-4 px-6 text-center">{{ $loop->iteration }}</td>
+                    <td class="py-4 px-6 text-center">{{ $d->created_at->format('d - m - Y') }}</td>
+                    <td class="py-4 px-6 font-semibold capitalize text-center">{{ $d->type }}</td>
                     @if (auth()->user()->role === "admin")
-                        <td class="py-4 px-6 font-semibold">{{ $d->user->name }}</td>
+                        <td class="py-4 px-6 font-semibold capitalize text-center">{{ $d->user->name }}</td>
                     @endif
                     <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
-                        {{ Str::limit($d->reason ?? $d->task_description, 40) }}
+                        {{ ucfirst(strtolower(Str::limit($d->reason ?? $d->task_description, 40))) }}
                     </td>
-                    <td class="py-4 px-6">
-                        @php
-                            $statusClass = match(strtolower($d->request_status)) {
-                                'approved', 'accepted' => 'bg-cyan-500 text-white',
-                                'under review', 'pending' => 'bg-gray-400 text-white',
-                                'rejected' => 'bg-red-500 text-white',
-                                default => 'bg-gray-300 text-gray-700',
-                            };
-                        @endphp
-                        <span class="rounded-full px-3 py-1 text-sm font-semibold {{ $statusClass }}">
-                            {{ ucfirst($d->request_status) }}
-                        </span>
-                    </td>
+                    <td class="py-4 px-6 text-center">
+                    @php
+                        $statusClass = match($d->request_status) {
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                        };
+                    @endphp
+                    <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
+                </td>
                     <td class="py-4 px-6 text-center">
                         @if (auth()->user()->role === 'user')
                             <button
@@ -320,20 +319,18 @@
                 allDataButtons[0].click();
             }
 
-            // Reset table visibility
             const rows = document.querySelectorAll('tbody tr');
             rows.forEach(row => {
                 row.style.display = '';
             });
         }
 
-        // Client-side search filtering
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('search').addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 const rows = document.querySelectorAll('tbody tr');
                 const isAdmin = '{{ auth()->user()->role }}' === 'admin';
-                const reasonIndex = isAdmin ? 4 : 3; // Reason column index
+                const reasonIndex = isAdmin ? 4 : 3;
 
                 rows.forEach(row => {
                     if (row.cells.length > reasonIndex) {
@@ -347,7 +344,6 @@
                 });
             });
 
-            // Modal preview for eye buttons
             document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;

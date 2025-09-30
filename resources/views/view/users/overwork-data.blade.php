@@ -34,13 +34,12 @@
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
                 <th class="py-3 px-6 font-semibold">Task Description</th>
-                <th class="py-3 px-6 font-semibold">
-                    @if (auth()->user()->role === 'admin')
-                        Name
-                    @else
-                        Duration
-                    @endif
-                </th>
+                @if (auth()->user()->role === 'admin')
+                    <th class="py-3 px-6 font-semibold">
+                            Name
+                    </th>
+                @endif
+                    <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Evidance</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
@@ -59,7 +58,7 @@
                 </td>
 
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
-                    {{ Str::limit($r->task_description, 25) }}
+                    {{ ucfirst(strtolower(Str::limit($r->task_description, 25))) }}
                 </td>
 
                 @if (auth()->user()->role === 'admin')
@@ -68,7 +67,7 @@
                     </td>
                 @endif
 
-                <td class="py-4 px-6 font-semibold">
+                <td class="py-4 px-6 font-semibold capitalize">
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
                         echo $duration->format('%h hours %i minutes');

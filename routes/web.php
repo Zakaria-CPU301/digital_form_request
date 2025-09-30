@@ -47,45 +47,40 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::middleware(['auth', 'role:user'])->group(function () {
-        //! overwork
-        Route::prefix('overwork')->name('overwork.')->group(function () {
+    //! overwork
+    Route::prefix('overwork')->name('overwork.')->group(function () {
+        Route::middleware(['auth', 'role:user'])->group(function () {
             Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
             Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
             Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
             Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
             Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
-            Route::get('/pending', [RequestController::class, 'showOverworkPending'])->name('pending');
-            Route::get('/accepted', [RequestController::class, 'showOverworkAccepted'])->name('accepted');
-            Route::get('/rejected', [RequestController::class, 'showOverworkRejected'])->name('rejected');
-            Route::get('/draft', [RequestController::class, 'showOverworkDraft'])->name('draft');
         });
+        Route::get('/', [RequestController::class, 'showOverworkData'])->name('submitted');
+        Route::get('/pending', [RequestController::class, 'showOverworkPending'])->name('pending');
+        Route::get('/accepted', [RequestController::class, 'showOverworkAccepted'])->name('accepted');
+        Route::get('/rejected', [RequestController::class, 'showOverworkRejected'])->name('rejected');
+        Route::get('/draft', [RequestController::class, 'showOverworkDraft'])->name('draft');
+    });
 
-        //! leave
-        Route::prefix('leave')->name('leave.')->group(function () {
+    //! leave
+    Route::prefix('leave')->name('leave.')->group(function () {
+        Route::middleware(['auth', 'role:user'])->group(function () {
             Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
             Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
             Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
             Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
             Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
-            Route::get('/pending', [RequestController::class, 'showLeavePending'])->name('pending');
-            Route::get('/accepted', [RequestController::class, 'showLeaveAccepted'])->name('accepted');
-            Route::get('/rejected', [RequestController::class, 'showLeaveRejected'])->name('rejected');
-            Route::get('/draft', [RequestController::class, 'showLeaveDraft'])->name('draft');
         });
-
-        //! draft
-        Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
-
-        //! recent
-        Route::get('/recent', [RequestController::class, 'showRecent'])->name('recent');
+        Route::get('/', [RequestController::class, 'showLeaveData'])->name('submitted');
+        Route::get('/pending', [RequestController::class, 'showLeavePending'])->name('pending');
+        Route::get('/accepted', [RequestController::class, 'showLeaveAccepted'])->name('accepted');
+        Route::get('/rejected', [RequestController::class, 'showLeaveRejected'])->name('rejected');
+        Route::get('/draft', [RequestController::class, 'showLeaveDraft'])->name('draft');
     });
 
-    //! overwork data (khusus untuk menampilkan data overwork)
-    Route::get('/overwork', [RequestController::class, 'showOverworkData'])->name('overwork.data');
-
-    //! leave data (khusus untuk menampilkan data leave)
-    Route::get('/leave', [RequestController::class, 'showLeaveData'])->name('leave.data');
+    //! draft
+    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 });
 
 require __DIR__ . '/auth.php';

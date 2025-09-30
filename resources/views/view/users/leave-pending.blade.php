@@ -34,7 +34,6 @@
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Leave Type</th>
                 <th class="py-3 px-6 font-semibold">Reason</th>
                 <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
@@ -51,25 +50,25 @@
                 <td class="py-4 px-6">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
-                <td class="py-4 px-6 font-semibold">
-                    {{ $r->leave_type ?? 'N/A' }}
-                </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
-                    {{ Str::limit($r->reason, 50) }}
+                    {{ ucfirst(strtolower(Str::limit($r->reason, 50))) }}
                 </td>
-                <td class="py-4 px-6 font-semibold">
-                    {{ $r->duration ?? 'N/A' }}
+                <td class="py-4 px-6 font-semibold capitalize">
+                    @php
+                        $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
+                        echo $duration->format('%d days');
+                    @endphp
                 </td>
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'Approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'Under Review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            default => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold',
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                         };
                     @endphp
-                    <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
+                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <button

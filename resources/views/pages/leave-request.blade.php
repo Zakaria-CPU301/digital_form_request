@@ -17,27 +17,32 @@
       {{-- Leave Request Section --}}
       <div class="flex-1 flex flex-col space-y-4">
         <h3 class="text-[#042E66] font-extrabold text-lg">Leave Informations</h3>
-        <div class="flex flex-col">
-        <x-input-label for="leave_type" class="font-bold text-md mb-1">Leave Duration:</x-input-label>
-        <div class="flex items-center space-x-2">
-          <x-text-input
-            type="date"
-            name="start"
-            id="start"
-            value="{{ old('start', isset($leave) ? $leave->start_leave : '') }}"
-            class="flex-1 border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
-            required
-          />
-          <span class="text-gray-500">-</span>
-          <x-text-input
-            type="date"
-            name="finish"
-            id="finish"
-            value="{{ old('finish', isset($leave) ? $leave->finished_leave : '') }}"
-            class="flex-1 border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
-            required
-          />
-        </div>
+        <div class="flex w-full space-x-4">
+          <div class="rangeTime flex flex-col w-full">
+            <x-input-label for="leave_type" class="font-bold text-md mb-1">Start:</x-input-label>
+            <x-text-input
+              type="date"
+              name="start"
+              id="start"
+              value="{{ old('start', isset($leave) ? $leave->start_leave : '') }}"
+              class="border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+              required
+              />
+            </div>
+            <span class="mt-7 text-gray-500">
+              <i class="bi bi-arrow-right text-3xl font-bold"></i>
+            </span>
+          <div class="rangeTime flex flex-col w-full">
+            <x-input-label for="leave_type" class="font-bold text-md mb-1">Finish:</x-input-label>
+            <x-text-input
+              type="date"
+              name="finish"
+              id="finish"
+              value="{{ old('finish', isset($leave) ? $leave->finished_leave : '') }}"
+              class="border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+              required disabled
+            />
+          </div>
         </div>
         <div>
           <x-input-label for="reason" class="font-bold text-md mb-1">Leave Reason:</x-input-label>
@@ -77,3 +82,34 @@
     </div>
   </form>
 </x-request-layout>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const startInput = document.getElementById('start');
+    const finishInput = document.getElementById('finish');
+    const arrowAnimate = document.querySelectorAll(".rangeTime input");
+
+    const todayFormatted = new Date().toLocaleDateString('en-CA');
+    startInput.setAttribute('min', todayFormatted);
+
+    startInput.addEventListener('change', function () {
+        const startDateStr = this.value;
+        if (!startDateStr) return;
+
+        const startDate = new Date(startDateStr);
+
+        const finishDate = new Date(startDate);
+        finishDate.setDate(finishDate.getDate() + 2);
+        const finishFormatted = finishDate.toISOString().split('T')[0];
+
+        finishInput.value = finishFormatted;
+        finishInput.removeAttribute('disabled');
+        finishInput.setAttribute('min', finishFormatted);
+
+        arrowAnimate.forEach(arrow => {
+            arrow.style.opacity = "1";
+            arrow.style.zIndex = "100";
+        });
+    });
+});
+</script>

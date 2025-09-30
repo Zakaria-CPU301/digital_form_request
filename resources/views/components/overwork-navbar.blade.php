@@ -4,13 +4,13 @@
 >
     <!-- Left: My Overwork Title -->
     <h1 class="text-white text-2xl font-bold">
-        {{ auth()->user()->name . ("'s") . (' Overwork')}}
+        {{ __(' Overwork') }}
     </h1>
 
     <!-- Right: Navigation Menu -->
     <div class="flex">
-        <a href="{{ route('overwork.data') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.data') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
+        <a href="{{ route('overwork.submitted') }}"
+           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.submitted') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
             Submitted
         </a>
         <a href="{{ route('overwork.accepted') }}"

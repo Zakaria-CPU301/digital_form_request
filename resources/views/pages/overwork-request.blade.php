@@ -44,10 +44,10 @@
       </div>
 
       {{-- Overwork Request Section --}}
-      <div class="flex-1 flex flex-col space-y-4">
+      <div class="flex-1 flex flex-col space-y-4 w-full">
         <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
 
-        <div class="max-w-xs">
+        <div class="w-full">
           <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date:</x-input-label>
           <x-text-input
             type="date"
@@ -58,26 +58,29 @@
             required />
         </div>
 
-        <div class="flex items-center gap-2 max-w-xs">
-          <div>
-            <x-input-label for="start" class="font-black text-[16px] mb-1">Start From:</x-input-label>
+        <div class="flex space-x-4 items-center w-full">
+          <div class="w-full">
+            <x-input-label for="start" class="font-black text-[16px] mb-1">Start:</x-input-label>
             <x-text-input
-              type="time"
-              name="start"
-              id="start"
-              value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
-              class="border border-gray-300 rounded px-2 py-1 text-sm w-[80px] cursor-pointer"
-              required />
+            type="time"
+            name="start"
+            id="start"
+            value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
+            class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
+            required />
           </div>
-          <span class="mt-7 text-gray-500">-</span>
-          <div class="mt-6">
+          <span class="mt-7 text-gray-500">
+            <i class="bi bi-arrow-right text-2xl font-bold"></i>
+          </span>
+          <div class="w-full">
+            <x-input-label for="start" class="font-black text-[16px] mb-1">Finish:</x-input-label>
             <x-text-input
               type="time"
               name="finish"
               id="finish"
               value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-              class="border border-gray-300 rounded ml-3 px-2 py-1 text-sm w-[80px] cursor-pointer"
-              required />
+              class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
+              required disabled/>
           </div>
         </div>
 
@@ -134,4 +137,29 @@
       </div>
     </div>
   </form>
+
 </x-request-layout>
+
+<script>
+  document.getElementById('start').addEventListener('change', function () {
+    const startTimeStr = this.value; 
+    if (!startTimeStr) return;
+
+    const [startHour, startMinute] = startTimeStr.split(':').map(Number);
+
+    const startDate = new Date();
+    startDate.setHours(startHour, startMinute, 0);
+
+    const finishDate = new Date(startDate);
+    finishDate.setHours(finishDate.getHours() + 2);
+
+    const finishHourStr = String(finishDate.getHours()).padStart(2, '0');
+    const finishMinuteStr = String(finishDate.getMinutes()).padStart(2, '0');
+    const finishTimeStr = `${finishHourStr}:${finishMinuteStr}`;
+
+    const finishInput = document.getElementById('finish');
+    finishInput.value = finishTimeStr;
+    finishInput.min = finishTimeStr;
+    finishInput.disabled = false;
+  });
+</script>

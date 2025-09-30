@@ -29,18 +29,16 @@
     <!-- Leave Table -->
     <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
-            <tr>
+            <tr class="text-center">
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Leave Type</th>
                 <th class="py-3 px-6 font-semibold">Reason</th>
-                <th class="py-3 px-6 font-semibold">
-                    @if (auth()->user()->role === 'admin')
+                @if (auth()->user()->role === 'admin')
+                    <th class="py-3 px-6 font-semibold">
                         Name
-                    @else
-                        Duration
-                    @endif
-                </th>
+                    </th>
+                @endif
+                <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
@@ -49,26 +47,27 @@
         <tbody>
             @forelse($data as $r)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
-                <td class="py-4 px-6">
+                <td class="py-4 px-6 text-center">
                     {{ $loop->iteration }}
                 </td>
-                <td class="py-4 px-6">
+                <td class="py-4 px-6 text-center">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
-                <td class="py-4 px-6 font-semibold">
-                    {{ $r->leave_type ?? 'N/A' }}
-                </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
-                    {{ Str::limit($r->reason, 25) }}
+                    {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
                 </td>
-                <td class="py-4 px-6 font-semibold">
-                    @if (auth()->user()->role === 'admin')
+                @if (auth()->user()->role === 'admin')
+                    <td class="py-4 px-6 font-semibold capitalize">
                         {{ Str::words($r->user->name, 2) ?? 'N/A' }}
-                    @else
-                        {{ $r->duration ?? 'N/A' }}
-                    @endif
+                    </td>
+                @endif
+                <td class="py-4 px-6 font-semibold capitalize text-center">
+                    @php
+                        $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
+                        echo $duration->format('%d days');
+                    @endphp
                 </td>
-                <td class="py-4 px-6">
+                <td class="py-4 px-6 text-center">
                     @php
                         $statusClass = match($r->request_status) {
                             'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
@@ -77,7 +76,7 @@
                             default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                         };
                     @endphp
-                    <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
+                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <button
