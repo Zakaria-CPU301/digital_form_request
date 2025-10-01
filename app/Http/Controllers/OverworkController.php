@@ -112,6 +112,26 @@ class OverworkController
      */
     public function update(Request $request, Overwork $overwork)
     {
+        $path = [];
+
+        if ($request->hasFile('photo')) {
+            foreach ($request->file('photo') as $photo) {
+                $path[] = $photo->store('evidance/photo', 'public');
+            }
+        }
+        if ($request->hasFile('video')) {
+            foreach ($request->file('video') as $photo) {
+                $path[] = $photo->store('evidance/video', 'public');
+            }
+        }
+
+        foreach ($path as $p) {
+            Evidance::create([
+                'path' => $p,
+                'overwork_id' => $overwork->id,
+            ]);
+        }
+
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],

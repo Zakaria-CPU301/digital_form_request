@@ -44,7 +44,7 @@
                         {{ __('Leave Balance') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance - (int) $data['totalOverwork'][0]->total_hours }} {{ __('Hours') }}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance - (int) $data['totalLeave'][0]->total_days }} {{ __('Hours') }}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
             @elseif (auth()->user()->role === 'admin')
@@ -226,30 +226,17 @@
                     <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
                         {{ ucfirst(strtolower(Str::limit($d->reason ?? $d->task_description, 40))) }}
                     </td>
-                    <td class="py-4 px-6">
+                    <td class="py-4 px-6 text-center">
                         @php
-                            $statusClass = match(strtolower($d->request_status)) {
-                                'approved', 'accepted' => 'bg-cyan-500 text-white',
-                                'under review', 'pending' => 'bg-gray-400 text-white',
-                                'rejected' => 'bg-red-500 text-white',
-                                default => 'bg-gray-300 text-gray-700',
+                            $statusClass = match($d->request_status) {
+                                'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
+                                'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                             };
                         @endphp
-                        <span class="rounded-full px-3 py-1 text-sm {{ $statusClass }}">
-                            {{ ucfirst($d->request_status) }}
-                        </span>
+                        <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                     </td>
-                    <td class="py-4 px-6 text-center">
-                    @php
-                        $statusClass = match($d->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                        };
-                    @endphp
-                    <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
-                </td>
                     <td class="py-4 px-6 text-center">
                         @if (auth()->user()->role === 'user')
                             <button

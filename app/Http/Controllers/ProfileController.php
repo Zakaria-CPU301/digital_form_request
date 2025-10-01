@@ -27,13 +27,12 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
         if ($request->hasFile('profile_photo')) {
-        // Simpan di storage/app/public/profile_photos
         $path = $request->file('profile_photo')->store('profile_photos', 'public');
         $user->profile_photo = $path;
     }

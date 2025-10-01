@@ -12,7 +12,14 @@ use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-
+Route::prefix('info')->name('info.')->group(function () {
+    Route::get('/account-suspended', function () {
+        return view('suspended');
+    })->name('account-suspended');
+    // Route::get('contact-admin', function () {
+    //     return view('contact-admin');
+    // })->name('contact-admin');
+});
 
 Route::get('/', function () {
     $view = Auth::id() === null ? route('login') : route('dashboard');
@@ -31,7 +38,7 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     //! dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -42,7 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
         Route::prefix('account')->name('account.')->group(function () {
             Route::get('/', [ManageAccountController::class, 'show'])->name('show');
-            Route::get('edit/{id}', [ManageAccountController::class, 'edit'])->name('edit');
+            Route::get('edit/user/{id}/status/{status?}', [ManageAccountController::class, 'edit'])->name('edit');
             Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
         });
     });

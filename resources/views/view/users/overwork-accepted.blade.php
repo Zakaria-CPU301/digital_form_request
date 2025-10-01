@@ -87,11 +87,7 @@
                     </td>
                 @endif
 
-<<<<<<< HEAD
-                <td class="py-4 px-6 font-semibold capitalize">
-=======
                 <td class="py-4 px-6">
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
                         echo $duration->format('%h hours %i minutes');

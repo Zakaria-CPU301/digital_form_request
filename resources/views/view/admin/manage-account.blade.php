@@ -2,10 +2,8 @@
 
 @section('content')
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
-    <!-- Title -->
     <h2 class="text-2xl font-bold text-[#012967] mb-4">Manage Account</h2>
 
-    <!-- Filter + Search -->
     <div id="filter" class="flex items-center">
         @php
             $activeToggle = request('status', 'pending');
@@ -27,8 +25,7 @@
         </div>
     </div>
 
-    <!-- Draft Table -->
-    <table class="min-w-full text-left justify-center border-b border-gray-400">
+    <table class="min-w-full text-left justify-center items-center border-b border-gray-400">
         <a href="{{ route('register') }}" 
             class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px] my-4">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -52,59 +49,60 @@
             @foreach($data as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
                     
-                    <!-- Number -->
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
-
-                    <!-- Date -->
                     <td class="py-4 px-6">{{ $d->name }}</td>
-                    
-                    <!-- Type -->
                     <td class="py-4 px-6 font-semibold">{{ $d->position }}</td>
-                    
-                    <!-- Status -->
                     <td class="py-4 px-6"> {{ $d->department }} </td>
-                    
-                    <!-- Status -->
                     <td class="py-4 px-6 font-semibold">{{$d->role}}</td>
-
-                    <!-- Status -->
                     <td class="py-4 px-6 font-semibold text-center">
                         <span class="{{$d->status_account === 'active' ? 'bg-blue-500' : 'bg-red-500'}} text-white rounded-full px-3 py-1 text-sm font-semibold">
                             {{$d->status_account}}
                         </span>
                     </td>
-                    
-                    <!-- Action -->
-                    <td class="py-4 px-6 text-center space-x-2 flex">
-                        @php
-                            $status = request()->query('status');
-                        @endphp
-                        <form action="{{route('account.edit', ['id' => $d->id])}}" method="get" class="flex justify-between space-x-2">
-                            <button 
-                                type="submit" name="type" value="show-dialog"
-                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
-                                title="Show"
-                            >
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </form>
 
-                        <a href="{{route('account.edit', ['id' => $d->id])}}"
-                            type="submit" name="status" value="ban"
-                            class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
-                            title="Accepted"
-                            onclick="return confirm('yakin di ban?')"
-                        >
-                            <i class="bi bi-ban"></i>
-                        </a>
+                    <td class="py-4 px-6 text-center">
+                        <div class="flex space-x-2 justify-center">
+                            @php
+                                $status = request()->query('status');
+                            @endphp
+                            <form action="{{route('account.edit', ['id' => $d->id])}}" method="get" class="flex justify-between space-x-2">
+                                <button 
+                                    type="submit" name="type" value="show-dialog"
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    title="Show"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </form>
 
-                        <a href="{{route('account.delete', ['id' => $d->id])}}"
-                            class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
-                            title="Rejected"
-                            onclick="return confirm('yakin di hapus?')"
-                        >
-                            <i class="bi bi-trash"></i>
-                        </a>
+                            @if ($d->email != 'superadmin@sangnila.com')
+                                @if ($d->status_account === 'active') 
+                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspend'])}}"
+                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                                        title="Suspended"
+                                        onclick="return confirm('are you sure suspended this account?')"
+                                    >
+                                        <i class="bi bi-ban"></i>
+                                    </a>
+                                @elseif ($d->status_account === 'suspended')
+                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspend'])}}"
+                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                                        title="Unsuspended"
+                                        onclick="return confirm('are you sure unsuspended this account?')"
+                                    >
+                                        <i class="bi bi-person-check"></i>
+                                    </a>
+                                @endif
+
+                                <a href="{{route('account.delete', ['id' => $d->id])}}"
+                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    title="Rejected"
+                                    onclick="return confirm('yakin di hapus?')"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            @endif
+                        </div>
                     </td>
                 </tr>
             @endforeach

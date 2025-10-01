@@ -1,8 +1,13 @@
 <x-guest-layout>
     <div 
-        class="min-h-screen flex items-center justify-center bg-cover bg-center"
-        style="background-image: url('{{ asset('img/bg.webp') }}');"
+    class="min-h-screen flex items-center justify-center bg-cover bg-center"
+    style="background-image: url('{{ asset('img/bg.webp') }}');"
     >
+    @if (session('status'))
+        <div class="mb-4 font-medium text-sm text-green-600">
+            {{ session('status') }}
+        </div>
+    @endif
         <div class="bg-white rounded-3xl p-8 max-w-md w-[900px] shadow-lg text-center">
             <!-- Logo -->
             <img 

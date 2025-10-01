@@ -68,12 +68,6 @@
                 <td class="py-4 px-6">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
-<<<<<<< HEAD
-=======
-                <td class="py-4 px-6">
-                    {{ $r->leave_type ?? 'N/A' }}
-                </td>
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ Str::limit($r->reason, 50) }}
                 </td>
@@ -81,19 +75,7 @@
                     {{ $r->duration ?? 'N/A' }}
                 </td>
                 <td class="py-4 px-6">
-<<<<<<< HEAD
                     <span class="bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold">{{ $r->request_status }}</span>
-=======
-                    @php
-                        $statusClass = match($r->request_status) {
-                            'Approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'Under Review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
-                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm',
-                        };
-                    @endphp
-                    <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
->>>>>>> bc95b34bae087a9f1d5306b7287668479ea9143a
                 </td>
                 <td class="py-4 px-6 text-center space-x-2 flex justify-center">
                     <button

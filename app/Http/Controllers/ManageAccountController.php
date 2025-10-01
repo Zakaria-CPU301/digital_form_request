@@ -20,9 +20,13 @@ class ManageAccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, string $status)
     {
-        User::findOrFail($id)->update(['status_account' => 'suspended']);
+        if ($status === 'suspend') {
+            User::findOrFail($id)->update(['status_account' => 'suspended']);
+        } elseif ($status === 'unsuspend') {
+            User::findOrFail($id)->update(['status_account' => 'active']);
+        }
 
         return redirect()->back()->with('success', 'Suspended account is successfully');
     }

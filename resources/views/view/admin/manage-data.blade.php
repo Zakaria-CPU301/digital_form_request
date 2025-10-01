@@ -99,7 +99,7 @@
                     </td>
                     
                     <!-- Action -->
-                    <td id="data" class="flex py-4 px-6 text-center space-x-2 items-center justify-center">
+                    <td id="data" class="flex py-4 px-6 text-center space-x-2 items-center justify-center bg-black">
                         @php
                             $status = request()->query('status');
                         @endphp
