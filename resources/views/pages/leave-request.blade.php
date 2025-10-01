@@ -92,14 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayFormatted = new Date().toLocaleDateString('en-CA');
     startInput.setAttribute('min', todayFormatted);
 
-    startInput.addEventListener('change', function () {
-        const startDateStr = this.value;
+    function updateFinishDate(startDateStr) {
         if (!startDateStr) return;
 
         const startDate = new Date(startDateStr);
-
         const finishDate = new Date(startDate);
-        finishDate.setDate(finishDate.getDate() + 2);
+        finishDate.setDate(finishDate.getDate() + 1);
+
         const finishFormatted = finishDate.toISOString().split('T')[0];
 
         finishInput.value = finishFormatted;
@@ -110,6 +109,17 @@ document.addEventListener("DOMContentLoaded", () => {
             arrow.style.opacity = "1";
             arrow.style.zIndex = "100";
         });
+    }
+
+    // Jalankan saat load, jika start sudah terisi
+    if (startInput.value) {
+        updateFinishDate(startInput.value);
+    }
+
+    // Jalankan saat user mengubah input start
+    startInput.addEventListener('change', function () {
+        updateFinishDate(this.value);
     });
 });
+
 </script>

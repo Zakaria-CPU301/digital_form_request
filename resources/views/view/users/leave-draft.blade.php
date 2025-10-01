@@ -48,7 +48,7 @@
 
     <!-- Leave Table -->
     <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
-        <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
+        <thead class="bg-transparent text-[#1e293b] border-b border-gray-300 text-center">
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
@@ -62,19 +62,22 @@
         <tbody>
             @forelse($data as $r)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
-                <td class="py-4 px-6">
+                <td class="py-4 px-6 text-center">
                     {{ $loop->iteration }}
                 </td>
-                <td class="py-4 px-6">
+                <td class="py-4 px-6 text-center">
                     {{ $r->date ?? $r->created_at->format('d - m - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ Str::limit($r->reason, 50) }}
                 </td>
-                <td class="py-4 px-6">
-                    {{ $r->duration ?? 'N/A' }}
+                <td class="py-4 px-6 capitalize text-center">
+                    @php
+                        $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
+                        echo $duration->format('%d days');
+                    @endphp
                 </td>
-                <td class="py-4 px-6">
+                <td class="py-4 px-6 text-center">
                     <span class="bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center space-x-2 flex justify-center">

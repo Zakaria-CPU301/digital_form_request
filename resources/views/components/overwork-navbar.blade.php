@@ -1,35 +1,34 @@
 <div
-    class="bg-[#1EB8CD] px-8 ml-72 transition-all duration-300 ease-in-out flex justify-between items-center"
+    class="bg-[#1EB8CD] px-8 py-4 ml-72 transition-all duration-300 ease-in-out flex justify-between items-center"
     :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'"
 >
-    <!-- Left: My Overwork Title -->
     <h1 class="text-white text-2xl font-bold">
         {{ __(' Overwork') }}
     </h1>
 
-    <!-- Right: Navigation Menu -->
-    <div class="flex">
-        <a href="{{ route('overwork.submitted') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.submitted') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Submitted
-        </a>
-        <a href="{{ route('overwork.accepted') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.accepted') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Accepted
-        </a>
-        <a href="{{ route('overwork.pending') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.pending') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Pending
-        </a>
-        <a href="{{ route('overwork.rejected') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.rejected') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Rejected
-        </a>
-        @if (auth()->user()->role === 'user')
-            <a href="{{ route('overwork.draft') }}"
-            class="px-5 py-5 font-semibold text-white {{ request()->routeIs('overwork.draft') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-                Draft
+    <div class="flex space-x-2">
+        @php
+            $navLinks = [
+                ['label' => 'Submitted', 'route' => 'overwork.submitted'],
+                ['label' => 'Accepted', 'route' => 'overwork.accepted'],
+                ['label' => 'Pending', 'route' => 'overwork.pending'],
+                ['label' => 'Rejected', 'route' => 'overwork.rejected'],
+            ];
+
+            if (auth()->user()->role === 'user') {
+                $navLinks[] = ['label' => 'Draft', 'route' => 'overwork.draft'];
+            }
+        @endphp
+
+        @foreach ($navLinks as $link)
+            <a href="{{ route($link['route']) }}"
+               class="px-4 py-2 font-medium text-white rounded-full transition duration-200 backdrop-blur-sm
+                   {{ request()->routeIs($link['route']) 
+                        ? 'bg-[#0E7490]/60 shadow-md shadow-sky-500' 
+                        : 'hover:bg-white/10 hover:shadow-md' }}
+               ">
+                {{ $link['label'] }}
             </a>
-        @endif
+        @endforeach
     </div>
 </div>

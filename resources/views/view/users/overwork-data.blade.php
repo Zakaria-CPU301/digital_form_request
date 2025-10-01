@@ -90,8 +90,12 @@
                 <td class="py-4 px-6">
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
-                        echo $duration->format('%h hours %i minutes');
-                    @endphp
+                        @endphp
+                    @if ($duration->format('%i') == '0')
+                        {{ $duration->format('%h hours') }}
+                    @else
+                        {{ $duration->format('%h hours %i minutes') }}
+                    @endif
                 </td>
 
                 <td class="py-4 px-6 flex items-center">

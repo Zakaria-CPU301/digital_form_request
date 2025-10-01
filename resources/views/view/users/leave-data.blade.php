@@ -76,8 +76,8 @@
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
                 </td>
-                <td class="py-4 px-6">
-                    @if (auth()->user()->role === 'admin')
+                @if (auth()->user()->role === 'admin')
+                    <td class="py-4 px-6">
                         {{ Str::words($r->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif

@@ -80,7 +80,7 @@
               id="finish"
               value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
               class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
-              required disabled/>
+              required/>
           </div>
         </div>
 
@@ -141,8 +141,7 @@
 </x-request-layout>
 
 <script>
-  document.getElementById('start').addEventListener('change', function () {
-    const startTimeStr = this.value; 
+  function updateFinishTime(startTimeStr) {
     if (!startTimeStr) return;
 
     const [startHour, startMinute] = startTimeStr.split(':').map(Number);
@@ -161,5 +160,19 @@
     finishInput.value = finishTimeStr;
     finishInput.min = finishTimeStr;
     finishInput.disabled = false;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const startInput = document.getElementById('start');
+    
+    // Jalankan saat halaman dimuat, jika ada nilai
+    if (startInput.value) {
+      updateFinishTime(startInput.value);
+    }
+
+    // Jalankan saat ada perubahan
+    startInput.addEventListener('change', function () {
+      updateFinishTime(this.value);
+    });
   });
 </script>

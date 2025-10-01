@@ -30,17 +30,15 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
+    //! dashboard
+    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('/update', [ProfileController::class, 'update'])->name('update');
         Route::delete('/delete', [ProfileController::class, 'destroy'])->name('destroy');
     });
-});
-
-Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
-    //! dashboard
-    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::prefix('request')->name('request.')->group(function () {

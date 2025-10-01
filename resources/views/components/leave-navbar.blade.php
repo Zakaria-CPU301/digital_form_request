@@ -1,35 +1,34 @@
 <div
-    class="bg-[#1EB8CD] px-8    ml-72   transition-all duration-300 ease-in-out flex justify-between items-center"
+    class="bg-[#1EB8CD] px-8 py-4 ml-72 transition-all duration-300 ease-in-out flex justify-between items-center"
     :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'"
 >
-    <!-- Left: My Leave Title -->
     <h1 class="text-white text-2xl font-bold">
-        {{ __('Leave') }}
+        {{ __(' Leave') }}
     </h1>
 
-    <!-- Right: Navigation Menu -->
-    <div class="flex">
-        <a href="{{ route('leave.submitted') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.submitted') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Submitted
-        </a>
-        <a href="{{ route('leave.accepted') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.accepted') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Accepted
-        </a>
-        <a href="{{ route('leave.pending') }}"
-           class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.pending') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Pending
-        </a>
-        <a href="{{ route('leave.rejected') }}"
-            class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.rejected') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-            Rejected
-        </a>    
-        @if (auth()->user()->role === 'user')
-            <a href="{{ route('leave.draft') }}"
-            class="px-5 py-5 font-semibold text-white {{ request()->routeIs('leave.draft') ? 'bg-[#0E7490]' : 'hover:bg-gradient-to-r hover:from-[#1EB8CD] hover:to-[#1EB8CD]/10' }} transition">
-                Draft
+    <div class="flex space-x-2">
+        @php
+            $navLinks = [
+                ['label' => 'Submitted', 'route' => 'leave.submitted'],
+                ['label' => 'Accepted', 'route' => 'leave.accepted'],
+                ['label' => 'Pending', 'route' => 'leave.pending'],
+                ['label' => 'Rejected', 'route' => 'leave.rejected'],
+            ];
+
+            if (auth()->user()->role === 'user') {
+                $navLinks[] = ['label' => 'Draft', 'route' => 'leave.draft'];
+            }
+        @endphp
+
+        @foreach ($navLinks as $link)
+            <a href="{{ route($link['route']) }}"
+               class="px-4 py-2 font-medium text-white rounded-full transition duration-300 backdrop-blur-sm
+                   {{ request()->routeIs($link['route']) 
+                        ? 'bg-[#0E7490]/60 shadow-md shadow-sky-500' 
+                        : 'hover:bg-white/10 hover:shadow-md' }}
+               ">
+                {{ $link['label'] }}
             </a>
-        @endif
+        @endforeach
     </div>
 </div>
