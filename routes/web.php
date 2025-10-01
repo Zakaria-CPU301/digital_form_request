@@ -60,6 +60,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
             Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
             Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
+            Route::delete('/evidance/{evidance}', [OverworkController::class, 'deleteEvidance'])->name('evidance.delete');
         });
         Route::get('/', [RequestController::class, 'showOverworkData'])->name('submitted');
         Route::get('/pending', [RequestController::class, 'showOverworkPending'])->name('pending');

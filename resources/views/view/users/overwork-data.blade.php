@@ -176,7 +176,7 @@
             </h3>
             <button
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'overwork-preview-modal' }))"
-                class="text-gray-400 hover:text-gray-600 text-xl"
+                class="text-red-500 hover:text-red-300 text-2xl"
             >
                 &times;
             </button>
@@ -188,27 +188,21 @@
 </x-modal>
 
 <x-modal name="evidence-viewer-modal" maxWidth="6xl">
-    <div class="p-6">
-        <div class="flex justify-center items-center mb-4 relative">
-            <h3 class="text-xl font-extrabold text-[#012967] text-center">
-                Evidence Viewer
-            </h3>
+    <div class="flex items-center justify-center relative p-6">
             <button
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
-                class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+                class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-2xl"
             >
                 &times;
             </button>
-        </div>
         <div id="evidence-viewer-body" class="flex items-center justify-center">
             <!-- media content -->
         </div>
-        <div class="flex justify-between mt-4">
-            <button id="prev-evidence" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                &larr; Previous
+            <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                &larr; 
             </button>
-            <button id="next-evidence" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                Next &rarr;
+            <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                &rarr;
             </button>
         </div>
     </div>

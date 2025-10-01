@@ -21,7 +21,19 @@
                     $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
                   @endphp
                   @if (in_array($ext, ['jpg', 'jpeg', 'png']))
-                    <img src="{{ asset('storage/' . $e->path) }}" alt="" width="100" class="mr-2 mb-2 rounded">
+                    <div class="relative group mr-2 mb-2 rounded overflow-hidden" style="width: 100px; height: 100px;">
+                      <img src="{{ asset('storage/' . $e->path) }}" alt="" class="w-full h-full object-cover rounded">
+                      @if(isset($overwork))
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button type="button" class="text-white hover:text-gray-300 preview-evidence" data-path="{{ asset('storage/' . $e->path) }}" data-type="image" data-id="{{ $e->id }}" title="Preview">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button type="button" class="text-white hover:text-gray-300 delete-evidence" data-id="{{ $e->id }}" title="Delete">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      @endif
+                    </div>
                   @endif
                 @endforeach
               </div>
@@ -32,10 +44,22 @@
                     $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
                   @endphp
                   @if (in_array($ext, ['mp4', 'mov', 'avi']))
-                    <video autoplay loop muted playsinline width="100" class="mr-2 mb-2 rounded">
-                      <source src="{{ asset('storage/' . $e->path) }}" type="video/mp4">
-                      Your browser does not support the video tag.
-                    </video>
+                    <div class="relative group mr-2 mb-2 rounded overflow-hidden" style="width: 100px; height: 100px;">
+                      <video autoplay loop muted playsinline class="w-full h-full object-cover rounded">
+                        <source src="{{ asset('storage/' . $e->path) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                      @if(isset($overwork))
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button type="button" class="text-white hover:text-gray-300 preview-evidence" data-path="{{ asset('storage/' . $e->path) }}" data-type="video" data-id="{{ $e->id }}" title="Preview">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button type="button" class="text-white hover:text-gray-300 delete-evidence" data-id="{{ $e->id }}" title="Delete">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      @endif
+                    </div>
                   @endif
                 @endforeach
               </div>
@@ -138,6 +162,27 @@
     </div>
   </form>
 
+<x-modal name="evidence-viewer-modal" maxWidth="6xl">
+    <div class="flex items-center justify-center relative p-6">
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
+                class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-3xl"
+            >
+                &times;
+            </button>
+        <div id="evidence-viewer-body" class="flex items-center justify-center">
+            <!-- media content -->
+        </div>
+            <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                &larr; 
+            </button>
+            <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                &rarr;
+            </button>
+        </div>
+    </div>
+</x-modal>
+
 </x-request-layout>
 
 <script>
@@ -165,14 +210,94 @@
   document.addEventListener('DOMContentLoaded', function () {
     const startInput = document.getElementById('start');
     
-    // Jalankan saat halaman dimuat, jika ada nilai
     if (startInput.value) {
       updateFinishTime(startInput.value);
     }
 
-    // Jalankan saat ada perubahan
     startInput.addEventListener('change', function () {
       updateFinishTime(this.value);
     });
+  });
+
+  let currentEvidences = [];
+  let currentIndex = 0;
+
+  function collectEvidences() {
+    currentEvidences = [];
+    document.querySelectorAll('.preview-evidence').forEach((btn, index) => {
+      currentEvidences.push({
+        path: btn.dataset.path,
+        type: btn.dataset.type,
+        id: btn.dataset.id
+      });
+    });
+  }
+
+  function showEvidence(index) {
+    const e = currentEvidences[index];
+    let mediaHtml = '';
+    if (e.type === 'image') {
+      mediaHtml = `<img src="${e.path}" alt="Evidence" class="max-w-full max-h-[80vh] rounded shadow-lg">`;
+    } else if (e.type === 'video') {
+      mediaHtml = `<video src="${e.path}" class="max-w-full max-h-[80vh] rounded shadow-lg" controls autoplay></video>`;
+    }
+    document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
+    document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
+    document.getElementById('next-evidence').style.display = index < currentEvidences.length - 1 ? 'block' : 'none';
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('preview-evidence') || e.target.closest('.preview-evidence')) {
+      e.preventDefault();
+      collectEvidences();
+      const btn = e.target.classList.contains('preview-evidence') ? e.target : e.target.closest('.preview-evidence');
+      const path = btn.dataset.path;
+      currentIndex = currentEvidences.findIndex(ev => ev.path === path);
+      showEvidence(currentIndex);
+      window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-evidence') || e.target.closest('.delete-evidence')) {
+      e.preventDefault();
+      const btn = e.target.classList.contains('delete-evidence') ? e.target : e.target.closest('.delete-evidence');
+      const id = btn.dataset.id;
+      if (confirm('Are you sure you want to delete this evidence?')) {
+        fetch(`/overwork/evidance/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            btn.closest('.relative').remove();
+          } else {
+            alert('Failed to delete evidence: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while deleting the evidence.');
+        });
+      }
+    }
+  });
+
+  document.getElementById('prev-evidence').addEventListener('click', function() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      showEvidence(currentIndex);
+    }
+  });
+
+  document.getElementById('next-evidence').addEventListener('click', function() {
+    if (currentIndex < currentEvidences.length - 1) {
+      currentIndex++;
+      showEvidence(currentIndex);
+    }
   });
 </script>

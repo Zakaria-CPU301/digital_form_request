@@ -112,26 +112,6 @@ class OverworkController
      */
     public function update(Request $request, Overwork $overwork)
     {
-        $path = [];
-
-        if ($request->hasFile('photo')) {
-            foreach ($request->file('photo') as $photo) {
-                $path[] = $photo->store('evidance/photo', 'public');
-            }
-        }
-        if ($request->hasFile('video')) {
-            foreach ($request->file('video') as $photo) {
-                $path[] = $photo->store('evidance/video', 'public');
-            }
-        }
-
-        foreach ($path as $p) {
-            Evidance::create([
-                'path' => $p,
-                'overwork_id' => $overwork->id,
-            ]);
-        }
-
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
@@ -149,6 +129,26 @@ class OverworkController
             'request_status' => $status,
         ]);
 
+        $path = [];
+
+        if ($request->hasFile('photo')) {
+            foreach ($request->file('photo') as $photo) {
+                $path[] = $photo->store('evidance/photo', 'public');
+            }
+        }
+        if ($request->hasFile('video')) {
+            foreach ($request->file('video') as $video) {
+                $path[] = $video->store('evidance/video', 'public');
+            }
+        }
+
+        foreach ($path as $p) {
+            Evidance::create([
+                'path' => $p,
+                'overwork_id' => $overwork->id,
+            ]);
+        }
+
         if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'overwork updated successfully');
         else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
     }
@@ -163,6 +163,19 @@ class OverworkController
             return redirect()->back()->with('success', 'Overwork draft deleted successfully');
         } catch (Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to delete overwork draft: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Delete a specific evidence.
+     */
+    public function deleteEvidance(Evidance $evidance)
+    {
+        try {
+            $evidance->delete();
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 }
