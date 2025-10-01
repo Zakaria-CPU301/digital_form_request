@@ -69,7 +69,7 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ $r->date ?? $r->created_at->format('d - m - Y') }}
+                    {{ $r->date ?? $r->created_at->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 50))) }}
@@ -95,7 +95,7 @@
                     <button
                         class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                         title="Show Details"
-                        data-date="{{ $r->date ?? $r->created_at->format('d - m - Y') }}"
+                        data-date="{{ $r->date ?? $r->created_at->format('d - F - Y') }}"
                         data-leave-type="{{ $r->leave_type ?? 'N/A' }}"
                         data-reason="{{ $r->reason }}"
                         data-duration="{{ $r->duration ?? 'N/A' }}"

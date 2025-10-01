@@ -60,8 +60,7 @@
                     </th>
                 @endif
                 <th class="py-3 px-6 font-semibold">Duration</th>
-                <th class="py-3 px-6 font-semibold">Evidance</th>
-                <th class="py-3 px-6 font-semibold">Status</th>
+                <th class="py-3 px-6 font-semibold">Evidence</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
         </thead>
@@ -74,7 +73,7 @@
                 </td>
 
                 <td class="py-4 px-6">
-                    {{ $r->date ?? $r->created_at->format('d - m - Y') }}
+                    {{ $r->date ?? $r->created_at->format('d - F - Y') }}
                 </td>
 
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
@@ -98,46 +97,29 @@
                     @endif
                 </td>
 
-                <td class="py-4 px-6 flex items-center">
+                <td class="py-4 px-6">
                     @php
                         $totalEvidance = $r->evidance->count();
                         $firstImage = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
                         $firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
-                    @if($firstImage)
-                        <img src="{{ asset('storage/' . $firstImage->path) }}" alt="Evidence" width="50" class="inline-block mr-2 rounded shadow-sm">
-                    @elseif($firstVideo)
-                        <video src="{{ asset('storage/' . $firstVideo->path) }}" width="50" class="inline-block mr-2 rounded shadow-sm" muted loop></video>
+                    @if($totalEvidance > 0)
+                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
+                        <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        {{ $totalEvidance }} Media
+                    </span>
                     @else
                         <span class="text-gray-500 text-sm">No evidence</span>
                     @endif
-                    @if($totalEvidance > 1)
-                        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full ml-2 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ $totalEvidance - 1 }} more
-                        </span>
-                    @endif
-                </td>
-
-                <td class="py-4 px-6">
-                    @php
-                        $statusClass = match($r->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
-                        };
-                    @endphp
-                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
 
                 <td class="py-4 px-6 text-center">
                     <button
                         class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                         title="Show Details"
-                        data-date="{{ $r->date ?? $r->created_at->format('d - m - Y') }}"
+                        data-date="{{ $r->date ?? $r->created_at->format('d - F - Y') }}"
                         data-description="{{ $r->task_description }}"
                         data-duration="{{ $r->duration ?? 'N/A' }}"
                         data-status="{{ $r->request_status }}"

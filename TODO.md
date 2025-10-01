@@ -1,5 +1,5 @@
-- [x] Add deleteEvidance method in OverworkController
-- [x] Update update method in OverworkController to handle new file uploads
-- [x] Create transparent modal component for evidence viewer
-- [x] Modify overwork-request.blade.php for hover effects and icons
-- [x] Add JavaScript for modal, navigation, and deletion
+- [x] Update overwork-accepted.blade.php: Remove extra Status td in tbody
+- [x] Update overwork-pending.blade.php: Remove Status th and td, change Evidence td to show count like provided
+- [x] Update draft.blade.php: Remove Type th and td, change Evidence td to show count, adjust for overwork data
+- [x] Verify overwork-rejected.blade.php is already correct
+- [x] Fix Evidence condition to >0 in all files

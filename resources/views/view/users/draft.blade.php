@@ -30,7 +30,6 @@
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Type</th>
                 <th class="py-3 px-6 font-semibold">Task Description</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
@@ -51,52 +50,45 @@
                 </td>
 
                 <td class="py-4 px-6">
-                    {{ $d->date ?? $d->created_at->format('d - m - Y') }}
-                </td>
-                
-                <td class="py-4 px-6">
-                    {{ $d->type }}
+                    {{ $d->date ?? $d->created_at->format('d - F - Y') }}
                 </td>
 
                 <td class="py-4 px-6" title="{{ $d->task_description }}">
-                    {{ ucfirst(strtolower(Str::limit($d->task_description ?? $d->reason, 25))) }}
+                    {{ ucfirst(strtolower(Str::limit($d->task_description, 25))) }}
                 </td>
 
                 @if (auth()->user()->role === 'admin')
-                    <td class="py-4 px-6 font-semibold">
+                    <td class="py-4 px-6">
                         {{ Str::words($d->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif
 
-                <td class="py-4 px-6 font-semibold capitalize">
+                <td class="py-4 px-6">
                     @php
-                    if ($d->type === 'leave') {
-                        $duration = \Carbon\Carbon::parse($d->start_leave)->diff(\Carbon\Carbon::parse($d->finished_leave));
-                        echo $duration->format('%d days');
-                    } else {
                         $duration = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
-                        echo $duration->format('%h hours');
-                    }
-                    @endphp
+                        @endphp
+                    @if ($duration->format('%i') == '0')
+                        {{ $duration->format('%h hours') }}
+                    @else
+                        {{ $duration->format('%h hours %i minutes') }}
+                    @endif
                 </td>
 
-                <td class="py-4 px-6 font-semibold flex-col">
-                    @if (isset($d->evidance) && $d->evidance->isNotEmpty())
-                        @foreach ($d->evidance as $e)
-                            <div class="flex">
-                                @if (in_array(pathinfo($e->path, PATHINFO_EXTENSION), ['jpg', 'png', 'jpeg', 'webp']))
-                                    <img src="{{ asset('storage/' . $e->path) }}" alt="evidance-image" width="50" class="inline-block mr-2 mb-2">
-                                @elseif (in_array(pathinfo($e->path, PATHINFO_EXTENSION), ['mp4', 'mov', 'avi']))
-                                    <video autoplay loop muted src="{{ asset('storage/' . $e->path) }}" alt="evidance-video" width="50" class="inline-block mr-2 mb-2"></video>
-                                @else
-                                    <a href="{{ asset('storage/' . $e->path) }}" target="_blank" class="text-blue-500 hover:underline">
-                                        {{ basename($e->path) }}
-                                    </a>
-                                @endif
-                            </div>
-                        @endforeach
+                <td class="py-4 px-6">
+                    @php
+                        $totalEvidance = $d->evidance->count();
+                        $firstImage = $d->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
+                        $firstVideo = $d->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
+                    @endphp
+                    @if($totalEvidance > 0)
+                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
+                        <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        {{ $totalEvidance }} Media
+                    </span>
                     @else
-                        {{__('N/A')}}
+                        <span class="text-gray-500 text-sm">No evidence</span>
                     @endif
                 </td>
 

@@ -201,7 +201,7 @@
 
         {{-- Table --}}
         <table class="min-w-full text-left border-collapse border-b border-gray-300">
-            <thead class="bg-transparent text-[#1e293b] border-b border-gray-300 text-center">
+            <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
                 <tr>
                     <th class="py-3 px-6 font-semibold w-12">No</th>
                     <th class="py-3 px-6 font-semibold w-15">Date</th>
@@ -218,7 +218,7 @@
                 @foreach ($data['requestData'] as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ $d->created_at->format('d - m - Y') }}</td>
+                    <td class="py-4 px-6">{{ $d->created_at->format('d - F - Y') }}</td>
                     <td class="py-4 px-6">{{ $d->type }}</td>
                     @if (auth()->user()->role === "admin")
                         <td class="py-4 px-6">{{ $d->user->name }}</td>

@@ -1,2 +1,5 @@
 *
 !.gitignore
+
+public/storage/evidance/photo/.png
+public/storage/evidance/video/.mp4

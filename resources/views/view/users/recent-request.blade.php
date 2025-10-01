@@ -67,7 +67,7 @@
                     {{ $r->date ?? $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ $r->date ?? $r->created_at->format('d - m - Y') }}
+                    {{ $r->date ?? $r->created_at->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6 font-semibold">
                     {{ $r->type }}

@@ -4,8 +4,8 @@
 
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#012967]">Overwork Data</h2>
-        <form action="{{ route('overwork.submitted') }}" method="GET" class="flex items-center space-x-4 mb-6">
+        <h2 class="text-2xl font-bold text-[#012967]">Overwork Rejected</h2>
+        <form action="{{ route('overwork.rejected') }}" method="GET" class="flex items-center space-x-4 mb-6">
             <div>
                 <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
@@ -38,7 +38,7 @@
 
             <!-- New Data Button -->
     @if (auth()->user()->role === 'user')
-        <a href="{{ route('overwork.form-view') }}" 
+        <a href="{{ route('overwork.form-view') }}"
             class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
@@ -100,18 +100,16 @@
                 <td class="py-4 px-6">
                     @php
                         $totalEvidance = $r->evidance->count();
-                        $firstImage = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
-                        $firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
-                    @if($totalEvidance > 1)
-                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
+                    @if($totalEvidance > 0)
+                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex items-center justify-center">
                         <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                         </svg>
                         {{ $totalEvidance }} Media
                     </span>
                     @else
-                        <span class="text-gray-500 text-sm">No evidence</span>
+                        <span class="text-gray-500 text-sm flex items-center justify-center">No evidence</span>
                     @endif
                 </td>
 
@@ -131,7 +129,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="py-8 px-6 text-center text-gray-500">
+                <td colspan="{{ auth()->user()->role === 'admin' ? 7 : 6 }}" class="py-8 px-6 text-center text-gray-500">
                     <div class="flex flex-col items-center">
                         <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
                             <path d="M12 6v12M6 12h12" />

@@ -49,7 +49,7 @@
     <!-- Leave Table -->
     <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
-            <tr class="text-center">
+            <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
                 <th class="py-3 px-6 font-semibold">Reason</th>
@@ -67,11 +67,11 @@
         <tbody>
             @forelse($data as $r)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
-                <td class="py-4 px-6 text-center">
+                <td class="py-4 px-6">
                     {{ $loop->iteration }}
                 </td>
-                <td class="py-4 px-6 text-center">
-                    {{ $r->date ?? $r->created_at->format('d - m - Y') }}
+                <td class="py-4 px-6">
+                    {{ $r->date ?? $r->created_at->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
@@ -81,13 +81,13 @@
                         {{ Str::words($r->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif
-                <td class="py-4 px-6 font-semibold capitalize text-center">
+                <td class="py-4 px-6 font-semibold capitalize">
                     @php
                         $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
                         echo $duration->format('%d days');
                     @endphp
                 </td>
-                <td class="py-4 px-6 text-center">
+                <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
                             'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
@@ -102,7 +102,7 @@
                     <button
                         class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                         title="Show Details"
-                        data-date="{{ $r->date ?? $r->created_at->format('d - m - Y') }}"
+                        data-date="{{ $r->date ?? $r->created_at->format('d - F - Y') }}"
                         data-leave-type="{{ $r->leave_type ?? 'N/A' }}"
                         data-reason="{{ $r->reason }}"
                         data-duration="{{ $r->duration ?? 'N/A' }}"
@@ -114,7 +114,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="py-8 px-6 text-center text-gray-500">
+                <td colspan="7" class="py-8 px-6 text-gray-500">
                     <div class="flex flex-col items-center">
                         <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -135,7 +135,7 @@
 <x-modal name="leave-preview-modal" maxWidth="lg">
     <div class="p-6">
         <div class="flex justify-center items-center mb-4 relative">
-            <h3 class="text-xl font-extrabold text-[#012967] text-center">
+            <h3 class="text-xl font-extrabold text-[#012967]">
                 Leave Preview
             </h3>
             <button
