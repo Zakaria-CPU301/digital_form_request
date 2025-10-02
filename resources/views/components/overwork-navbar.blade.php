@@ -11,7 +11,7 @@
             $navLinks = [
                 ['label' => 'Submitted', 'route' => 'overwork.submitted'],
                 ['label' => 'Accepted', 'route' => 'overwork.accepted'],
-                ['label' => 'Pending', 'route' => 'overwork.pending'],
+                ['label' => 'Pending', 'route' => 'overwork.review'],
                 ['label' => 'Rejected', 'route' => 'overwork.rejected'],
             ];
 

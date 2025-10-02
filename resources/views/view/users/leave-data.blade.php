@@ -71,7 +71,7 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ $r->date ?? $r->created_at->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
@@ -99,17 +99,42 @@
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
-                    <button
-                        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                        title="Show Details"
-                        data-date="{{ $r->date ?? $r->created_at->format('d - F - Y') }}"
-                        data-leave-type="{{ $r->leave_type ?? 'N/A' }}"
-                        data-reason="{{ $r->reason }}"
-                        data-duration="{{ $r->duration ?? 'N/A' }}"
-                        data-status="{{ $r->request_status }}"
-                    >
-                        <i class="bi bi-eye"></i>
-                    </button>
+                    <div class="flex justify-center items-center space-x-3">
+
+                        <!-- Show Details Button -->
+                        <button
+                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                            title="Show Details"
+                            data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
+                            data-description="{{ $r->task_description }}"
+                            data-duration="{{ $r->duration ?? 'N/A' }}"
+                            data-status="{{ $r->request_status }}"
+                            {{-- data-evidences="{{ $r->evidance->toJson() }}" --}}
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+
+                        @if ($r->request_status === 'draft')
+                            <a
+                            href="{{ route('leave.edit', $r->id) }}"
+                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                title="Edit"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('leave.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
+                                @csrf
+                                @method('DELETE')
+                                <button
+                                    type="submit"
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    title="Delete"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                 </td>
             </tr>
             @empty

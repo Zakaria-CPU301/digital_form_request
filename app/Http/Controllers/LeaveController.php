@@ -9,14 +9,6 @@ use Illuminate\Http\Request;
 class LeaveController
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -46,14 +38,9 @@ class LeaveController
             'user_id' => $validate['user_id']
         ]);
 
-        if ($status === 'review') return redirect()->route('leave.pending')->with('success', 'add data leave successfully');
+        if ($status === 'review') return redirect()->route('leave.review')->with('success', 'add data leave successfully');
         else return redirect()->route('leave.draft')->with('success', 'data leave is draft');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Leave $leave) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -83,7 +70,7 @@ class LeaveController
             'request_status' => $status,
         ]);
 
-        if ($status === 'review') return redirect()->route('leave.pending')->with('success', 'leave updated successfully');
+        if ($status === 'review') return redirect()->route('leave.review')->with('success', 'leave updated successfully');
         else return redirect()->route('leave.draft')->with('success', 'leave draft updated');
     }
 

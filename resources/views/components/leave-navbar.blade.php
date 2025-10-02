@@ -11,7 +11,7 @@
             $navLinks = [
                 ['label' => 'Submitted', 'route' => 'leave.submitted'],
                 ['label' => 'Accepted', 'route' => 'leave.accepted'],
-                ['label' => 'Pending', 'route' => 'leave.pending'],
+                ['label' => 'Pending', 'route' => 'leave.review'],
                 ['label' => 'Rejected', 'route' => 'leave.rejected'],
             ];
 

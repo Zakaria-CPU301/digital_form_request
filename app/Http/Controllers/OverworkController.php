@@ -11,14 +11,6 @@ use Illuminate\Support\Facades\DB;
 class OverworkController
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -31,7 +23,6 @@ class OverworkController
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
@@ -149,7 +140,7 @@ class OverworkController
             ]);
         }
 
-        if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'overwork updated successfully');
+        if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'overwork updated successfully');
         else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
     }
 

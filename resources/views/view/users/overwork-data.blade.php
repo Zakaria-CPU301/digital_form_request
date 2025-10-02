@@ -61,6 +61,7 @@
                 @endif
                     <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Evidence</th>
+                <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
         </thead>
@@ -73,7 +74,7 @@
                 </td>
 
                 <td class="py-4 px-6">
-                    {{ $r->date ?? $r->created_at->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
                 </td>
 
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
@@ -103,7 +104,7 @@
                         $firstImage = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
                         $firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
-                    @if($totalEvidance > 1)
+                    @if($totalEvidance > 0)
                     <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
                         <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
@@ -115,18 +116,58 @@
                     @endif
                 </td>
 
+                <td class="py-4 px-6">
+                    @php
+                        $statusClass = match($r->request_status) {
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
+                        };
+                    @endphp
+                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
+                </td>
+
                 <td class="py-4 px-6 text-center">
-                    <button
-                        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                        title="Show Details"
-                        data-date="{{ $r->date ?? $r->created_at->format('d - F - Y') }}"
-                        data-description="{{ $r->task_description }}"
-                        data-duration="{{ $r->duration ?? 'N/A' }}"
-                        data-status="{{ $r->request_status }}"
-                        data-evidences="{{ $r->evidance->toJson() }}"
-                    >
-                        <i class="bi bi-eye"></i>
-                    </button>
+                    {{$r->user->name}}
+                </td>
+                    
+                <td class="py-4 px-6 text-center">
+                    <div class="flex justify-center items-center space-x-3">
+
+                        <!-- Show Details Button -->
+                        <button
+                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                            title="Show Details"
+                            data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
+                            data-description="{{ $r->task_description }}"
+                            data-duration="{{ $r->duration ?? 'N/A' }}"
+                            data-status="{{ $r->request_status }}"
+                            {{-- data-evidences="{{ $r->evidance->toJson() }}" --}}
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        @if ($r->request_status === 'draft')
+                            <a
+                            href="{{ route('overwork.edit', $r->id) }}"
+                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                title="Edit"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('overwork.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
+                                @csrf
+                                @method('DELETE')
+                                <button
+                                    type="submit"
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    title="Delete"
+                                    >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                 </td>
             </tr>
             @empty
@@ -146,7 +187,6 @@
             @endforelse
         </tbody>
     </table>
-
 
 </div>
 
