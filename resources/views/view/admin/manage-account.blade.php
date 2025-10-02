@@ -46,9 +46,9 @@
         </thead>
 
         <tbody>
-            @foreach($data as $d)
+            @forelse($data as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
-                    
+
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->name }}</td>
                     <td class="py-4 px-6 font-semibold">{{ $d->position }}</td>
@@ -66,9 +66,9 @@
                                 $status = request()->query('status');
                             @endphp
                             <form action="{{route('account.edit', ['id' => $d->id])}}" method="get" class="flex justify-between space-x-2">
-                                <button 
+                                <button
                                     type="submit" name="type" value="show-dialog"
-                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                     title="Show"
                                 >
                                     <i class="bi bi-eye"></i>
@@ -76,9 +76,9 @@
                             </form>
 
                             @if ($d->email != 'superadmin@sangnila.com')
-                                @if ($d->status_account === 'active') 
+                                @if ($d->status_account === 'active')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspend'])}}"
-                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Suspended"
                                         onclick="return confirm('are you sure suspended this account?')"
                                     >
@@ -86,7 +86,7 @@
                                     </a>
                                 @elseif ($d->status_account === 'suspended')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspend'])}}"
-                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Unsuspended"
                                         onclick="return confirm('are you sure unsuspended this account?')"
                                     >
@@ -95,7 +95,7 @@
                                 @endif
 
                                 <a href="{{route('account.delete', ['id' => $d->id])}}"
-                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                     title="Rejected"
                                     onclick="return confirm('yakin di hapus?')"
                                 >
@@ -105,7 +105,18 @@
                         </div>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" class="py-8 px-6 text-center text-gray-500">
+                    <div class="flex flex-col items-center">
+                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <p>No data found</p>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

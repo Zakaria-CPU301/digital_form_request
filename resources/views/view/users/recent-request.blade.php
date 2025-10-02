@@ -61,7 +61,7 @@
         </thead>
 
         <tbody>
-            @foreach($data as $r)
+            @forelse($data as $r)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
                 <td class="py-4 px-6">
                     {{ $r->date ?? $loop->iteration }}
@@ -98,7 +98,18 @@
                     </button>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" class="py-8 px-6 text-center text-gray-500">
+                    <div class="flex flex-col items-center">
+                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <p>No data found</p>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

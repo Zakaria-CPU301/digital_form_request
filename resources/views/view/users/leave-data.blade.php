@@ -29,7 +29,7 @@
                     type="search"
                     id="search"
                     name="search"
-                    placeholder="Search leave data..."
+                    placeholder="Search leave..."
                     value="{{ request('search') }}"
                     class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
                 />
@@ -90,10 +90,10 @@
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
@@ -122,7 +122,7 @@
                         </svg>
                         <p>No leave data found</p>
                         <a href="{{ route('leave.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
-                            Create your first leave request
+                            Create your leave request
                         </a>
                     </div>
                 </td>

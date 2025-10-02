@@ -5,7 +5,7 @@
 
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#012967]">Leave Draft</h2>
+        <h2 class="text-2xl font-bold text-[#012967]">Leave Data</h2>
         {{-- Search --}}
         <form action="{{ route('leave.draft') }}" method="GET" class="flex items-center space-x-4 mb-6">
             <div>
@@ -30,7 +30,7 @@
                     type="search"
                     id="search"
                     name="search"
-                    placeholder="Search draft leave..."
+                    placeholder="Search leave..."
                     value="{{ request('search') }}"
                     class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
                 />
@@ -120,7 +120,10 @@
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <path d="M16 2v4M8 2v4M3 10h18" />
                         </svg>
-                        <p>No draft leave found</p>
+                        <p>No leave data found</p>
+                        <a href="{{ route('leave.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
+                            Create your leave request
+                        </a>
                     </div>
                 </td>
             </tr>
@@ -205,7 +208,7 @@ function getStatusClass(status) {
         case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
         case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm';
         case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
-        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm';
+        default: return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
     }
 }
 

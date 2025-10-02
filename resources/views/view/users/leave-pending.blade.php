@@ -4,7 +4,7 @@
 
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#012967]">Leave Pending</h2>
+        <h2 class="text-2xl font-bold text-[#012967]">Leave Data</h2>
 
         <!-- New Data Button -->
 
@@ -33,7 +33,7 @@
                     type="search"
                     id="search"
                     name="search"
-                    placeholder="Search pending leave..."
+                    placeholder="Search leave..."
                     value="{{ request('search') }}"
                     class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
                 />
@@ -83,10 +83,10 @@
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
@@ -113,7 +113,10 @@
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <path d="M16 2v4M8 2v4M3 10h18" />
                         </svg>
-                        <p>No pending leave found</p>
+                        <p>No leave data found</p>
+                        <a href="{{ route('leave.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
+                            Create your leave request
+                        </a>
                     </div>
                 </td>
             </tr>

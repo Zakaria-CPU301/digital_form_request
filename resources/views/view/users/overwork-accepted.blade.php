@@ -237,9 +237,9 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                     ${evidences.map(e => {
                         const ext = e.path.split('.').pop().toLowerCase();
                         if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-                            return `<img src="/storage/${e.path}" alt="Evidence" width="200" class="rounded shadow-sm">`;
+                            return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm">`;
                         } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                            return `<video src="/storage/${e.path}" width="200" class="rounded shadow-sm" muted loop controls></video>`;
+                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm" muted autoplay loop controls></video>`;
                         }
                         return '';
                     }).join('')}
@@ -256,7 +256,7 @@ function getStatusClass(status) {
         case 'Approved': return 'bg-[#57B5CA] text-white rounded-full px-3 py-1 text-sm';
         case 'Under Review': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
         case 'Rejected': return 'bg-[#DC5249] text-white rounded-full px-3 py-1 text-sm';
-        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm';
+        default: return 'bg-gray-400 text-gray-700 rounded-full px-3 py-1 text-sm';
     }
 }
 

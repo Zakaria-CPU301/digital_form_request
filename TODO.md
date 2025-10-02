@@ -1,5 +1,7 @@
-- [x] Update overwork-accepted.blade.php: Remove extra Status td in tbody
-- [x] Update overwork-pending.blade.php: Remove Status th and td, change Evidence td to show count like provided
-- [x] Update draft.blade.php: Remove Type th and td, change Evidence td to show count, adjust for overwork data
-- [x] Verify overwork-rejected.blade.php is already correct
-- [x] Fix Evidence condition to >0 in all files
+# TODO: Implement Global Page Loader
+
+## Steps to Complete
+- [ ] Update `resources/views/layouts/app.blade.php` to add `loading` state to Alpine x-data and insert loader overlay HTML.
+- [ ] Update `resources/js/app.js` to add axios interceptors and event listeners for showing/hiding the loader.
+- [ ] Test the loader behavior on page loads, form submissions, and AJAX calls.
+- [ ] Verify styling and functionality, make adjustments if needed.

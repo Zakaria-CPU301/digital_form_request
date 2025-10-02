@@ -51,7 +51,7 @@
                 <th class="py-3 px-6 font-semibold">Date</th>
                 <th class="py-3 px-6 font-semibold">Task Description</th>
                 <th class="py-3 px-6 font-semibold">Duration</th>
-                <th class="py-3 px-6 font-semibold">Evidance</th>
+                <th class="py-3 px-6 font-semibold">Evidence</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
@@ -86,11 +86,11 @@
                         $firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
                     @if($totalEvidance > 1)
-                        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full ml-2 flex items-center">
+                        <span class="text-xs bg-blue-100 text-blue-600 px-auto w-[80px] py-2 rounded-full justify-center flex items-center">
                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                             </svg>
-                            {{ $totalEvidance }} more
+                            {{ $totalEvidance }} Media
                         </span>
                     @else
                         <span class="text-gray-500 text-sm">No evidence</span>
@@ -102,7 +102,7 @@
                             'Approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
                             'Under Review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                             'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm',
+                            default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
@@ -250,9 +250,9 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                     ${evidences.map((e, index) => {
                         const ext = e.path.split('.').pop().toLowerCase();
                         if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-                            return `<img src="/storage/${e.path}" alt="Evidence" width="200" class="rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
+                            return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
                         } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                            return `<video src="/storage/${e.path}" width="200" class="rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" muted loop controls></video>`;
+                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" muted loop autoplay controls></video>`;
                         }
                         return '';
                     }).join('')}
@@ -307,7 +307,7 @@ function getStatusClass(status) {
         case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
         case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm';
         case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
-        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm';
+        default: return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
     }
 }
 

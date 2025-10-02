@@ -19,7 +19,7 @@
         <h3 class="text-[#042E66] font-extrabold text-lg">Leave Informations</h3>
         <div class="flex w-full space-x-4">
           <div class="rangeTime flex flex-col w-full">
-            <x-input-label for="leave_type" class="font-bold text-md mb-1">Start:</x-input-label>
+            <x-input-label for="leave_type" class="font-bold text-md mb-1">Start: <span class="text-red-500">*</span></x-input-label>
             <x-text-input
               type="date"
               name="start"
@@ -33,7 +33,7 @@
               <i class="bi bi-arrow-right text-3xl font-bold"></i>
             </span>
           <div class="rangeTime flex flex-col w-full">
-            <x-input-label for="leave_type" class="font-bold text-md mb-1">Finish:</x-input-label>
+            <x-input-label for="leave_type" class="font-bold text-md mb-1">Finish: <span class=" text-red-500">*</span></x-input-label>
             <x-text-input
               type="date"
               name="finish"
@@ -45,7 +45,7 @@
           </div>
         </div>
         <div>
-          <x-input-label for="reason" class="font-bold text-md mb-1">Leave Reason:</x-input-label>
+          <x-input-label for="reason" class="font-bold text-md mb-1">Leave Reason: <span class="text-red-500">*</span></x-input-label>
           <textarea
             name="reason"
             id="reason"
@@ -77,7 +77,7 @@
             <i class="bi bi-send-fill mr-1"></i>
             Submit
           </button>
-                    </div>
+        </div>
       </div>
     </div>
   </form>

@@ -215,7 +215,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data['requestData'] as $d)
+                @forelse ($data['requestData'] as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->created_at->format('d - F - Y') }}</td>
@@ -256,9 +256,9 @@
                             @endphp
 
                             <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between space-x-2">
-                                <button 
+                                <button
                                     type="submit" name="type" value="show-dialog"
-                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                     title="Show"
                                 >
                                     <i class="bi bi-eye"></i>
@@ -266,7 +266,7 @@
 
                                 <button
                                     type="submit" name="accepted" value="{{$d->type}}"
-                                    class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
+                                    class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                     title="Accepted"
                                     onclick="return confirm('yakin di terima?')"
                                 >
@@ -275,7 +275,7 @@
 
                                 <button
                                     type="submit" name="rejected" value="{{$d->type}}"
-                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100" 
+                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                     title="Rejected"
                                     onclick="return confirm('yakin di tolak?')"
                                 >
@@ -285,7 +285,18 @@
                         @endif
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="{{ auth()->user()->role === 'admin' ? 7 : 6 }}" class="py-8 px-6 text-center text-gray-500">
+                        <div class="flex flex-col items-center">
+                            <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <p>No data found</p>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

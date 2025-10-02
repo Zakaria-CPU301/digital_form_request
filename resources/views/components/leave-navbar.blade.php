@@ -22,10 +22,10 @@
 
         @foreach ($navLinks as $link)
             <a href="{{ route($link['route']) }}"
-               class="px-4 py-2 font-medium text-white rounded-full transition duration-300 backdrop-blur-sm
-                   {{ request()->routeIs($link['route']) 
-                        ? 'bg-[#0E7490]/60 shadow-md shadow-sky-500' 
-                        : 'hover:bg-white/10 hover:shadow-md' }}
+               class="px-4 py-2 font-medium rounded-full transition duration-300 backdrop-blur-sm
+                   {{ request()->routeIs($link['route'])
+                        ? 'bg-white text-[#1EB8CD] shadow-sm shadow-gray-300'
+                        : 'text-white hover:bg-white/10 hover:shadow-md' }}
                ">
                 {{ $link['label'] }}
             </a>

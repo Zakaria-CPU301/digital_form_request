@@ -72,7 +72,7 @@
         <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
 
         <div class="w-full">
-          <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date:</x-input-label>
+          <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date: <span class="text-red-500">*</span></x-input-label>
           <x-text-input
             type="date"
             name="date"
@@ -84,7 +84,7 @@
 
         <div class="flex space-x-4 items-center w-full">
           <div class="w-full">
-            <x-input-label for="start" class="font-black text-[16px] mb-1">Start:</x-input-label>
+            <x-input-label for="start" class="font-black text-[16px] mb-1">Start: <span class="text-red-500">*</span></x-input-label>
             <x-text-input
             type="time"
             name="start"
@@ -97,7 +97,7 @@
             <i class="bi bi-arrow-right text-2xl font-bold"></i>
           </span>
           <div class="w-full">
-            <x-input-label for="start" class="font-black text-[16px] mb-1">Finish:</x-input-label>
+            <x-input-label for="finish" class="font-black text-[16px] mb-1">Finish: <span class="text-red-500">*</span></x-input-label>
             <x-text-input
               type="time"
               name="finish"
@@ -109,7 +109,7 @@
         </div>
 
         <div>
-          <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description:</x-input-label>
+          <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description: <span class="text-red-500">*</span></x-input-label>
           <textarea
             name="desc"
             id="desc"
@@ -120,29 +120,35 @@
         </div>
 
         <div>
-            <label>Foto (jpg/png):</label>
-            <input type="file" name="photo[]" multiple value="{{ old('photo[]') }}">
+            <label>Foto (jpg/png): <span class="text-red-500">*</span></label><br>
+            <input type="file" name="photo[]" multiple id="photo-input" accept="image/*" value="{{ old('photo[]') }}">
             @error('photo')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
         </div>
 
         <div>
-            <label>Video (mp4/avi):</label>
-            <input type="file" name="video[]" multiple>
+            <label>Video (mp4/avi): <span class="text-red-500">*</span></label><br>
+            <input type="file" name="video[]" multiple id="video-input" accept="video/*">
             @error('video')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
         </div>
 
+        <!-- Preview Container -->
+        <div id="media-preview" class="mt-4" style="display: none;">
+            <h4 class="font-bold text-md mb-2">Selected Files Preview:</h4>
+            <div id="preview-images" class="flex flex-wrap gap-2 mb-2"></div>
+            <div id="preview-videos" class="flex flex-wrap gap-2"></div>
+        </div>
+
         <div class="flex justify-end space-x-4 mt-6">
           {{-- Draft Button --}}
-          <button 
-            type="submit" 
-            name="action" 
-            value="draft" 
+          <button
+            type="button"
+            id="draft-btn"
             class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition">
-            
+
             <i class="bi bi-save2 mr-1 text-[#042E66]"></i>
             Draft
           </button>
@@ -174,7 +180,7 @@
             <!-- media content -->
         </div>
             <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                &larr; 
+                &larr;
             </button>
             <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
                 &rarr;
@@ -182,6 +188,8 @@
         </div>
     </div>
 </x-modal>
+
+<x-loader />
 
 </x-request-layout>
 
@@ -300,4 +308,129 @@
       showEvidence(currentIndex);
     }
   });
+
+  // Media Preview Functionality
+  let selectedPhotos = [];
+  let selectedVideos = [];
+
+  function updatePreviewVisibility() {
+    const previewContainer = document.getElementById('media-preview');
+    if (selectedPhotos.length > 0 || selectedVideos.length > 0) {
+      previewContainer.style.display = 'block';
+    } else {
+      previewContainer.style.display = 'none';
+    }
+  }
+
+  function createImagePreview(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const previewDiv = document.createElement('div');
+      previewDiv.className = 'relative group';
+      previewDiv.innerHTML = `
+        <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300">
+          <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
+        </div>
+        <button type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file" data-type="photo" data-index="${index}" title="Remove">
+          ×
+        </button>
+      `;
+      document.getElementById('preview-images').appendChild(previewDiv);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function createVideoPreview(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const previewDiv = document.createElement('div');
+      previewDiv.className = 'relative group';
+      previewDiv.innerHTML = `
+        <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300 bg-gray-100 flex items-center justify-center">
+          <video class="w-full h-full object-cover" muted controls autoplay loop playsinline>
+            <source src="${e.target.result}" type="${file.type}">
+          </video>
+        </div>
+        <button type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file" data-type="video" data-index="${index}" title="Remove">
+          ×
+        </button>
+      `;
+      document.getElementById('preview-videos').appendChild(previewDiv);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateFileInputs() {
+    // Update photo input
+    const photoInput = document.getElementById('photo-input');
+    const photoDataTransfer = new DataTransfer();
+    selectedPhotos.forEach(file => {
+      photoDataTransfer.items.add(file);
+    });
+    photoInput.files = photoDataTransfer.files;
+
+    // Update video input
+    const videoInput = document.getElementById('video-input');
+    const videoDataTransfer = new DataTransfer();
+    selectedVideos.forEach(file => {
+      videoDataTransfer.items.add(file);
+    });
+    videoInput.files = videoDataTransfer.files;
+  }
+
+  // Photo input change handler
+  document.getElementById('photo-input').addEventListener('change', function(e) {
+    const newPhotos = Array.from(e.target.files);
+    // Add new photos to existing selection
+    selectedPhotos = selectedPhotos.concat(newPhotos);
+    // Clear and recreate all previews
+    document.getElementById('preview-images').innerHTML = '';
+    selectedPhotos.forEach((file, index) => {
+      createImagePreview(file, index);
+    });
+    updatePreviewVisibility();
+    // Clear the input so user can select the same files again if needed
+    this.value = '';
+  });
+
+  // Video input change handler
+  document.getElementById('video-input').addEventListener('change', function(e) {
+    const newVideos = Array.from(e.target.files);
+    // Add new videos to existing selection
+    selectedVideos = selectedVideos.concat(newVideos);
+    // Clear and recreate all previews
+    document.getElementById('preview-videos').innerHTML = '';
+    selectedVideos.forEach((file, index) => {
+      createVideoPreview(file, index);
+    });
+    updatePreviewVisibility();
+    // Clear the input so user can select the same files again if needed
+    this.value = '';
+  });
+
+  // Remove file handler
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-file')) {
+      const type = e.target.dataset.type;
+      const index = parseInt(e.target.dataset.index);
+
+      if (type === 'photo') {
+        selectedPhotos.splice(index, 1);
+        document.getElementById('preview-images').innerHTML = '';
+        selectedPhotos.forEach((file, idx) => {
+          createImagePreview(file, idx);
+        });
+      } else if (type === 'video') {
+        selectedVideos.splice(index, 1);
+        document.getElementById('preview-videos').innerHTML = '';
+        selectedVideos.forEach((file, idx) => {
+          createVideoPreview(file, idx);
+        });
+      }
+
+      updateFileInputs();
+      updatePreviewVisibility();
+    }
+  });
+
 </script>

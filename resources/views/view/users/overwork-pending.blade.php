@@ -240,9 +240,9 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                     ${evidences.map((e, index) => {
                         const ext = e.path.split('.').pop().toLowerCase();
                         if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-                            return `<img src="/storage/${e.path}" alt="Evidence" width="200" class="rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
+                            return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
                         } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                            return `<video src="/storage/${e.path}" width="200" class="rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" muted loop controls></video>`;
+                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" muted loop autoplay controls></video>`;
                         }
                         return '';
                     }).join('')}
