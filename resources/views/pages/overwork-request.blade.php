@@ -6,6 +6,7 @@
     @endif
 
     <h2 class="text-center text-[#042E66] text-3xl font-black mb-8">Overwork Request</h2>
+    
 
     <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto">
       {{-- Submission Section --}}
@@ -71,42 +72,69 @@
       <div class="flex-1 flex flex-col space-y-4 w-full">
         <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
 
-        <div class="w-full">
-          <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date: <span class="text-red-500">*</span></x-input-label>
-          <x-text-input
-            type="date"
-            name="date"
-            id="date"
-            value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-            class="border border-gray-300 rounded px-3 py-1 w-full text-sm flatpickr-date"
-            required />
-        </div>
+        <div class="w-full relative">
+  <x-input-label for="date" class="font-black text-[16px] mb-1">
+    Overwork date: <span class="text-red-500">*</span>
+  </x-input-label>
+  <div class="relative">
+    <x-text-input
+      type="text"
+      name="date"
+      id="date"
+      placeholder="Select a date"
+      readonly
+      value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
+      class="border border-gray-300 rounded px-3 py-1 w-full text-sm custom-datepicker cursor-pointer bg-white"
+      required
+    />
+    <i class="bi bi-calendar3 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+  </div>
+</div>
 
-        <div class="flex space-x-4 items-center w-full">
-          <div class="w-full">
-            <x-input-label for="start" class="font-black text-[16px] mb-1">Start: <span class="text-red-500">*</span></x-input-label>
-            <x-text-input
-            type="time"
-            name="start"
-            id="start"
-            value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
-            class="border border-gray-300 rounded px-2 py-1 text-sm w-full flatpickr-time"
-            required />
-          </div>
-          <span class="mt-7 text-gray-500">
-            <i class="bi bi-arrow-right text-2xl font-bold"></i>
-          </span>
-          <div class="w-full">
-            <x-input-label for="finish" class="font-black text-[16px] mb-1">Finish: <span class="text-red-500">*</span></x-input-label>
-            <x-text-input
-              type="time"
-              name="finish"
-              id="finish"
-              value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-              class="border border-gray-300 rounded px-2 py-1 text-sm w-full flatpickr-time"
-              required/>
-          </div>
-        </div>
+<div class="flex space-x-4 items-center w-full mt-4">
+  <div class="w-full relative">
+    <x-input-label for="start" class="font-black text-[16px] mb-1">
+      Start: <span class="text-red-500">*</span>
+    </x-input-label>
+    <div class="relative">
+      <x-text-input
+        type="text"
+        name="start"
+        id="start"
+        placeholder="HH:MM"
+        readonly
+        value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
+        class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+        required
+      />
+      <i class="bi bi-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+    </div>
+  </div>
+
+  <span class="mt-7 text-gray-500">
+    <i class="bi bi-arrow-right text-2xl font-bold"></i>
+  </span>
+
+  <div class="w-full relative">
+    <x-input-label for="finish" class="font-black text-[16px] mb-1">
+      Finish: <span class="text-red-500">*</span>
+    </x-input-label>
+    <div class="relative">
+      <x-text-input
+        type="text"
+        name="finish"
+        id="finish"
+        placeholder="HH:MM"
+        readonly
+        value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
+        class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+        required
+      />
+      <i class="bi bi-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+    </div>
+  </div>
+</div>
+
 
         <div>
           <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description: <span class="text-red-500">*</span></x-input-label>
@@ -430,5 +458,181 @@
       updatePreviewVisibility();
     }
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+  // ---------------- DATE PICKER ----------------
+  function renderCalendar(year, month, input) {
+    const calendar = document.createElement('div');
+    calendar.className = 'calendar-popup absolute bg-white border shadow rounded p-3 mt-1 z-50';
+
+    const header = document.createElement('div');
+    header.className = 'flex justify-between items-center mb-2';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '&lt;';
+    prevBtn.className = 'px-2 py-1 hover:bg-gray-200 rounded';
+
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '&gt;';
+    nextBtn.className = 'px-2 py-1 hover:bg-gray-200 rounded';
+
+    const title = document.createElement('span');
+    title.className = 'font-bold';
+    title.textContent = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+    header.appendChild(prevBtn);
+    header.appendChild(title);
+    header.appendChild(nextBtn);
+
+    // Days of week row
+    const daysRow = document.createElement('div');
+    daysRow.className = 'grid grid-cols-7 text-center font-bold mb-1';
+    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
+      const d = document.createElement('div');
+      d.textContent = day;
+      daysRow.appendChild(d);
+    });
+
+    const grid = document.createElement('div');
+    grid.className = 'grid grid-cols-7 gap-1 text-center text-sm';
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+
+    for (let i = 0; i < firstDay; i++) {
+      grid.appendChild(document.createElement('div'));
+    }
+
+    const today = new Date();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded';
+      btn.textContent = d;
+
+      if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+        btn.classList.add('bg-blue-200', 'font-bold');
+      }
+
+      btn.addEventListener('click', () => {
+        input.value = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        calendar.remove();
+      });
+      grid.appendChild(btn);
+    }
+
+    calendar.appendChild(header);
+    calendar.appendChild(daysRow);
+    calendar.appendChild(grid);
+
+    prevBtn.addEventListener('click', () => {
+      const newMonth = month - 1 < 0 ? 11 : month - 1;
+      const newYear = month - 1 < 0 ? year - 1 : year;
+      calendar.replaceWith(renderCalendar(newYear, newMonth, input));
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const newMonth = month + 1 > 11 ? 0 : month + 1;
+      const newYear = month + 1 > 11 ? year + 1 : year;
+      calendar.replaceWith(renderCalendar(newYear, newMonth, input));
+    });
+
+    return calendar;
+  }
+
+  function showCalendar(input) {
+    document.querySelectorAll('.calendar-popup').forEach(el => el.remove());
+    const today = new Date();
+    const calendar = renderCalendar(today.getFullYear(), today.getMonth(), input);
+    input.parentNode.appendChild(calendar);
+  }
+
+  document.querySelectorAll('.custom-datepicker').forEach(input => {
+    input.addEventListener('click', () => showCalendar(input));
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.calendar-popup') && !e.target.closest('.custom-datepicker')) {
+      document.querySelectorAll('.calendar-popup').forEach(el => el.remove());
+    }
+  });
+
+  // ---------------- SCROLL TIME PICKER ----------------
+  function showTimePicker(input) {
+    document.querySelectorAll('.time-popup').forEach(el => el.remove());
+
+    const popup = document.createElement('div');
+    popup.className = 'time-popup absolute bg-white border shadow rounded p-2 mt-1 z-50 flex flex-col';
+
+    // Labels row
+    const labelsRow = document.createElement('div');
+    labelsRow.className = 'flex justify-between text-xs font-bold mb-1';
+    labelsRow.innerHTML = '<span class="w-1/2 text-center">Hours</span><span class="w-1/2 text-center">Minutes</span>';
+
+    const scrolls = document.createElement('div');
+    scrolls.className = 'flex space-x-2';
+
+    // Hours column
+    const hoursCol = document.createElement('div');
+    hoursCol.className = 'h-40 overflow-y-scroll border-r pr-2 w-16';
+    for (let h = 0; h < 24; h++) {
+      const btn = document.createElement('div');
+      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded cursor-pointer text-center';
+      btn.textContent = String(h).padStart(2, '0');
+      btn.addEventListener('click', () => {
+        let [_, minute = "00"] = input.value.split(':');
+        input.value = `${btn.textContent}:${minute}`;
+        if (input.id === 'start') autoUpdateFinish(input.value);
+      });
+      hoursCol.appendChild(btn);
+    }
+
+    // Minutes column
+    const minsCol = document.createElement('div');
+    minsCol.className = 'h-40 overflow-y-scroll pl-2 w-16';
+    for (let m = 0; m < 60; m += 5) {
+      const btn = document.createElement('div');
+      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded cursor-pointer text-center';
+      btn.textContent = String(m).padStart(2, '0');
+      btn.addEventListener('click', () => {
+        let [hour = "00", _] = input.value.split(':');
+        input.value = `${hour}:${btn.textContent}`;
+        if (input.id === 'start') autoUpdateFinish(input.value);
+        popup.remove();
+      });
+      minsCol.appendChild(btn);
+    }
+
+    scrolls.appendChild(hoursCol);
+    scrolls.appendChild(minsCol);
+
+    popup.appendChild(labelsRow);
+    popup.appendChild(scrolls);
+
+    input.parentNode.appendChild(popup);
+  }
+
+  function autoUpdateFinish(startTime) {
+    const [h, m] = startTime.split(':').map(Number);
+    const date = new Date();
+    date.setHours(h);
+    date.setMinutes(m);
+    date.setMinutes(date.getMinutes() + 120); // +2h
+
+    const finish = document.getElementById('finish');
+    finish.value = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  }
+
+  document.querySelectorAll('.custom-timepicker').forEach(input => {
+    input.addEventListener('click', () => showTimePicker(input));
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.time-popup') && !e.target.closest('.custom-timepicker')) {
+      document.querySelectorAll('.time-popup').forEach(el => el.remove());
+    }
+  });
+});
+
 
 </script>
