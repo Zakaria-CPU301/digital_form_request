@@ -97,6 +97,8 @@
                     </x-primary-button>
                 </div>
             </form>
+
+
             <!-- Put this script AFTER the form (before closing body) or in a js file included after DOM loads -->
 <script>
 (function () {
@@ -142,6 +144,7 @@
 })();
 </script>
         </div>
+        
     </div>
 
     

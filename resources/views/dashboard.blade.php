@@ -302,8 +302,8 @@
     </div>
 
     <x-modal name="dashboard-preview-modal" maxWidth="lg">
-        <div class="p-6">
-            <div class="flex justify-center items-center mb-4 relative">
+        <div class="p-6 flex flex-col max-h-[80vh]">
+            <div class="flex justify-center items-center mb-4 relative flex-shrink-0">
                 <h3 class="text-xl font-extrabold text-[#012967] text-center">
                     Request Preview
                 </h3>
@@ -314,7 +314,7 @@
                     &times;
                 </button>
             </div>
-            <div id="dashboard-preview-body" class="space-y-3">
+            <div id="dashboard-preview-body" class="space-y-3 overflow-y-auto flex-1">
                 <!-- content -->
             </div>
         </div>
@@ -374,7 +374,7 @@
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Description:</span>
-                            <span class="text-gray-900 mt-2">${description}</span>
+                            <span class="text-gray-900 mt-2">${description.replace(/\n/g, '<br>')}</span>
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Status:</span>

@@ -66,6 +66,22 @@
                 </svg>
                 <span>Profile</span>
             </a>
+
+            <!-- Logout Button -->
+            <div>
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    @csrf
+                    <button type="submit" onclick="return confirm('Are you sure you want to logout this account?');" class="flex items-center space-x-4 px-5 py-3 w-full font-bold text-red-500 transition-all duration-300 hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10">
+                        <!-- Icon Logout -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16,17 21,12 16,7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
         </nav>
     </aside>
 
