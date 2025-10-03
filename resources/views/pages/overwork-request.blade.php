@@ -78,7 +78,7 @@
             name="date"
             id="date"
             value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-            class="border border-gray-300 rounded px-3 py-1 w-full text-sm cursor-pointer"
+            class="border border-gray-300 rounded px-3 py-1 w-full text-sm flatpickr-date"
             required />
         </div>
 
@@ -90,7 +90,7 @@
             name="start"
             id="start"
             value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
-            class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
+            class="border border-gray-300 rounded px-2 py-1 text-sm w-full flatpickr-time"
             required />
           </div>
           <span class="mt-7 text-gray-500">
@@ -103,7 +103,7 @@
               name="finish"
               id="finish"
               value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-              class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
+              class="border border-gray-300 rounded px-2 py-1 text-sm w-full flatpickr-time"
               required/>
           </div>
         </div>
@@ -145,8 +145,9 @@
         <div class="flex justify-end space-x-4 mt-6">
           {{-- Draft Button --}}
           <button
-            type="button"
-            id="draft-btn"
+            type="submit"
+            name="action"
+            value="draft"
             class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition">
 
             <i class="bi bi-save2 mr-1 text-[#042E66]"></i>
@@ -154,12 +155,12 @@
           </button>
 
           {{-- Submit Button --}}
-          <button 
-            type="submit" 
-            name="action" 
-            value="submit" 
+          <button
+            type="submit"
+            name="action"
+            value="submit"
             class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700">
-            
+
             <i class="bi bi-send-fill mr-1"></i>
             Submit
           </button>
@@ -188,9 +189,6 @@
         </div>
     </div>
 </x-modal>
-
-<x-loader />
-
 </x-request-layout>
 
 <script>

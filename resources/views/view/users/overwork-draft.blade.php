@@ -105,7 +105,7 @@
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
-                    <span class="{{ $statusClass }}">{{ $r->request_status }}</span>
+                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center items-center space-x-3">

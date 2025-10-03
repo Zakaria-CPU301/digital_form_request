@@ -1,7 +1,9 @@
-# TODO: Implement Global Page Loader
+# TODO: Create Custom DatePicker Component
 
 ## Steps to Complete
-- [ ] Update `resources/views/layouts/app.blade.php` to add `loading` state to Alpine x-data and insert loader overlay HTML.
-- [ ] Update `resources/js/app.js` to add axios interceptors and event listeners for showing/hiding the loader.
-- [ ] Test the loader behavior on page loads, form submissions, and AJAX calls.
-- [ ] Verify styling and functionality, make adjustments if needed.
+- [ ] Create the Blade component file `resources/views/components/date-picker.blade.php` with Alpine.js logic for date selection.
+- [ ] Implement the input field that is fully clickable to open the modal.
+- [ ] Build the modal with calendar grid, navigation buttons, and close functionality.
+- [ ] Style the component using Tailwind CSS for a clean and responsive design.
+- [ ] Ensure the modal closes on date selection, close button click, or clicking outside.
+- [ ] Test the component in a sample form or page to verify functionality.
