@@ -74,7 +74,7 @@
                 </td>
 
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->overwork_date)->format('d - F - Y') }}
                 </td>
 
                 <td class="py-4 px-6" title="{{ $r->task_description }}">
@@ -100,16 +100,16 @@
 
                 <td class="py-4 px-6">
                     @php
-                        $totalEvidance = $r->evidance->count();
-                        $firstImage = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
-                        $firstVideo = $r->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
+                        $totalEvidence = $r->evidence->count();
+                        $firstImage = $r->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
+                        $firstVideo = $r->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
-                    @if($totalEvidance > 0)
+                    @if($totalEvidence > 0)
                     <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
                         <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                         </svg>
-                        {{ $totalEvidance }} Media
+                        {{ $totalEvidence }} Media
                     </span>
                     @else
                         <span class="text-gray-500 text-sm">No evidence</span>
@@ -143,7 +143,7 @@
                             data-description="{{ $r->task_description }}"
                             data-duration="{{ $r->duration ?? 'N/A' }}"
                             data-status="{{ $r->request_status }}"
-                            {{-- data-evidences="{{ $r->evidance->toJson() }}" --}}
+                            data-evidences="{{ $r->evidence->toJson() }}"
                         >
                             <i class="bi bi-eye"></i>
                         </button>
@@ -174,8 +174,9 @@
             <tr>
                 <td colspan="6" class="py-8 px-6 text-center text-gray-500">
                     <div class="flex flex-col items-center">
-                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                            <path d="M12 6v12M6 12h12" />
+                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 7v5l3 3" />
                         </svg>
                         <p>No overwork data found</p>
                         <a href="{{ route('overwork.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">

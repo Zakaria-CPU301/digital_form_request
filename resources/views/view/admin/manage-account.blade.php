@@ -9,9 +9,6 @@
             $activeToggle = request('status', 'pending');
         @endphp
         {{-- Tabs --}}
-        <form id="type" action="{{route('account.show', ['type' => $activeToggle])}}" method="get">
-            @include('components.filter-data-toggle')
-        </form>
 
         {{-- Search --}}
         <div class="ml-auto">
@@ -47,7 +44,7 @@
 
         <tbody>
             @foreach($data as $d)
-                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
+                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 capitalize">
                     
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->name }}</td>
@@ -80,7 +77,7 @@
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspend'])}}"
                                         class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
                                         title="Suspended"
-                                        onclick="return confirm('are you sure suspended this account?')"
+                                        onclick="return confirm('are you sure want to suspend this account?')"
                                     >
                                         <i class="bi bi-ban"></i>
                                     </a>
@@ -88,7 +85,7 @@
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspend'])}}"
                                         class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block" 
                                         title="Unsuspended"
-                                        onclick="return confirm('are you sure unsuspended this account?')"
+                                        onclick="return confirm('are you sure want to unsuspend this account?')"
                                     >
                                         <i class="bi bi-person-check"></i>
                                     </a>

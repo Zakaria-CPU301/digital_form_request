@@ -13,10 +13,10 @@
           <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
           <x-submisson />
 
-          @if (isset($evidance) && count($evidance) > 0)
+          @if (isset($evidence) && count($evidence) > 0)
             <div class="p-2 py-5">
               <div class="flex flex-wrap mb-4">
-                @foreach ($evidance as $e)
+                @foreach ($evidence as $e)
                   @php
                     $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
                   @endphp
@@ -39,7 +39,7 @@
               </div>
 
               <div class="flex flex-wrap">
-                @foreach ($evidance as $e)
+                @foreach ($evidence as $e)
                   @php
                     $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
                   @endphp
@@ -121,7 +121,7 @@
 
         <div>
             <label>Foto (jpg/png):</label>
-            <input type="file" name="photo[]" multiple value="{{ old('photo[]') }}">
+            <input type="file" name="photo[]" multiple accept="image/*">
             @error('photo')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
@@ -129,7 +129,7 @@
 
         <div>
             <label>Video (mp4/avi):</label>
-            <input type="file" name="video[]" multiple>
+            <input type="file" name="video[]" multiple accept="video/*">
             @error('video')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
@@ -264,7 +264,7 @@
       const btn = e.target.classList.contains('delete-evidence') ? e.target : e.target.closest('.delete-evidence');
       const id = btn.dataset.id;
       if (confirm('Are you sure you want to delete this evidence?')) {
-        fetch(`/overwork/evidance/${id}`, {
+        fetch(`/overwork/evidence/${id}`, {
           method: 'DELETE',
           headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

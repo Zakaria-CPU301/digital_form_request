@@ -33,7 +33,7 @@ Route::get('/login', function () {
 Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     //! dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    
+
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('/update', [ProfileController::class, 'update'])->name('update');
@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
             Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
             Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
-            Route::delete('/evidance/{evidance}', [OverworkController::class, 'deleteEvidance'])->name('evidance.delete');
+            Route::delete('/evidence/{evidence}', [OverworkController::class, 'deleteEvidence'])->name('evidence.delete');
         });
         Route::get('/', [RequestController::class, 'showRecent'])->name('submitted');
         Route::get('/pending', [RequestController::class, 'showRecent'])->name('review');

@@ -38,7 +38,7 @@
                 @endif
                 <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Type</th>
-                <th class="py-3 px-6 font-semibold">Evidance</th>
+                <th class="py-3 px-6 font-semibold">Evidence</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
         </thead>
@@ -81,16 +81,16 @@
 
                 {{-- <td class="py-4 px-6">
                     @php
-                        $totalEvidance = $d->evidance->count();
-                        $firstImage = $d->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
-                        $firstVideo = $d->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
+                        $totalEvidence = $d->evidence->count();
+                        $firstImage = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
+                        $firstVideo = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
-                    @if($totalEvidance > 0)
+                    @if($totalEvidence > 0)
                     <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
                         <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                         </svg>
-                        {{ $totalEvidance }} Media
+                        {{ $totalEvidence }} Media
                     </span>
                     @else
                         <span class="text-gray-500 text-sm">No evidence</span>

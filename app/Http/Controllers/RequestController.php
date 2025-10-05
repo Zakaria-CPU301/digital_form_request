@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
-use App\Models\Evidance;
+use App\Models\Evidence;
 use App\Models\Overwork;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class RequestController extends Controller
             return $item;
         });
 
-        $overwork = Overwork::with('evidance')->orderByDesc('created_at')->get()->map(function ($item) {
+        $overwork = Overwork::with('evidence')->orderByDesc('created_at')->get()->map(function ($item) {
             $item->type = 'overwork';
             return $item;
         });

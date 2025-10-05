@@ -71,7 +71,7 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->start_leave)->format('d - F - Y') . '~' . Carbon\Carbon::parse($r->finished_leave)->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
@@ -109,7 +109,7 @@
                             data-description="{{ $r->task_description }}"
                             data-duration="{{ $r->duration ?? 'N/A' }}"
                             data-status="{{ $r->request_status }}"
-                            {{-- data-evidences="{{ $r->evidance->toJson() }}" --}}
+                            {{-- data-evidences="{{ $r->evidence->toJson() }}" --}}
                         >
                             <i class="bi bi-eye"></i>
                         </button>
@@ -146,9 +146,11 @@
                             <path d="M16 2v4M8 2v4M3 10h18" />
                         </svg>
                         <p>No leave data found</p>
-                        <a href="{{ route('leave.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
-                            Create your first leave request
-                        </a>
+                        @if (auth()->user()->role === 'user')
+                            <a href="{{ route('leave.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
+                                Create your first leave request
+                            </a>
+                        @endif
                     </div>
                 </td>
             </tr>
