@@ -79,7 +79,7 @@
                                 @if ($d->status_account === 'active')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspend'])}}"
                                         class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                        title="Suspended"
+                                        title="Suspend"
                                         onclick="return confirm('are you sure suspended this account?')"
                                     >
                                         <i class="bi bi-ban"></i>
@@ -87,7 +87,7 @@
                                 @elseif ($d->status_account === 'suspended')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspend'])}}"
                                         class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                        title="Unsuspended"
+                                        title="Unsuspend"
                                         onclick="return confirm('are you sure unsuspended this account?')"
                                     >
                                         <i class="bi bi-person-check"></i>
@@ -96,7 +96,7 @@
 
                                 <a href="{{route('account.delete', ['id' => $d->id])}}"
                                     class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Rejected"
+                                    title="Remove"
                                     onclick="return confirm('yakin di hapus?')"
                                 >
                                     <i class="bi bi-trash"></i>

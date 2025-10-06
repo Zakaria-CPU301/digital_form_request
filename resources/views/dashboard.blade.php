@@ -267,8 +267,8 @@
                                 <button
                                     type="submit" name="accepted" value="{{$d->type}}"
                                     class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                    title="Accepted"
-                                    onclick="return confirm('yakin di terima?')"
+                                    title="Accept"
+                                    onclick="return confirm('Are you sure want to accept this request?')"
                                 >
                                     <i class="bi bi-check2-square"></i>
                                 </button>
@@ -276,8 +276,8 @@
                                 <button
                                     type="submit" name="rejected" value="{{$d->type}}"
                                     class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Rejected"
-                                    onclick="return confirm('yakin di tolak?')"
+                                    title="Reject"
+                                    onclick="return confirm('Are you sure want to reject this request?')"
                                 >
                                 <i class="bi bi-x"></i>
                                 </button>
