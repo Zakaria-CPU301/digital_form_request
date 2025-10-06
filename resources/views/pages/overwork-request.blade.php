@@ -1,359 +1,477 @@
 <x-request-layout>
-  <form action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}" method="post" enctype="multipart/form-data">
-    @csrf
-    @if(isset($overwork))
-      @method('PUT')
-    @endif
+    <form
+        action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}"
+        method="post"
+        enctype="multipart/form-data"
+    >
+        @csrf @if(isset($overwork)) @method('PUT') @endif
 
-    <h2 class="text-center text-[#042E66] text-3xl font-black mb-8">Overwork Request</h2>
-    
+        <h2 class="text-center text-[#042E66] text-3xl font-black mb-8">
+            Overwork Request
+        </h2>
 
-    <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto">
-      {{-- Submission Section --}}
-        <div class="flex-1">
-          <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
-          <x-submisson />
+        <div
+            class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto"
+        >
+            {{-- Submission Section --}}
+            <div class="flex-1">
+                <h3 class="text-[#042E66] font-extrabold text-lg mb-4">
+                    Submission Informations
+                </h3>
+                <x-submisson />
 
-          @if (isset($evidence) && count($evidence) > 0)
-            <div class="p-2 py-5">
-              <div class="flex flex-wrap mb-4">
-                @foreach ($evidence as $e)
-                  @php
-                    $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
-                  @endphp
-                  @if (in_array($ext, ['jpg', 'jpeg', 'png']))
-                    <div class="relative group mr-2 mb-2 rounded overflow-hidden" style="width: 100px; height: 100px;">
-                      <img src="{{ asset('storage/' . $e->path) }}" alt="" class="w-full h-full object-cover rounded">
-                      @if(isset($overwork))
-                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button type="button" class="text-white hover:text-gray-300 preview-evidence" data-path="{{ asset('storage/' . $e->path) }}" data-type="image" data-id="{{ $e->id }}" title="Preview">
-                            <i class="bi bi-eye"></i>
-                          </button>
-                          <button type="button" class="text-white hover:text-gray-300 delete-evidence" data-id="{{ $e->id }}" title="Delete">
-                            <i class="bi bi-trash"></i>
-                          </button>
+                @if (isset($evidence) && count($evidence) > 0)
+                <div class="p-2 py-5">
+                    <div class="flex flex-wrap mb-4">
+                        @foreach ($evidence as $e) @php $ext =
+                        strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
+                        @endphp @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                        <div
+                            class="relative group mr-2 mb-2 rounded overflow-hidden"
+                            style="width: 100px; height: 100px"
+                        >
+                            <img
+                                src="{{ asset('storage/' . $e->path) }}"
+                                alt=""
+                                class="w-full h-full object-cover rounded"
+                            />
+                            @if(isset($overwork))
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <button
+                                    type="button"
+                                    class="text-white hover:text-gray-300 preview-evidence"
+                                    data-path="{{ asset('storage/' . $e->path) }}"
+                                    data-type="image"
+                                    data-id="{{ $e->id }}"
+                                    title="Preview"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="text-white hover:text-gray-300 delete-evidence"
+                                    data-id="{{ $e->id }}"
+                                    title="Delete"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            @endif
                         </div>
-                      @endif
+                        @endif @endforeach
                     </div>
-                  @endif
-                @endforeach
-              </div>
 
-              <div class="flex flex-wrap">
-                @foreach ($evidence as $e)
-                  @php
-                    $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
-                  @endphp
-                  @if (in_array($ext, ['mp4', 'mov', 'avi']))
-                    <div class="relative group mr-2 mb-2 rounded overflow-hidden" style="width: 100px; height: 100px;">
-                      <video autoplay loop muted playsinline class="w-full h-full object-cover rounded">
-                        <source src="{{ asset('storage/' . $e->path) }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                      </video>
-                      @if(isset($overwork))
-                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button type="button" class="text-white hover:text-gray-300 preview-evidence" data-path="{{ asset('storage/' . $e->path) }}" data-type="video" data-id="{{ $e->id }}" title="Preview">
-                            <i class="bi bi-eye"></i>
-                          </button>
-                          <button type="button" class="text-white hover:text-gray-300 delete-evidence" data-id="{{ $e->id }}" title="Delete">
-                            <i class="bi bi-trash"></i>
-                          </button>
+                    <div class="flex flex-wrap">
+                        @foreach ($evidence as $e) @php $ext =
+                        strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
+                        @endphp @if (in_array($ext, ['mp4', 'mov', 'avi']))
+                        <div
+                            class="relative group mr-2 mb-2 rounded overflow-hidden"
+                            style="width: 100px; height: 100px"
+                        >
+                            <video
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                                class="w-full h-full object-cover rounded"
+                            >
+                                <source
+                                    src="{{ asset('storage/' . $e->path) }}"
+                                    type="video/mp4"
+                                />
+                                Your browser does not support the video tag.
+                            </video>
+                            @if(isset($overwork))
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <button
+                                    type="button"
+                                    class="text-white hover:text-gray-300 preview-evidence"
+                                    data-path="{{ asset('storage/' . $e->path) }}"
+                                    data-type="video"
+                                    data-id="{{ $e->id }}"
+                                    title="Preview"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="text-white hover:text-gray-300 delete-evidence"
+                                    data-id="{{ $e->id }}"
+                                    title="Delete"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            @endif
                         </div>
-                      @endif
+                        @endif @endforeach
                     </div>
-                  @endif
-                @endforeach
-              </div>
+                </div>
+                @endif
             </div>
-          @endif
-      </div>
 
-      {{-- Overwork Request Section --}}
-      <div class="flex-1 flex flex-col space-y-4 w-full">
-        <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
+            {{-- Overwork Request Section --}}
+            <div class="flex-1 flex flex-col space-y-4 w-full">
+                <h3 class="text-[#042E66] font-extrabold text-lg">
+                    Overwork Informations
+                </h3>
 
-        <div class="w-full relative">
-  <x-input-label for="date" class="font-black text-[16px] mb-1">
-    Overwork date: <span class="text-red-500">*</span>
-  </x-input-label>
-  <div class="relative">
-    <x-text-input
-      type="text"
-      name="date"
-      id="date"
-      placeholder="Select a date"
-      readonly
-      value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-      class="border border-gray-300 rounded px-3 py-1 w-full text-sm custom-datepicker cursor-pointer bg-white"
-      required
-    />
-    <i class="bi bi-calendar3 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
-  </div>
-</div>
+                <div class="w-full relative">
+                    <x-input-label
+                        for="date"
+                        class="font-black text-[16px] mb-1"
+                    >
+                        Overwork date: <span class="text-red-500">*</span>
+                    </x-input-label>
+                    <div class="relative">
+                        <x-text-input
+                            type="date"
+                            name="date"
+                            id="date"
+                            value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
+                            class="border border-gray-300 rounded px-3 py-1 w-full text-sm custom-datepicker cursor-pointer bg-white"
+                            required
+                        />
+                    </div>
+                </div>
 
-<div class="flex space-x-4 items-center w-full mt-4">
-  <div class="w-full relative">
-    <x-input-label for="start" class="font-black text-[16px] mb-1">
-      Start: <span class="text-red-500">*</span>
-    </x-input-label>
-    <div class="relative">
-      <x-text-input
-        type="text"
-        name="start"
-        id="start"
-        placeholder="HH:MM"
-        readonly
-        value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
-        class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
-        required
-      />
-      <i class="bi bi-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
-    </div>
-  </div>
+                <div class="flex space-x-4 items-center w-full mt-4">
+                    <div class="w-full relative">
+                        <x-input-label
+                            for="start"
+                            class="font-black text-[16px] mb-1"
+                        >
+                            Start: <span class="text-red-500">*</span>
+                        </x-input-label>
+                        <div class="relative">
+                            <x-text-input
+                                type="time"
+                                name="start"
+                                id="start"
+                                value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
+                                class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+                                required
+                            />
+                        </div>
+                    </div>
 
-  <span class="mt-7 text-gray-500">
-    <i class="bi bi-arrow-right text-2xl font-bold"></i>
-  </span>
+                    <span class="mt-7 text-gray-500">
+                        <i class="bi bi-arrow-right text-2xl font-bold"></i>
+                    </span>
 
-  <div class="w-full relative">
-    <x-input-label for="finish" class="font-black text-[16px] mb-1">
-      Finish: <span class="text-red-500">*</span>
-    </x-input-label>
-    <div class="relative">
-      <x-text-input
-        type="text"
-        name="finish"
-        id="finish"
-        placeholder="HH:MM"
-        readonly
-        value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-        class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
-        required
-      />
-      <i class="bi bi-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
-    </div>
-  </div>
-</div>
+                    <div class="w-full relative">
+                        <x-input-label
+                            for="finish"
+                            class="font-black text-[16px] mb-1"
+                        >
+                            Finish: <span class="text-red-500">*</span>
+                        </x-input-label>
+                        <div class="relative">
+                            <x-text-input
+                                type="time"
+                                name="finish"
+                                id="finish"
+                                value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
+                                class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
 
+                <div>
+                    <x-input-label
+                        for="desc"
+                        class="font-black text-[16px] mb-1"
+                        >Task Description:
+                        <span class="text-red-500">*</span></x-input-label
+                    >
+                    <textarea
+                        name="desc"
+                        id="desc"
+                        rows="4"
+                        placeholder="Task you did for this overwork"
+                        class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
+                        required
+                    >
+{{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea
+                    >
+                </div>
 
-        <div>
-          <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description: <span class="text-red-500">*</span></x-input-label>
-          <textarea
-            name="desc"
-            id="desc"
-            rows="4"
-            placeholder="Task you did for this overwork"
-            class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
-            required>{{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea>
+                <div>
+                    <label
+                        >Foto (jpg/png):
+                        <span class="text-red-500">*</span></label
+                    ><br />
+                    <input
+                        type="file"
+                        name="photo[]"
+                        multiple
+                        id="photo-input"
+                        accept="image/*"
+                    />
+                    @error('photo')
+                    <div style="color: red">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div>
+                    <label
+                        >Video (mp4/avi):
+                        <span class="text-red-500">*</span></label
+                    ><br />
+                    <input
+                        type="file"
+                        name="video[]"
+                        multiple
+                        id="video-input"
+                        accept="video/*"
+                    />
+                    @error('video')
+                    <div style="color: red">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Preview Container -->
+                <div id="media-preview" class="mt-4" style="display: none">
+                    <h4 class="font-bold text-md mb-2">
+                        Selected Files Preview:
+                    </h4>
+                    <div
+                        id="preview-images"
+                        class="flex flex-wrap gap-2 mb-2"
+                    ></div>
+                    <div id="preview-videos" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-6">
+                    {{-- Draft Button --}}
+                    <button
+                        type="submit"
+                        name="action"
+                        value="draft"
+                        class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition"
+                    >
+                        <i class="bi bi-save2 mr-1 text-[#042E66]"></i>
+                        Draft
+                    </button>
+
+                    {{-- Submit Button --}}
+                    <button
+                        type="submit"
+                        name="action"
+                        value="submit"
+                        class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700"
+                    >
+                        <i class="bi bi-send-fill mr-1"></i>
+                        Submit
+                    </button>
+                </div>
+            </div>
         </div>
+    </form>
 
-        <div>
-            <label>Foto (jpg/png): <span class="text-red-500">*</span></label><br>
-            <input type="file" name="photo[]" multiple id="photo-input" accept="image/*">
-            @error('photo')
-                <div style="color: red;">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div>
-            <label>Video (mp4/avi): <span class="text-red-500">*</span></label><br>
-            <input type="file" name="video[]" multiple id="video-input" accept="video/*">
-            @error('video')
-                <div style="color: red;">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Preview Container -->
-        <div id="media-preview" class="mt-4" style="display: none;">
-            <h4 class="font-bold text-md mb-2">Selected Files Preview:</h4>
-            <div id="preview-images" class="flex flex-wrap gap-2 mb-2"></div>
-            <div id="preview-videos" class="flex flex-wrap gap-2"></div>
-        </div>
-
-        <div class="flex justify-end space-x-4 mt-6">
-          {{-- Draft Button --}}
-          <button
-            type="submit"
-            name="action"
-            value="draft"
-            class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition">
-
-            <i class="bi bi-save2 mr-1 text-[#042E66]"></i>
-            Draft
-          </button>
-
-          {{-- Submit Button --}}
-          <button
-            type="submit"
-            name="action"
-            value="submit"
-            class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700">
-
-            <i class="bi bi-send-fill mr-1"></i>
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>
-
-<x-modal name="evidence-viewer-modal" maxWidth="6xl">
-    <div class="flex items-center justify-center relative p-6">
+    <x-modal name="evidence-viewer-modal" maxWidth="6xl">
+        <div class="flex items-center justify-center relative p-6">
             <button
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
                 class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-3xl"
             >
                 &times;
             </button>
-        <div id="evidence-viewer-body" class="flex items-center justify-center">
-            <!-- media content -->
-        </div>
-            <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+            <div
+                id="evidence-viewer-body"
+                class="flex items-center justify-center"
+            >
+                <!-- media content -->
+            </div>
+            <button
+                id="prev-evidence"
+                class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded"
+            >
                 &larr;
             </button>
-            <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+            <button
+                id="next-evidence"
+                class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded"
+            >
                 &rarr;
             </button>
         </div>
-    </div>
-</x-modal>
+    </x-modal>
 </x-request-layout>
 
 <script>
-  function updateFinishTime(startTimeStr) {
-    if (!startTimeStr) return;
+  const showPicker = ['date', 'start', 'finish']
+  showPicker.forEach((e, i) => {
+    document.getElementById(e).addEventListener('click', () => {
+        document.getElementById(showPicker[i]).showPicker()
+    })
+  });  
+    function updateFinishTime(startTimeStr) {
+        if (!startTimeStr) return;
 
-    const [startHour, startMinute] = startTimeStr.split(':').map(Number);
+        const [startHour, startMinute] = startTimeStr.split(":").map(Number);
 
-    const startDate = new Date();
-    startDate.setHours(startHour, startMinute, 0);
+        const startDate = new Date();
+        startDate.setHours(startHour, startMinute, 0);
 
-    const finishDate = new Date(startDate);
-    finishDate.setHours(finishDate.getHours() + 2);
+        const finishDate = new Date(startDate);
+        finishDate.setHours(finishDate.getHours() + 2);
 
-    const finishHourStr = String(finishDate.getHours()).padStart(2, '0');
-    const finishMinuteStr = String(finishDate.getMinutes()).padStart(2, '0');
-    const finishTimeStr = `${finishHourStr}:${finishMinuteStr}`;
+        const finishHourStr = String(finishDate.getHours()).padStart(2, "0");
+        const finishMinuteStr = String(finishDate.getMinutes()).padStart(
+            2,
+            "0"
+        );
+        const finishTimeStr = `${finishHourStr}:${finishMinuteStr}`;
 
-    const finishInput = document.getElementById('finish');
-    finishInput.value = finishTimeStr;
-    finishInput.min = finishTimeStr;
-    finishInput.disabled = false;
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    const startInput = document.getElementById('start');
-    
-    if (startInput.value) {
-      updateFinishTime(startInput.value);
+        const finishInput = document.getElementById("finish");
+        finishInput.value = finishTimeStr;
+        finishInput.min = finishTimeStr;
+        finishInput.disabled = false;
     }
 
-    startInput.addEventListener('change', function () {
-      updateFinishTime(this.value);
-    });
-  });
+    document.addEventListener("DOMContentLoaded", function () {
+        const startInput = document.getElementById("start");
 
-  let currentEvidences = [];
-  let currentIndex = 0;
+        if (startInput.value) {
+            updateFinishTime(startInput.value);
+        }
 
-  function collectEvidences() {
-    currentEvidences = [];
-    document.querySelectorAll('.preview-evidence').forEach((btn, index) => {
-      currentEvidences.push({
-        path: btn.dataset.path,
-        type: btn.dataset.type,
-        id: btn.dataset.id
-      });
-    });
-  }
-
-  function showEvidence(index) {
-    const e = currentEvidences[index];
-    let mediaHtml = '';
-    if (e.type === 'image') {
-      mediaHtml = `<img src="${e.path}" alt="Evidence" class="max-w-full max-h-[80vh] rounded shadow-lg">`;
-    } else if (e.type === 'video') {
-      mediaHtml = `<video src="${e.path}" class="max-w-full max-h-[80vh] rounded shadow-lg" controls autoplay></video>`;
-    }
-    document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
-    document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
-    document.getElementById('next-evidence').style.display = index < currentEvidences.length - 1 ? 'block' : 'none';
-  }
-
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('preview-evidence') || e.target.closest('.preview-evidence')) {
-      e.preventDefault();
-      collectEvidences();
-      const btn = e.target.classList.contains('preview-evidence') ? e.target : e.target.closest('.preview-evidence');
-      const path = btn.dataset.path;
-      currentIndex = currentEvidences.findIndex(ev => ev.path === path);
-      showEvidence(currentIndex);
-      window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
-    }
-  });
-
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('delete-evidence') || e.target.closest('.delete-evidence')) {
-      e.preventDefault();
-      const btn = e.target.classList.contains('delete-evidence') ? e.target : e.target.closest('.delete-evidence');
-      const id = btn.dataset.id;
-      if (confirm('Are you sure you want to delete this evidence?')) {
-        fetch(`/overwork/evidence/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            btn.closest('.relative').remove();
-          } else {
-            alert('Failed to delete evidence: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while deleting the evidence.');
+        startInput.addEventListener("change", function () {
+            updateFinishTime(this.value);
         });
-      }
+    });
+
+    let currentEvidences = [];
+    let currentIndex = 0;
+
+    function collectEvidences() {
+        currentEvidences = [];
+        document.querySelectorAll(".preview-evidence").forEach((btn, index) => {
+            currentEvidences.push({
+                path: btn.dataset.path,
+                type: btn.dataset.type,
+                id: btn.dataset.id,
+            });
+        });
     }
-  });
 
-  document.getElementById('prev-evidence').addEventListener('click', function() {
-    if (currentIndex > 0) {
-      currentIndex--;
-      showEvidence(currentIndex);
+    function showEvidence(index) {
+        const e = currentEvidences[index];
+        let mediaHtml = "";
+        if (e.type === "image") {
+            mediaHtml = `<img src="${e.path}" alt="Evidence" class="max-w-full max-h-[80vh] rounded shadow-lg">`;
+        } else if (e.type === "video") {
+            mediaHtml = `<video src="${e.path}" class="max-w-full max-h-[80vh] rounded shadow-lg" controls autoplay></video>`;
+        }
+        document.getElementById("evidence-viewer-body").innerHTML = mediaHtml;
+        document.getElementById("prev-evidence").style.display =
+            index > 0 ? "block" : "none";
+        document.getElementById("next-evidence").style.display =
+            index < currentEvidences.length - 1 ? "block" : "none";
     }
-  });
 
-  document.getElementById('next-evidence').addEventListener('click', function() {
-    if (currentIndex < currentEvidences.length - 1) {
-      currentIndex++;
-      showEvidence(currentIndex);
+    document.addEventListener("click", function (e) {
+        if (
+            e.target.classList.contains("preview-evidence") ||
+            e.target.closest(".preview-evidence")
+        ) {
+            e.preventDefault();
+            collectEvidences();
+            const btn = e.target.classList.contains("preview-evidence")
+                ? e.target
+                : e.target.closest(".preview-evidence");
+            const path = btn.dataset.path;
+            currentIndex = currentEvidences.findIndex((ev) => ev.path === path);
+            showEvidence(currentIndex);
+            window.dispatchEvent(
+                new CustomEvent("open-modal", {
+                    detail: "evidence-viewer-modal",
+                })
+            );
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        if (
+            e.target.classList.contains("delete-evidence") ||
+            e.target.closest(".delete-evidence")
+        ) {
+            e.preventDefault();
+            const btn = e.target.classList.contains("delete-evidence")
+                ? e.target
+                : e.target.closest(".delete-evidence");
+            const id = btn.dataset.id;
+            if (confirm("Are you sure you want to delete this evidence?")) {
+                fetch(`/overwork/evidence/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            btn.closest(".relative").remove();
+                        } else {
+                            alert("Failed to delete evidence: " + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while deleting the evidence.");
+                    });
+            }
+        }
+    });
+
+    document
+        .getElementById("prev-evidence")
+        .addEventListener("click", function () {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showEvidence(currentIndex);
+            }
+        });
+
+    document
+        .getElementById("next-evidence")
+        .addEventListener("click", function () {
+            if (currentIndex < currentEvidences.length - 1) {
+                currentIndex++;
+                showEvidence(currentIndex);
+            }
+        });
+
+    // Media Preview Functionality
+    let selectedPhotos = [];
+    let selectedVideos = [];
+
+    function updatePreviewVisibility() {
+        const previewContainer = document.getElementById("media-preview");
+        if (selectedPhotos.length > 0 || selectedVideos.length > 0) {
+            previewContainer.style.display = "block";
+        } else {
+            previewContainer.style.display = "none";
+        }
     }
-  });
 
-  // Media Preview Functionality
-  let selectedPhotos = [];
-  let selectedVideos = [];
-
-  function updatePreviewVisibility() {
-    const previewContainer = document.getElementById('media-preview');
-    if (selectedPhotos.length > 0 || selectedVideos.length > 0) {
-      previewContainer.style.display = 'block';
-    } else {
-      previewContainer.style.display = 'none';
-    }
-  }
-
-  function createImagePreview(file, index) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const previewDiv = document.createElement('div');
-      previewDiv.className = 'relative group';
-      previewDiv.innerHTML = `
+    function createImagePreview(file, index) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const previewDiv = document.createElement("div");
+            previewDiv.className = "relative group";
+            previewDiv.innerHTML = `
         <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300">
           <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
         </div>
@@ -361,17 +479,17 @@
           ×
         </button>
       `;
-      document.getElementById('preview-images').appendChild(previewDiv);
-    };
-    reader.readAsDataURL(file);
-  }
+            document.getElementById("preview-images").appendChild(previewDiv);
+        };
+        reader.readAsDataURL(file);
+    }
 
-  function createVideoPreview(file, index) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const previewDiv = document.createElement('div');
-      previewDiv.className = 'relative group';
-      previewDiv.innerHTML = `
+    function createVideoPreview(file, index) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const previewDiv = document.createElement("div");
+            previewDiv.className = "relative group";
+            previewDiv.innerHTML = `
         <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300 bg-gray-100 flex items-center justify-center">
           <video class="w-full h-full object-cover" muted controls autoplay loop playsinline>
             <source src="${e.target.result}" type="${file.type}">
@@ -381,258 +499,85 @@
           ×
         </button>
       `;
-      document.getElementById('preview-videos').appendChild(previewDiv);
-    };
-    reader.readAsDataURL(file);
-  }
+            document.getElementById("preview-videos").appendChild(previewDiv);
+        };
+        reader.readAsDataURL(file);
+    }
 
-  function updateFileInputs() {
-    // Update photo input
-    const photoInput = document.getElementById('photo-input');
-    const photoDataTransfer = new DataTransfer();
-    selectedPhotos.forEach(file => {
-      photoDataTransfer.items.add(file);
-    });
-    photoInput.files = photoDataTransfer.files;
-
-    // Update video input
-    const videoInput = document.getElementById('video-input');
-    const videoDataTransfer = new DataTransfer();
-    selectedVideos.forEach(file => {
-      videoDataTransfer.items.add(file);
-    });
-    videoInput.files = videoDataTransfer.files;
-  }
-
-  // Photo input change handler
-  document.getElementById('photo-input').addEventListener('change', function(e) {
-    const newPhotos = Array.from(e.target.files);
-    // Add new photos to existing selection
-    selectedPhotos = selectedPhotos.concat(newPhotos);
-    // Clear and recreate all previews
-    document.getElementById('preview-images').innerHTML = '';
-    selectedPhotos.forEach((file, index) => {
-      createImagePreview(file, index);
-    });
-    updatePreviewVisibility();
-    // Clear the input so user can select the same files again if needed
-    updateFileInputs();
-  });
-
-  // Video input change handler
-  document.getElementById('video-input').addEventListener('change', function(e) {
-    const newVideos = Array.from(e.target.files);
-    // Add new videos to existing selection
-    selectedVideos = selectedVideos.concat(newVideos);
-    // Clear and recreate all previews
-    document.getElementById('preview-videos').innerHTML = '';
-    selectedVideos.forEach((file, index) => {
-      createVideoPreview(file, index);
-    });
-    updatePreviewVisibility();
-    // Clear the input so user can select the same files again if needed
-    updateFileInputs();
-  });
-
-  // Remove file handler
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-file')) {
-      const type = e.target.dataset.type;
-      const index = parseInt(e.target.dataset.index);
-
-      if (type === 'photo') {
-        selectedPhotos.splice(index, 1);
-        document.getElementById('preview-images').innerHTML = '';
-        selectedPhotos.forEach((file, idx) => {
-          createImagePreview(file, idx);
+    function updateFileInputs() {
+        // Update photo input
+        const photoInput = document.getElementById("photo-input");
+        const photoDataTransfer = new DataTransfer();
+        selectedPhotos.forEach((file) => {
+            photoDataTransfer.items.add(file);
         });
-      } else if (type === 'video') {
-        selectedVideos.splice(index, 1);
-        document.getElementById('preview-videos').innerHTML = '';
-        selectedVideos.forEach((file, idx) => {
-          createVideoPreview(file, idx);
+        photoInput.files = photoDataTransfer.files;
+
+        // Update video input
+        const videoInput = document.getElementById("video-input");
+        const videoDataTransfer = new DataTransfer();
+        selectedVideos.forEach((file) => {
+            videoDataTransfer.items.add(file);
         });
-      }
-
-      updateFileInputs();
-      updatePreviewVisibility();
+        videoInput.files = videoDataTransfer.files;
     }
-  });
 
-  document.addEventListener('DOMContentLoaded', () => {
-  // ---------------- DATE PICKER ----------------
-  function renderCalendar(year, month, input) {
-    const calendar = document.createElement('div');
-    calendar.className = 'calendar-popup absolute bg-white border shadow rounded p-3 mt-1 z-50';
+    // Photo input change handler
+    document
+        .getElementById("photo-input")
+        .addEventListener("change", function (e) {
+            const newPhotos = Array.from(e.target.files);
+            // Add new photos to existing selection
+            selectedPhotos = selectedPhotos.concat(newPhotos);
+            // Clear and recreate all previews
+            document.getElementById("preview-images").innerHTML = "";
+            selectedPhotos.forEach((file, index) => {
+                createImagePreview(file, index);
+            });
+            updatePreviewVisibility();
+            // Clear the input so user can select the same files again if needed
+            updateFileInputs();
+        });
 
-    const header = document.createElement('div');
-    header.className = 'flex justify-between items-center mb-2';
+    // Video input change handler
+    document
+        .getElementById("video-input")
+        .addEventListener("change", function (e) {
+            const newVideos = Array.from(e.target.files);
+            // Add new videos to existing selection
+            selectedVideos = selectedVideos.concat(newVideos);
+            // Clear and recreate all previews
+            document.getElementById("preview-videos").innerHTML = "";
+            selectedVideos.forEach((file, index) => {
+                createVideoPreview(file, index);
+            });
+            updatePreviewVisibility();
+            // Clear the input so user can select the same files again if needed
+            updateFileInputs();
+        });
 
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '&lt;';
-    prevBtn.className = 'px-2 py-1 hover:bg-gray-200 rounded';
+    // Remove file handler
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-file")) {
+            const type = e.target.dataset.type;
+            const index = parseInt(e.target.dataset.index);
 
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = '&gt;';
-    nextBtn.className = 'px-2 py-1 hover:bg-gray-200 rounded';
+            if (type === "photo") {
+                selectedPhotos.splice(index, 1);
+                document.getElementById("preview-images").innerHTML = "";
+                selectedPhotos.forEach((file, idx) => {
+                    createImagePreview(file, idx);
+                });
+            } else if (type === "video") {
+                selectedVideos.splice(index, 1);
+                document.getElementById("preview-videos").innerHTML = "";
+                selectedVideos.forEach((file, idx) => {
+                    createVideoPreview(file, idx);
+                });
+            }
 
-    const title = document.createElement('span');
-    title.className = 'font-bold';
-    title.textContent = `${year}-${String(month + 1).padStart(2, '0')}`;
-
-    header.appendChild(prevBtn);
-    header.appendChild(title);
-    header.appendChild(nextBtn);
-
-    // Days of week row
-    const daysRow = document.createElement('div');
-    daysRow.className = 'grid grid-cols-7 text-center font-bold mb-1';
-    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
-      const d = document.createElement('div');
-      d.textContent = day;
-      daysRow.appendChild(d);
+            updateFileInputs();
+            updatePreviewVisibility();
+        }
     });
-
-    const grid = document.createElement('div');
-    grid.className = 'grid grid-cols-7 gap-1 text-center text-sm';
-
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDay = new Date(year, month, 1).getDay();
-
-    for (let i = 0; i < firstDay; i++) {
-      grid.appendChild(document.createElement('div'));
-    }
-
-    const today = new Date();
-    for (let d = 1; d <= daysInMonth; d++) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded';
-      btn.textContent = d;
-
-      if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
-        btn.classList.add('bg-blue-200', 'font-bold');
-      }
-
-      btn.addEventListener('click', () => {
-        input.value = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        calendar.remove();
-      });
-      grid.appendChild(btn);
-    }
-
-    calendar.appendChild(header);
-    calendar.appendChild(daysRow);
-    calendar.appendChild(grid);
-
-    prevBtn.addEventListener('click', () => {
-      const newMonth = month - 1 < 0 ? 11 : month - 1;
-      const newYear = month - 1 < 0 ? year - 1 : year;
-      calendar.replaceWith(renderCalendar(newYear, newMonth, input));
-    });
-
-    nextBtn.addEventListener('click', () => {
-      const newMonth = month + 1 > 11 ? 0 : month + 1;
-      const newYear = month + 1 > 11 ? year + 1 : year;
-      calendar.replaceWith(renderCalendar(newYear, newMonth, input));
-    });
-
-    return calendar;
-  }
-
-  function showCalendar(input) {
-    document.querySelectorAll('.calendar-popup').forEach(el => el.remove());
-    const today = new Date();
-    const calendar = renderCalendar(today.getFullYear(), today.getMonth(), input);
-    input.parentNode.appendChild(calendar);
-  }
-
-  document.querySelectorAll('.custom-datepicker').forEach(input => {
-    input.addEventListener('click', () => showCalendar(input));
-  });
-
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.calendar-popup') && !e.target.closest('.custom-datepicker')) {
-      document.querySelectorAll('.calendar-popup').forEach(el => el.remove());
-    }
-  });
-
-  // ---------------- SCROLL TIME PICKER ----------------
-  function showTimePicker(input) {
-    document.querySelectorAll('.time-popup').forEach(el => el.remove());
-
-    const popup = document.createElement('div');
-    popup.className = 'time-popup absolute bg-white border shadow rounded p-2 mt-1 z-50 flex flex-col';
-
-    // Labels row
-    const labelsRow = document.createElement('div');
-    labelsRow.className = 'flex justify-between text-xs font-bold mb-1';
-    labelsRow.innerHTML = '<span class="w-1/2 text-center">Hours</span><span class="w-1/2 text-center">Minutes</span>';
-
-    const scrolls = document.createElement('div');
-    scrolls.className = 'flex space-x-2';
-
-    // Hours column
-    const hoursCol = document.createElement('div');
-    hoursCol.className = 'h-40 overflow-y-scroll border-r pr-2 w-16';
-    for (let h = 0; h < 24; h++) {
-      const btn = document.createElement('div');
-      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded cursor-pointer text-center';
-      btn.textContent = String(h).padStart(2, '0');
-      btn.addEventListener('click', () => {
-        let [_, minute = "00"] = input.value.split(':');
-        input.value = `${btn.textContent}:${minute}`;
-        if (input.id === 'start') autoUpdateFinish(input.value);
-      });
-      hoursCol.appendChild(btn);
-    }
-
-    // Minutes column
-    const minsCol = document.createElement('div');
-    minsCol.className = 'h-40 overflow-y-scroll pl-2 w-16';
-    for (let m = 0; m < 60; m += 5) {
-      const btn = document.createElement('div');
-      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded cursor-pointer text-center';
-      btn.textContent = String(m).padStart(2, '0');
-      btn.addEventListener('click', () => {
-        let [hour = "00", _] = input.value.split(':');
-        input.value = `${hour}:${btn.textContent}`;
-        if (input.id === 'start') autoUpdateFinish(input.value);
-        popup.remove();
-      });
-      minsCol.appendChild(btn);
-    }
-
-    scrolls.appendChild(hoursCol);
-    scrolls.appendChild(minsCol);
-
-    popup.appendChild(labelsRow);
-    popup.appendChild(scrolls);
-
-    input.parentNode.appendChild(popup);
-  }
-
-  function autoUpdateFinish(startTime) {
-    const [h, m] = startTime.split(':').map(Number);
-    const date = new Date();
-    date.setHours(h);
-    date.setMinutes(m);
-    date.setMinutes(date.getMinutes() + 120); // +2h
-
-    const finish = document.getElementById('finish');
-    finish.value = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-  }
-
-  document.querySelectorAll('.custom-timepicker').forEach(input => {
-    input.addEventListener('click', () => showTimePicker(input));
-  });
-
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.time-popup') && !e.target.closest('.custom-timepicker')) {
-      document.querySelectorAll('.time-popup').forEach(el => el.remove());
-    }
-  });
-});
-
-
 </script>

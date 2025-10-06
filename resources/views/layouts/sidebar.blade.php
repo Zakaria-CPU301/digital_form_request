@@ -10,7 +10,7 @@
         <div class="mb-8">
             @if(Auth::user()->profile_photo)
             <img
-                src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
+                src="{{ asset(Auth::user()->profile_photo) }}"
                 alt="Profile Photo"
                 class="w-[120px] h-[120px] rounded-full object-cover mx-auto"
             />
