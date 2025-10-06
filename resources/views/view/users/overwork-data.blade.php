@@ -128,7 +128,7 @@
                 </td>
                     
                 <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center items-center space-x-3">
+                    <div class="flex justify-center items-center space-x-2">
 
                         <!-- Show Details Button -->
                         <button
@@ -136,12 +136,35 @@
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
                             data-description="{{ $r->task_description }}"
-                            data-duration="{{ $r->duration ?? 'N/A' }}"
+                            data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"
                             data-evidences="{{ $r->evidence->toJson() }}"
                         >
                             <i class="bi bi-eye"></i>
                         </button>
+
+                        @if (auth()->user()->role === 'admin')
+                            <form action="{{route('request.edit', ['id' => $r->id])}}" method="get" class="flex gap-2">
+                                <button
+                                    type="submit" name="accepted" value="{{$r->type}}"
+                                    class="{{$r->request_status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                    title="Accept"
+                                    onclick="return confirm('Are you sure want to accept this request?')"
+                                >
+                                    <i class="bi bi-check2-square"></i>
+                                </button>
+
+                                <button
+                                    type="submit" name="rejected" value="{{$r->type}}"
+                                    class="{{$r->request_status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    title="Reject"
+                                    onclick="return confirm('Are you sure want to reject this request?')"
+                                >
+                                <i class="bi bi-x"></i>
+                                </button>
+                            </form>
+                        @endif
+                        
                         @if ($r->request_status === 'draft')
                             <a
                             href="{{ route('overwork.edit', $r->id) }}"
@@ -230,16 +253,20 @@
 
 <script>
 document.getElementById('search').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
+    const searchTerm = this.value.toLowerCase().trim();
     const rows = document.querySelectorAll('tbody tr');
+
     rows.forEach(row => {
-        if (row.cells.length > 2) {
-            const taskDesc = row.cells[2].textContent.toLowerCase();
-            if (taskDesc.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+        // Gabungkan semua teks dari setiap kolom dalam satu string
+        const rowText = Array.from(row.cells)
+            .map(cell => cell.textContent.toLowerCase())
+            .join(' ');
+
+        // Jika baris mengandung kata yang dicari → tampilkan, kalau tidak → sembunyikan
+        if (rowText.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
         }
     });
 });
@@ -281,7 +308,7 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                         if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
                             return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
                         } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" loop autoplay controls></video>`;
+                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
                         }
                         return '';
                     }).join('')}
@@ -310,7 +337,7 @@ function showEvidence(index) {
     if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
         mediaHtml = `<img src="/storage/${e.path}" alt="Evidence" class="max-w-full h-[600px] rounded shadow-lg">`;
     } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-        mediaHtml = `<video src="/storage/${e.path}" class="max-w-full h-[600px] rounded shadow-lg" controls autoplay></video>`;
+        mediaHtml = `<video src="/storage/${e.path}" class="max-w-full h-[600px] rounded shadow-lg" controls></video>`;
     }
     document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
     document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
@@ -333,9 +360,9 @@ document.getElementById('next-evidence').addEventListener('click', function() {
 
 function getStatusClass(status) {
     switch(status) {
-        case 'Approved': return 'bg-[#57B5CA] text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'Under Review': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'Rejected': return 'bg-[#DC5249] text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'accepted': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
         default: return 'bg-gray-400 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
     }
 }

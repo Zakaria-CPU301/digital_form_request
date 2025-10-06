@@ -2,13 +2,8 @@
 
 @section('content')
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
-    <h2 class="text-2xl font-bold text-[#012967] mb-4">Manage Account</h2>
-
-    <div id="filter" class="flex items-center">
-        @php
-            $activeToggle = request('status', 'pending');
-        @endphp
-        {{-- Tabs --}}
+    <div id="filter" class="flex items-center mb-8">
+        <h2 class="text-2xl font-bold text-[#012967]">Manage Account</h2>
 
         {{-- Search --}}
         <div class="ml-auto">
@@ -21,6 +16,10 @@
             />
         </div>
     </div>
+
+    @php
+        $activeToggle = request('status', 'pending');
+    @endphp
 
     <table class="min-w-full text-left justify-center items-center border-b border-gray-400">
         <a href="{{ route('register') }}" 

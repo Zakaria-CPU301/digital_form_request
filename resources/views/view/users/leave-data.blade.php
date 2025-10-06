@@ -71,14 +71,14 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->start_leave)->format('d - F - Y') . '~' . Carbon\Carbon::parse($r->finished_leave)->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
                 </td>
                 @if (auth()->user()->role === 'admin')
                     <td class="py-4 px-6">
-                        {{ Str::words($r->user->name, 2) ?? 'N/A' }}
+                        {{ Str::words($r->user->name, 2) }}
                     </td>
                 @endif
                 <td class="py-4 px-6 font-semibold capitalize">
@@ -99,20 +99,40 @@
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
-                    <div class="flex justify-center items-center space-x-3">
-
-                        <!-- Show Details Button -->
+                    <div class="flex justify-center items-center space-x-2">
                         <button
                             class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
-                            data-description="{{ $r->task_description }}"
-                            data-duration="{{ $r->duration ?? 'N/A' }}"
+                            data-type="{{ $r->type }}"
+                            data-reason="{{ $r->reason }}"
+                            data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"
-                            {{-- data-evidences="{{ $r->evidence->toJson() }}" --}}
                         >
                             <i class="bi bi-eye"></i>
                         </button>
+
+                        @if (auth()->user()->role === 'admin')
+                            <form action="{{route('request.edit', ['id' => $r->id])}}" method="get" class="flex gap-2">
+                                <button
+                                    type="submit" name="accepted" value="{{$r->type}}"
+                                    class="{{$r->request_status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                    title="Accept"
+                                    onclick="return confirm('Are you sure want to accept this request?')"
+                                >
+                                    <i class="bi bi-check2-square"></i>
+                                </button>
+
+                                <button
+                                    type="submit" name="rejected" value="{{$r->type}}"
+                                    class="{{$r->request_status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    title="Reject"
+                                    onclick="return confirm('Are you sure want to reject this request?')"
+                                >
+                                <i class="bi bi-x"></i>
+                                </button>
+                            </form>
+                        @endif
 
                         @if ($r->request_status === 'draft')
                             <a
@@ -183,8 +203,8 @@ document.getElementById('search').addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
-        if (row.cells.length > 3) {
-            const reason = row.cells[3].textContent.toLowerCase();
+        if (row.cells.length > 1) {
+            const reason = row.cells[2].textContent.toLowerCase();
             if (reason.includes(searchTerm)) {
                 row.style.display = '';
             } else {
@@ -197,7 +217,7 @@ document.getElementById('search').addEventListener('input', function() {
 document.querySelectorAll('.eye-preview-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const date = this.dataset.date;
-        const leaveType = this.dataset.leaveType;
+        const leaveType = this.dataset.type;
         const reason = this.dataset.reason;
         const duration = this.dataset.duration;
         const status = this.dataset.status;
@@ -231,10 +251,10 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
 
 function getStatusClass(status) {
     switch(status) {
-        case 'Approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
-        case 'Under Review': return 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm';
-        case 'Rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
-        default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm';
+        case 'accepted': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+        default: return 'bg-gray-400 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
     }
 }
 

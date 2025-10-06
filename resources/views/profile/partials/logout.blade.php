@@ -12,7 +12,7 @@
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <x-danger-button>
+        <x-danger-button onclick="return confirm('Are you sure you want to logout this account?')">
             {{ __('Logout') }}
         </x-danger-button>
     </form>
