@@ -1,5 +1,3 @@
-- [x] Update overwork-accepted.blade.php: Remove extra Status td in tbody
-- [x] Update overwork-pending.blade.php: Remove Status th and td, change Evidence td to show count like provided
-- [x] Update draft.blade.php: Remove Type th and td, change Evidence td to show count, adjust for overwork data
-- [x] Verify overwork-rejected.blade.php is already correct
-- [x] Fix Evidence condition to >0 in all files
+- [x] Add logout button in sidebar below profile edit
+- [x] Add confirmation alert to logout button
+- [x] Change logout button SVG and text to red

@@ -6,6 +6,7 @@
     @endif
 
     <h2 class="text-center text-[#042E66] text-3xl font-black mb-8">Overwork Request</h2>
+    
 
     <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto">
       {{-- Submission Section --}}
@@ -71,45 +72,72 @@
       <div class="flex-1 flex flex-col space-y-4 w-full">
         <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
 
-        <div class="w-full">
-          <x-input-label for="date" class="font-black text-[16px] mb-1">Overwork date:</x-input-label>
-          <x-text-input
-            type="date"
-            name="date"
-            id="date"
-            value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-            class="border border-gray-300 rounded px-3 py-1 w-full text-sm cursor-pointer"
-            required />
-        </div>
+        <div class="w-full relative">
+  <x-input-label for="date" class="font-black text-[16px] mb-1">
+    Overwork date: <span class="text-red-500">*</span>
+  </x-input-label>
+  <div class="relative">
+    <x-text-input
+      type="text"
+      name="date"
+      id="date"
+      placeholder="Select a date"
+      readonly
+      value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
+      class="border border-gray-300 rounded px-3 py-1 w-full text-sm custom-datepicker cursor-pointer bg-white"
+      required
+    />
+    <i class="bi bi-calendar3 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+  </div>
+</div>
 
-        <div class="flex space-x-4 items-center w-full">
-          <div class="w-full">
-            <x-input-label for="start" class="font-black text-[16px] mb-1">Start:</x-input-label>
-            <x-text-input
-            type="time"
-            name="start"
-            id="start"
-            value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
-            class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
-            required />
-          </div>
-          <span class="mt-7 text-gray-500">
-            <i class="bi bi-arrow-right text-2xl font-bold"></i>
-          </span>
-          <div class="w-full">
-            <x-input-label for="start" class="font-black text-[16px] mb-1">Finish:</x-input-label>
-            <x-text-input
-              type="time"
-              name="finish"
-              id="finish"
-              value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-              class="border border-gray-300 rounded px-2 py-1 text-sm w-full cursor-pointer"
-              required/>
-          </div>
-        </div>
+<div class="flex space-x-4 items-center w-full mt-4">
+  <div class="w-full relative">
+    <x-input-label for="start" class="font-black text-[16px] mb-1">
+      Start: <span class="text-red-500">*</span>
+    </x-input-label>
+    <div class="relative">
+      <x-text-input
+        type="text"
+        name="start"
+        id="start"
+        placeholder="HH:MM"
+        readonly
+        value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
+        class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+        required
+      />
+      <i class="bi bi-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+    </div>
+  </div>
+
+  <span class="mt-7 text-gray-500">
+    <i class="bi bi-arrow-right text-2xl font-bold"></i>
+  </span>
+
+  <div class="w-full relative">
+    <x-input-label for="finish" class="font-black text-[16px] mb-1">
+      Finish: <span class="text-red-500">*</span>
+    </x-input-label>
+    <div class="relative">
+      <x-text-input
+        type="text"
+        name="finish"
+        id="finish"
+        placeholder="HH:MM"
+        readonly
+        value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
+        class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+        required
+      />
+      <i class="bi bi-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+    </div>
+  </div>
+</div>
+
 
         <div>
-          <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description:</x-input-label>
+          <x-input-label for="desc" class="font-black text-[16px] mb-1">Task Description: <span class="text-red-500">*</span></x-input-label>
           <textarea
             name="desc"
             id="desc"
@@ -120,40 +148,47 @@
         </div>
 
         <div>
-            <label>Foto (jpg/png):</label>
-            <input type="file" name="photo[]" multiple accept="image/*">
+            <label>Foto (jpg/png): <span class="text-red-500">*</span></label><br>
+            <input type="file" name="photo[]" multiple id="photo-input" accept="image/*">
             @error('photo')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
         </div>
 
         <div>
-            <label>Video (mp4/avi):</label>
-            <input type="file" name="video[]" multiple accept="video/*">
+            <label>Video (mp4/avi): <span class="text-red-500">*</span></label><br>
+            <input type="file" name="video[]" multiple id="video-input" accept="video/*">
             @error('video')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
         </div>
 
+        <!-- Preview Container -->
+        <div id="media-preview" class="mt-4" style="display: none;">
+            <h4 class="font-bold text-md mb-2">Selected Files Preview:</h4>
+            <div id="preview-images" class="flex flex-wrap gap-2 mb-2"></div>
+            <div id="preview-videos" class="flex flex-wrap gap-2"></div>
+        </div>
+
         <div class="flex justify-end space-x-4 mt-6">
           {{-- Draft Button --}}
-          <button 
-            type="submit" 
-            name="action" 
-            value="draft" 
+          <button
+            type="submit"
+            name="action"
+            value="draft"
             class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition">
-            
+
             <i class="bi bi-save2 mr-1 text-[#042E66]"></i>
             Draft
           </button>
 
           {{-- Submit Button --}}
-          <button 
-            type="submit" 
-            name="action" 
-            value="submit" 
+          <button
+            type="submit"
+            name="action"
+            value="submit"
             class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700">
-            
+
             <i class="bi bi-send-fill mr-1"></i>
             Submit
           </button>
@@ -174,7 +209,7 @@
             <!-- media content -->
         </div>
             <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                &larr; 
+                &larr;
             </button>
             <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
                 &rarr;
@@ -182,7 +217,6 @@
         </div>
     </div>
 </x-modal>
-
 </x-request-layout>
 
 <script>
@@ -300,4 +334,305 @@
       showEvidence(currentIndex);
     }
   });
+
+  // Media Preview Functionality
+  let selectedPhotos = [];
+  let selectedVideos = [];
+
+  function updatePreviewVisibility() {
+    const previewContainer = document.getElementById('media-preview');
+    if (selectedPhotos.length > 0 || selectedVideos.length > 0) {
+      previewContainer.style.display = 'block';
+    } else {
+      previewContainer.style.display = 'none';
+    }
+  }
+
+  function createImagePreview(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const previewDiv = document.createElement('div');
+      previewDiv.className = 'relative group';
+      previewDiv.innerHTML = `
+        <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300">
+          <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
+        </div>
+        <button type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file" data-type="photo" data-index="${index}" title="Remove">
+          ×
+        </button>
+      `;
+      document.getElementById('preview-images').appendChild(previewDiv);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function createVideoPreview(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const previewDiv = document.createElement('div');
+      previewDiv.className = 'relative group';
+      previewDiv.innerHTML = `
+        <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300 bg-gray-100 flex items-center justify-center">
+          <video class="w-full h-full object-cover" muted controls autoplay loop playsinline>
+            <source src="${e.target.result}" type="${file.type}">
+          </video>
+        </div>
+        <button type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file" data-type="video" data-index="${index}" title="Remove">
+          ×
+        </button>
+      `;
+      document.getElementById('preview-videos').appendChild(previewDiv);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateFileInputs() {
+    // Update photo input
+    const photoInput = document.getElementById('photo-input');
+    const photoDataTransfer = new DataTransfer();
+    selectedPhotos.forEach(file => {
+      photoDataTransfer.items.add(file);
+    });
+    photoInput.files = photoDataTransfer.files;
+
+    // Update video input
+    const videoInput = document.getElementById('video-input');
+    const videoDataTransfer = new DataTransfer();
+    selectedVideos.forEach(file => {
+      videoDataTransfer.items.add(file);
+    });
+    videoInput.files = videoDataTransfer.files;
+  }
+
+  // Photo input change handler
+  document.getElementById('photo-input').addEventListener('change', function(e) {
+    const newPhotos = Array.from(e.target.files);
+    // Add new photos to existing selection
+    selectedPhotos = selectedPhotos.concat(newPhotos);
+    // Clear and recreate all previews
+    document.getElementById('preview-images').innerHTML = '';
+    selectedPhotos.forEach((file, index) => {
+      createImagePreview(file, index);
+    });
+    updatePreviewVisibility();
+    // Clear the input so user can select the same files again if needed
+    updateFileInputs();
+  });
+
+  // Video input change handler
+  document.getElementById('video-input').addEventListener('change', function(e) {
+    const newVideos = Array.from(e.target.files);
+    // Add new videos to existing selection
+    selectedVideos = selectedVideos.concat(newVideos);
+    // Clear and recreate all previews
+    document.getElementById('preview-videos').innerHTML = '';
+    selectedVideos.forEach((file, index) => {
+      createVideoPreview(file, index);
+    });
+    updatePreviewVisibility();
+    // Clear the input so user can select the same files again if needed
+    updateFileInputs();
+  });
+
+  // Remove file handler
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-file')) {
+      const type = e.target.dataset.type;
+      const index = parseInt(e.target.dataset.index);
+
+      if (type === 'photo') {
+        selectedPhotos.splice(index, 1);
+        document.getElementById('preview-images').innerHTML = '';
+        selectedPhotos.forEach((file, idx) => {
+          createImagePreview(file, idx);
+        });
+      } else if (type === 'video') {
+        selectedVideos.splice(index, 1);
+        document.getElementById('preview-videos').innerHTML = '';
+        selectedVideos.forEach((file, idx) => {
+          createVideoPreview(file, idx);
+        });
+      }
+
+      updateFileInputs();
+      updatePreviewVisibility();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+  // ---------------- DATE PICKER ----------------
+  function renderCalendar(year, month, input) {
+    const calendar = document.createElement('div');
+    calendar.className = 'calendar-popup absolute bg-white border shadow rounded p-3 mt-1 z-50';
+
+    const header = document.createElement('div');
+    header.className = 'flex justify-between items-center mb-2';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '&lt;';
+    prevBtn.className = 'px-2 py-1 hover:bg-gray-200 rounded';
+
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '&gt;';
+    nextBtn.className = 'px-2 py-1 hover:bg-gray-200 rounded';
+
+    const title = document.createElement('span');
+    title.className = 'font-bold';
+    title.textContent = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+    header.appendChild(prevBtn);
+    header.appendChild(title);
+    header.appendChild(nextBtn);
+
+    // Days of week row
+    const daysRow = document.createElement('div');
+    daysRow.className = 'grid grid-cols-7 text-center font-bold mb-1';
+    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
+      const d = document.createElement('div');
+      d.textContent = day;
+      daysRow.appendChild(d);
+    });
+
+    const grid = document.createElement('div');
+    grid.className = 'grid grid-cols-7 gap-1 text-center text-sm';
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+
+    for (let i = 0; i < firstDay; i++) {
+      grid.appendChild(document.createElement('div'));
+    }
+
+    const today = new Date();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded';
+      btn.textContent = d;
+
+      if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+        btn.classList.add('bg-blue-200', 'font-bold');
+      }
+
+      btn.addEventListener('click', () => {
+        input.value = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        calendar.remove();
+      });
+      grid.appendChild(btn);
+    }
+
+    calendar.appendChild(header);
+    calendar.appendChild(daysRow);
+    calendar.appendChild(grid);
+
+    prevBtn.addEventListener('click', () => {
+      const newMonth = month - 1 < 0 ? 11 : month - 1;
+      const newYear = month - 1 < 0 ? year - 1 : year;
+      calendar.replaceWith(renderCalendar(newYear, newMonth, input));
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const newMonth = month + 1 > 11 ? 0 : month + 1;
+      const newYear = month + 1 > 11 ? year + 1 : year;
+      calendar.replaceWith(renderCalendar(newYear, newMonth, input));
+    });
+
+    return calendar;
+  }
+
+  function showCalendar(input) {
+    document.querySelectorAll('.calendar-popup').forEach(el => el.remove());
+    const today = new Date();
+    const calendar = renderCalendar(today.getFullYear(), today.getMonth(), input);
+    input.parentNode.appendChild(calendar);
+  }
+
+  document.querySelectorAll('.custom-datepicker').forEach(input => {
+    input.addEventListener('click', () => showCalendar(input));
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.calendar-popup') && !e.target.closest('.custom-datepicker')) {
+      document.querySelectorAll('.calendar-popup').forEach(el => el.remove());
+    }
+  });
+
+  // ---------------- SCROLL TIME PICKER ----------------
+  function showTimePicker(input) {
+    document.querySelectorAll('.time-popup').forEach(el => el.remove());
+
+    const popup = document.createElement('div');
+    popup.className = 'time-popup absolute bg-white border shadow rounded p-2 mt-1 z-50 flex flex-col';
+
+    // Labels row
+    const labelsRow = document.createElement('div');
+    labelsRow.className = 'flex justify-between text-xs font-bold mb-1';
+    labelsRow.innerHTML = '<span class="w-1/2 text-center">Hours</span><span class="w-1/2 text-center">Minutes</span>';
+
+    const scrolls = document.createElement('div');
+    scrolls.className = 'flex space-x-2';
+
+    // Hours column
+    const hoursCol = document.createElement('div');
+    hoursCol.className = 'h-40 overflow-y-scroll border-r pr-2 w-16';
+    for (let h = 0; h < 24; h++) {
+      const btn = document.createElement('div');
+      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded cursor-pointer text-center';
+      btn.textContent = String(h).padStart(2, '0');
+      btn.addEventListener('click', () => {
+        let [_, minute = "00"] = input.value.split(':');
+        input.value = `${btn.textContent}:${minute}`;
+        if (input.id === 'start') autoUpdateFinish(input.value);
+      });
+      hoursCol.appendChild(btn);
+    }
+
+    // Minutes column
+    const minsCol = document.createElement('div');
+    minsCol.className = 'h-40 overflow-y-scroll pl-2 w-16';
+    for (let m = 0; m < 60; m += 5) {
+      const btn = document.createElement('div');
+      btn.className = 'px-2 py-1 hover:bg-blue-100 rounded cursor-pointer text-center';
+      btn.textContent = String(m).padStart(2, '0');
+      btn.addEventListener('click', () => {
+        let [hour = "00", _] = input.value.split(':');
+        input.value = `${hour}:${btn.textContent}`;
+        if (input.id === 'start') autoUpdateFinish(input.value);
+        popup.remove();
+      });
+      minsCol.appendChild(btn);
+    }
+
+    scrolls.appendChild(hoursCol);
+    scrolls.appendChild(minsCol);
+
+    popup.appendChild(labelsRow);
+    popup.appendChild(scrolls);
+
+    input.parentNode.appendChild(popup);
+  }
+
+  function autoUpdateFinish(startTime) {
+    const [h, m] = startTime.split(':').map(Number);
+    const date = new Date();
+    date.setHours(h);
+    date.setMinutes(m);
+    date.setMinutes(date.getMinutes() + 120); // +2h
+
+    const finish = document.getElementById('finish');
+    finish.value = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  }
+
+  document.querySelectorAll('.custom-timepicker').forEach(input => {
+    input.addEventListener('click', () => showTimePicker(input));
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.time-popup') && !e.target.closest('.custom-timepicker')) {
+      document.querySelectorAll('.time-popup').forEach(el => el.remove());
+    }
+  });
+});
+
+
 </script>

@@ -41,5 +41,29 @@
     <div class="container w-full min-h-screen flex justify-center items-center bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]">
         @yield('content')
     </div>
+    <div id="global-loading" 
+         class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+        <div class="w-6 h-6 border-4 rounded-full animate-spin border-sky-600 border-t-transparent"></div>
+    </div>
+
+    <!-- Script -->
+    <script>
+      function showLoading() {
+        document.getElementById('global-loading').classList.remove('hidden');
+      }
+      function hideLoading() {
+        document.getElementById('global-loading').classList.add('hidden');
+      }
+
+      // Spinner hilang setelah semua resource selesai dimuat
+      window.addEventListener('load', () => {
+        hideLoading();
+      });
+
+      // Spinner muncul saat submit form
+      document.addEventListener('submit', function () {
+        showLoading();
+      });
+    </script>
 </body>
 </html>

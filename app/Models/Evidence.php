@@ -10,6 +10,8 @@ class Evidence extends Model
     /** @use HasFactory<\Database\Factories\EvidenceFactory> */
     use HasFactory;
 
+    protected $table = 'evidences';
+    
     protected $fillable = [
         'path',
         'overwork_id',

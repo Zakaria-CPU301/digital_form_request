@@ -29,7 +29,7 @@
                     type="search"
                     id="search"
                     name="search"
-                    placeholder="Search leave data..."
+                    placeholder="Search leave..."
                     value="{{ request('search') }}"
                     class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
                 />
@@ -90,10 +90,10 @@
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
-                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
-                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'Review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
@@ -160,8 +160,8 @@
 </div>
 
 <x-modal name="leave-preview-modal" maxWidth="lg">
-    <div class="p-6">
-        <div class="flex justify-center items-center mb-4 relative">
+    <div class="p-6 flex flex-col max-h-[80vh]">
+        <div class="flex justify-center items-center mb-4 relative flex-shrink-0">
             <h3 class="text-xl font-extrabold text-[#012967]">
                 Leave Preview
             </h3>
@@ -172,7 +172,7 @@
                 &times;
             </button>
         </div>
-        <div id="leave-preview-body" class="space-y-3">
+        <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1">
             <!-- content -->
         </div>
     </div>
@@ -213,7 +213,7 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
             </div>
             <div class="flex flex-col items-start">
                 <span class="font-extrabold text-gray-700">Reason:</span>
-                <span class="text-gray-900 mt-2">${reason}</span>
+                <span class="text-gray-900 mt-2">${reason.replace(/\n/g, '<br>')}</span>
             </div>
             <div class="flex flex-col items-start">
                 <span class="font-extrabold text-gray-700">Duration:</span>

@@ -29,8 +29,6 @@ class OverworkController
             'finish' => ['required'],
             'desc' => ['required'],
             'user_id' => ['required'],
-            'photo*' => ['mimes:jpg,jpeg,png', 'max:10240'],
-            'video*' => ['mimes:mp4,mov,avi', 'max:51200']
         ]);
 
         $status = $request->action === 'submit' ? 'review' : 'draft';
@@ -47,32 +45,39 @@ class OverworkController
                 'user_id' => $validate['user_id'],
             ]);
 
+            $path = [];
+            if ($request->hasFile('photo')) {
+                foreach ($request->file('photo') as $photo) {
+                    $path[] = $photo->store('evidence/photo', 'public');
+                }
+            }
+            if ($request->hasFile('video')) {
+                foreach ($request->file('video') as $photo) {
+                    $path[] = $photo->store('evidence/video', 'public');
+                }
+            }
+
+            foreach ($path as $p) {
+                Evidence::create([
+                    'path' => $p,
+                    'overwork_id' => $overwork->id,
+                ]);
+            }
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            }
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        $path = [];
-        if ($request->hasFile('photo')) {
-            foreach ($request->file('photo') as $photo) {
-                $path[] = $photo->store('evidence/photo', 'public');
-            }
-        }
-        if ($request->hasFile('video')) {
-            foreach ($request->file('video') as $photo) {
-                $path[] = $photo->store('evidence/video', 'public');
-            }
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Draft saved successfully']);
         }
 
-        foreach ($path as $p) {
-            Evidence::create([
-                'path' => $p,
-                'overwork_id' => $overwork->id,
-            ]);
-        }
-
-        if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'add data overwork successfully');
+        if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'add data overwork successfully');
         else return redirect()->route('overwork.draft')->with('success', 'data overwork is draft');
     }
 
@@ -113,36 +118,47 @@ class OverworkController
 
         $status = $request->action === 'submit' ? 'review' : 'draft';
 
-        $overwork->update([
-            'overwork_date' => $validate['date'],
-            'start_overwork' => $validate['start'],
-            'finished_overwork' => $validate['finish'],
-            'task_description' => $validate['desc'],
-            'request_status' => $status,
-        ]);
-
-        $path = [];
-
-        if ($request->hasFile('photo')) {
-            foreach ($request->file('photo') as $photo) {
-                $path[] = $photo->store('evidence/photo', 'public');
-            }
-        }
-        if ($request->hasFile('video')) {
-            foreach ($request->file('video') as $video) {
-                $path[] = $video->store('evidence/video', 'public');
-            }
-        }
-
-        foreach ($path as $p) {
-            Evidence::create([
-                'path' => $p,
-                'overwork_id' => $overwork->id,
+        try {
+            $overwork->update([
+                'overwork_date' => $validate['date'],
+                'start_overwork' => $validate['start'],
+                'finished_overwork' => $validate['finish'],
+                'task_description' => $validate['desc'],
+                'request_status' => $status,
             ]);
-        }
 
-        if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'overwork updated successfully');
-        else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
+            $path = [];
+
+            if ($request->hasFile('photo')) {
+                foreach ($request->file('photo') as $photo) {
+                    $path[] = $photo->store('evidence/photo', 'public');
+                }
+            }
+            if ($request->hasFile('video')) {
+                foreach ($request->file('video') as $video) {
+                    $path[] = $video->store('evidence/video', 'public');
+                }
+            }
+
+            foreach ($path as $p) {
+                Evidence::create([
+                    'path' => $p,
+                    'overwork_id' => $overwork->id,
+                ]);
+            }
+
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Draft updated successfully']);
+            }
+
+            if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'overwork updated successfully');
+            else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
+        } catch (Exception $e) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            }
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     /**

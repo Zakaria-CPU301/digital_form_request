@@ -8,12 +8,12 @@
         padding-inline: 10px;
         padding-block: 11px;
         border-radius: 6px;
-        border: 1px solid black; /* default */
+        border: 1px solid black;
         font-size: 16px;
     }
 
     .ts-wrapper.focus .ts-control {
-        border-color: #6366f1; /* focus border */
+        border-color: #6366f1;
         border-width: 2px;
         input {
             font-size:16px;
@@ -275,6 +275,40 @@
         </div>
     </div>
 </form>
+<script>
+(function () {
+  function initToggle(btnId, inputId, labelShow, labelHide) {
+    const btn = document.getElementById(btnId);
+    const input = document.getElementById(inputId);
+    if (!btn || !input) return;
+
+    const eyeSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/></svg>';
+    const eyeOffSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/><path stroke-linecap="round" stroke-linejoin="round" d="M10.477 10.477A3 3 0 0113.523 13.523"/><path stroke-linecap="round" stroke-linejoin="round" d="M6.88 6.88C8.155 6.47 9.571 6.29 11 6.29c4.477 0 8.268 2.943 9.542 7-0.34 1.082-0.9 2.07-1.642 2.923M3.17 8.53A9.953 9.953 0 002.458 12c1.274 4.057 5.065 7 9.542 7 1.429 0 2.845-.18 4.121-.59"/></svg>';
+
+    btn.innerHTML = eyeSVG;
+
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const hidden = input.type === 'password';
+      input.type = hidden ? 'text' : 'password';
+      btn.innerHTML = hidden ? eyeOffSVG : eyeSVG;
+      btn.setAttribute('aria-label', hidden ? labelHide : labelShow);
+      input.focus({ preventScroll: true });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initToggle('togglePassword', 'password', 'Show password', 'Hide password');
+      initToggle('togglePasswordConfirm', 'password_confirmation', 'Show confirm password', 'Hide confirm password');
+    });
+  } else {
+    initToggle('togglePassword', 'password', 'Show password', 'Hide password');
+    initToggle('togglePasswordConfirm', 'password_confirmation', 'Show confirm password', 'Hide confirm password');
+  }
+})();
+</script>
+
 @endsection
 <script>
     document.addEventListener("DOMContentLoaded", function () {
