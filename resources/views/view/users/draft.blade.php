@@ -36,8 +36,9 @@
                             Name
                     </th>
                 @endif
-                    <th class="py-3 px-6 font-semibold">Duration</th>
-                <th class="py-3 px-6 font-semibold">Evidance</th>
+                <th class="py-3 px-6 font-semibold">Duration</th>
+                <th class="py-3 px-6 font-semibold">Type</th>
+                <th class="py-3 px-6 font-semibold">Evidence</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
         </thead>
@@ -50,11 +51,11 @@
                 </td>
 
                 <td class="py-4 px-6">
-                    {{ $d->date ?? $d->created_at->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($d->created_at)->format('h - F -Y') }}
                 </td>
 
-                <td class="py-4 px-6" title="{{ $d->task_description }}">
-                    {{ ucfirst(strtolower(Str::limit($d->task_description, 25))) }}
+                <td class="py-4 px-6" title="{{ $d->task_description ?? $d->reason }}">
+                    {{ ucfirst(strtolower(Str::limit($d->task_description ?? $d->reason, 25))) }}
                 </td>
 
                 @if (auth()->user()->role === 'admin')
@@ -73,36 +74,64 @@
                         {{ $duration->format('%h hours %i minutes') }}
                     @endif
                 </td>
-
+                
                 <td class="py-4 px-6">
+                    {{ $d->type }}
+                </td>
+
+                {{-- <td class="py-4 px-6">
                     @php
-                        $totalEvidance = $d->evidance->count();
-                        $firstImage = $d->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
-                        $firstVideo = $d->evidance->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
+                        $totalEvidence = $d->evidence->count();
+                        $firstImage = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
+                        $firstVideo = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
-                    @if($totalEvidance > 0)
+                    @if($totalEvidence > 0)
                     <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
                         <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                         </svg>
-                        {{ $totalEvidance }} Media
+                        {{ $totalEvidence }} Media
                     </span>
                     @else
                         <span class="text-gray-500 text-sm">No evidence</span>
                     @endif
+                </td> --}}
+
+                <td class="py-4 px-6 text-center">
+                    {{$d->user->name}}
                 </td>
 
                 <td class="py-4 px-6 text-center">
-                    <button
-                        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                        title="Show Details"
-                        data-date="{{ $d->date ?? $d->created_at->format('d - m - Y') }}"
-                        data-description="{{ $d->task_description }}"
-                        data-duration="{{ $d->duration ?? 'N/A' }}"
-                        data-status="{{ $d->request_status }}"
-                    >
-                        <i class="bi bi-eye"></i>
-                    </button>
+                    <div class="flex space-x-2">
+                        <button
+                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                            title="Show Details"
+                            data-date="{{ Carbon\Carbon::parse($d->created_at)->format('h - F - Y') }}"
+                            data-description="{{ $d->task_description }}"
+                            data-duration="{{ $d->duration ?? 'N/A' }}"
+                            data-status="{{ $d->request_status }}"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <a
+                            href="{{ route('overwork.edit', $d->id) }}"
+                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                            title="Edit"
+                        >
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
+                            @csrf
+                            @method('DELETE')
+                            <button
+                            type="submit"
+                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                            title="Delete"
+                            >
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @empty

@@ -1,5 +1,5 @@
 <x-request-layout>
-  <form action="{{ isset($leave) ? route('leave.update', $leave) : route('leave.insert') }}" method="post">
+  <form action="{{ isset($leave) ? route('leave.update', $leave) : route('leave.insert') }}" method="post" enctype="multipart/form-data">
     @csrf
     @if(isset($leave))
       @method('PUT')

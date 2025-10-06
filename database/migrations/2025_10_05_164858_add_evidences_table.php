@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Schema\ForeignKeyDefinition;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('evidances', function (Blueprint $table) {
+        Schema::create('evidences', function (Blueprint $table) {
             $table->id();
             $table->string('path')->nullable();
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('evidances');
+        //
     }
 };

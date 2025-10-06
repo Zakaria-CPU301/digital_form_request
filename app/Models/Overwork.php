@@ -8,12 +8,13 @@ class Overwork extends Model
 {
     protected $guarded = ['id'];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function evidance()
+    public function evidence()
     {
-        return $this->hasMany(Evidance::class);
+        return $this->hasMany(Evidence::class);
     }
 }

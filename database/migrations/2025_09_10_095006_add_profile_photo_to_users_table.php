@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,18 +10,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('profile_photo')->nullable()->default(value: asset('img/photo_profile.png'))->after('email');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('profile_photo')->nullable()->default('default_photo_profile.webp')->after('email');
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('profile_photo');
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('profile_photo');
+        });
+    }
 };

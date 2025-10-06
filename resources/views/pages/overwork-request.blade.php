@@ -14,10 +14,10 @@
           <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
           <x-submisson />
 
-          @if (isset($evidance) && count($evidance) > 0)
+          @if (isset($evidence) && count($evidence) > 0)
             <div class="p-2 py-5">
               <div class="flex flex-wrap mb-4">
-                @foreach ($evidance as $e)
+                @foreach ($evidence as $e)
                   @php
                     $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
                   @endphp
@@ -40,7 +40,7 @@
               </div>
 
               <div class="flex flex-wrap">
-                @foreach ($evidance as $e)
+                @foreach ($evidence as $e)
                   @php
                     $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
                   @endphp
@@ -149,7 +149,7 @@
 
         <div>
             <label>Foto (jpg/png): <span class="text-red-500">*</span></label><br>
-            <input type="file" name="photo[]" multiple id="photo-input" accept="image/*" value="{{ old('photo[]') }}">
+            <input type="file" name="photo[]" multiple id="photo-input" accept="image/*">
             @error('photo')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
@@ -298,7 +298,7 @@
       const btn = e.target.classList.contains('delete-evidence') ? e.target : e.target.closest('.delete-evidence');
       const id = btn.dataset.id;
       if (confirm('Are you sure you want to delete this evidence?')) {
-        fetch(`/overwork/evidance/${id}`, {
+        fetch(`/overwork/evidence/${id}`, {
           method: 'DELETE',
           headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -416,7 +416,7 @@
     });
     updatePreviewVisibility();
     // Clear the input so user can select the same files again if needed
-    this.value = '';
+    updateFileInputs();
   });
 
   // Video input change handler
@@ -431,7 +431,7 @@
     });
     updatePreviewVisibility();
     // Clear the input so user can select the same files again if needed
-    this.value = '';
+    updateFileInputs();
   });
 
   // Remove file handler

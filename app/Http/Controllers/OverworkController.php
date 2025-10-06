@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Evidance;
+use App\Models\Evidence;
 use App\Models\Overwork;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,14 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class OverworkController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -31,7 +23,6 @@ class OverworkController
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validate = $request->validate([
             'date' => ['required', 'date'],
             'start' => ['required'],
@@ -54,6 +45,25 @@ class OverworkController
                 'user_id' => $validate['user_id'],
             ]);
 
+            $path = [];
+            if ($request->hasFile('photo')) {
+                foreach ($request->file('photo') as $photo) {
+                    $path[] = $photo->store('evidence/photo', 'public');
+                }
+            }
+            if ($request->hasFile('video')) {
+                foreach ($request->file('video') as $photo) {
+                    $path[] = $photo->store('evidence/video', 'public');
+                }
+            }
+
+            foreach ($path as $p) {
+                Evidence::create([
+                    'path' => $p,
+                    'overwork_id' => $overwork->id,
+                ]);
+            }
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -63,31 +73,11 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        $path = [];
-
-        if ($request->hasFile('photo')) {
-            foreach ($request->file('photo') as $photo) {
-                $path[] = $photo->store('evidance/photo', 'public');
-            }
-        }
-        if ($request->hasFile('video')) {
-            foreach ($request->file('video') as $video) {
-                $path[] = $video->store('evidance/video', 'public');
-            }
-        }
-
-        foreach ($path as $p) {
-            Evidance::create([
-                'path' => $p,
-                'overwork_id' => $overwork->id,
-            ]);
-        }
-
         if ($request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Draft saved successfully']);
         }
 
-        if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'add data overwork successfully');
+        if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'add data overwork successfully');
         else return redirect()->route('overwork.draft')->with('success', 'data overwork is draft');
     }
 
@@ -102,16 +92,16 @@ class OverworkController
     public function edit(Overwork $overwork)
     {
         $request = new RequestController;
-        $evidance = [];
+        $evidence = [];
         foreach ($request->requestData() as $item) {
             if ($item->id === $overwork->id && $item->type === 'overwork') {
-                foreach ($item->evidance as $e) {
-                    $evidance[] = $e;
+                foreach ($item->evidence as $e) {
+                    $evidence[] = $e;
                 }
                 break;
             }
         }
-        return view('pages.overwork-request', compact('evidance', 'overwork'));
+        return view('pages.overwork-request', compact('evidence', 'overwork'));
     }
 
     /**
@@ -141,17 +131,17 @@ class OverworkController
 
             if ($request->hasFile('photo')) {
                 foreach ($request->file('photo') as $photo) {
-                    $path[] = $photo->store('evidance/photo', 'public');
+                    $path[] = $photo->store('evidence/photo', 'public');
                 }
             }
             if ($request->hasFile('video')) {
                 foreach ($request->file('video') as $video) {
-                    $path[] = $video->store('evidance/video', 'public');
+                    $path[] = $video->store('evidence/video', 'public');
                 }
             }
 
             foreach ($path as $p) {
-                Evidance::create([
+                Evidence::create([
                     'path' => $p,
                     'overwork_id' => $overwork->id,
                 ]);
@@ -187,10 +177,10 @@ class OverworkController
     /**
      * Delete a specific evidence.
      */
-    public function deleteEvidance(Evidance $evidance)
+    public function deleteEvidence(Evidence $evidence)
     {
         try {
-            $evidance->delete();
+            $evidence->delete();
             return response()->json(['success' => true]);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);

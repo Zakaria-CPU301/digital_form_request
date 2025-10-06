@@ -218,7 +218,7 @@
                 @forelse ($data['requestData'] as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ $d->created_at->format('d - F - Y') }}</td>
+                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d - F - Y') }}</td>
                     <td class="py-4 px-6">{{ $d->type }}</td>
                     @if (auth()->user()->role === "admin")
                         <td class="py-4 px-6">{{ $d->user->name }}</td>
@@ -243,7 +243,7 @@
                                 class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                 title="Show Details"
                                 data-id="{{ $d->id }}"
-                                data-date="{{ $d->created_at->format('d - m - Y') }}"
+                                data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d - m - Y') }}"
                                 data-type="{{ $d->type }}"
                                 data-description="{{ $d->reason ?? $d->task_description }}"
                                 data-status="{{ $d->request_status }}"
