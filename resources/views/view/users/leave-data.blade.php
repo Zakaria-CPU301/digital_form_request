@@ -90,9 +90,9 @@
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'Accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'Review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
-                            'Rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
+                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
@@ -145,7 +145,7 @@
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <path d="M16 2v4M8 2v4M3 10h18" />
                         </svg>
-                        <p>No leave data found</p>
+                        <p class="capitalize">No leave {{request()->segment(2)}} data found</p>
                         @if (auth()->user()->role === 'user')
                             <a href="{{ route('leave.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
                                 Create your first leave request

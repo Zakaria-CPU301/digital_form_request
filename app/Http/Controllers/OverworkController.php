@@ -151,7 +151,7 @@ class OverworkController
                 return response()->json(['success' => true, 'message' => 'Draft updated successfully']);
             }
 
-            if ($status === 'review') return redirect()->route('overwork.pending')->with('success', 'overwork updated successfully');
+            if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'overwork updated successfully');
             else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
         } catch (Exception $e) {
             if ($request->ajax()) {
