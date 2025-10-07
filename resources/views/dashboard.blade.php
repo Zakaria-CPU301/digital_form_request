@@ -237,32 +237,30 @@
                         @endphp
                         <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                     </td>
-                    <td class="py-4 px-6 text-center">
-                        @if (auth()->user()->role === 'user')
-                            <button
-                                class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                title="Show Details"
-                                data-id="{{ $d->id }}"
-                                data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d - m - Y') }}"
-                                data-type="{{ $d->type }}"
-                                data-description="{{ $d->reason ?? $d->task_description }}"
-                                data-status="{{ $d->request_status }}"
-                            >
+                    <td class="py-4 px-6 text-center flex justify-center gap-2">
+                        {{-- View Details Button --}}
+                        <button
+                        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                        title="Show Details"
+                        data-id="{{ $d->id }}"
+                        data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d - m - Y') }}"
+                        data-type="{{ $d->type }}"
+                        data-description="{{ $d->reason ?? $d->task_description }}"
+                        data-status="{{ $d->request_status }}"
+                        @if($d->type === 'overwork')
+                        data-evidences="{{ $d->evidence->toJson() }}"
+                        data-duration="{{ $d->duration ?? 'N/A' }}"
+                        @endif
+                        >
                                 <i class="bi bi-eye"></i>
                             </button>
-                        @else
+                            @if (auth()->user()->role === 'admin')
                             @php
                                 $status = request('status');
-                            @endphp
+                                @endphp
 
                             <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between space-x-2">
-                                <button
-                                    type="submit" name="type" value="show-dialog"
-                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Show"
-                                >
-                                    <i class="bi bi-eye"></i>
-                                </button>
+                               
 
                                 <button
                                     type="submit" name="accepted" value="{{$d->type}}"
@@ -301,21 +299,42 @@
         </table>
     </div>
 
-    <x-modal name="dashboard-preview-modal" maxWidth="lg">
+    <x-modal name="dashboard-preview-modal" maxWidth="3xl">
         <div class="p-6 flex flex-col max-h-[80vh]">
-            <div class="flex justify-center items-center mb-4 relative flex-shrink-0">
-                <h3 class="text-xl font-extrabold text-[#012967] text-center">
+            <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                <h3 class="text-xl font-extrabold text-[#012967] flex-1 text-center">
                     Request Preview
                 </h3>
                 <button
                     @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'dashboard-preview-modal' }))"
-                    class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+                    class="text-red-500 hover:text-red-300 text-2xl"
                 >
                     &times;
                 </button>
             </div>
             <div id="dashboard-preview-body" class="space-y-3 overflow-y-auto flex-1">
                 <!-- content -->
+            </div>
+        </div>
+    </x-modal>
+
+    <x-modal name="evidence-viewer-modal" maxWidth="6xl">
+        <div class="flex items-center justify-center relative p-6">
+                <button
+                    @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
+                    class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-2xl"
+                >
+                    &times;
+                </button>
+            <div id="evidence-viewer-body" class="flex items-center justify-center">
+                <!-- media content -->
+            </div>
+                <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                    &larr;
+                </button>
+                <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                    &rarr;
+                </button>
             </div>
         </div>
     </x-modal>
@@ -362,8 +381,10 @@
                     const type = this.dataset.type;
                     const description = this.dataset.description;
                     const status = this.dataset.status;
+                    const duration = this.dataset.duration;
+                    const evidences = this.dataset.evidences ? JSON.parse(this.dataset.evidences) : [];
                     const statusClass = getStatusClass(status);
-                    const body = `
+                    let body = `
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Date:</span>
                             <span class="text-gray-900 mt-2">${date}</span>
@@ -377,11 +398,36 @@
                             <span class="text-gray-900 mt-2">${description.replace(/\n/g, '<br>')}</span>
                         </div>
                         <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Status:</span>
-                            <span class="${statusClass}">${status}</span>
+                            <span class="font-extrabold text-gray-700">Duration:</span>
+                            <span class="text-gray-900 mt-2">${duration}</span>
                         </div>
-                    `;
+                        `;
+                        body += `
+                            <div class="flex flex-col items-start">
+                                <span class="font-extrabold text-gray-700">Status:</span>
+                                <span class="${statusClass}">${status}</span>
+                            </div>
+                        `;
+                    if (type === 'overwork') {
+                        body += `
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Evidences:</span>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                ${evidences.map((e, index) => {
+                                    const ext = e.path.split('.').pop().toLowerCase();
+                                    if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
+                                        return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
+                                    } else if (['mp4', 'mov', 'avi'].includes(ext)) {
+                                        return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" loop autoplay controls></video>`;
+                                    }
+                                    return '';
+                                }).join('')}
+                            </div>
+                        </div>
+                        `;
+                    }
                     document.getElementById('dashboard-preview-body').innerHTML = body;
+                    currentEvidences = evidences;
                     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'dashboard-preview-modal' }));
                 });
             });
@@ -398,8 +444,48 @@
                 case 'under review':
                 case 'pending': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
                 case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-                default: return 'bg-gray-300 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+                default: return 'bg-gray-500 text-white capitalize rounded-full px-3 py-1 text-sm font-semibold';
             }
         }
+
+        let currentEvidences = [];
+        let currentIndex = 0;
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('evidence-item')) {
+                const index = parseInt(e.target.dataset.index);
+                currentIndex = index;
+                showEvidence(currentIndex);
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
+            }
+        });
+
+        function showEvidence(index) {
+            const e = currentEvidences[index];
+            const ext = e.path.split('.').pop().toLowerCase();
+            let mediaHtml = '';
+            if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
+                mediaHtml = `<img src="/storage/${e.path}" alt="Evidence" class="max-w-full h-[600px] rounded shadow-lg">`;
+            } else if (['mp4', 'mov', 'avi'].includes(ext)) {
+                mediaHtml = `<video src="/storage/${e.path}" class="max-w-full h-[600px] rounded shadow-lg" controls autoplay></video>`;
+            }
+            document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
+            document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
+            document.getElementById('next-evidence').style.display = index < currentEvidences.length - 1 ? 'block' : 'none';
+        }
+
+        document.getElementById('prev-evidence').addEventListener('click', function() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showEvidence(currentIndex);
+            }
+        });
+
+        document.getElementById('next-evidence').addEventListener('click', function() {
+            if (currentIndex < currentEvidences.length - 1) {
+                currentIndex++;
+                showEvidence(currentIndex);
+            }
+        });
     </script>
 </x-app-layout>

@@ -38,7 +38,19 @@ class LeaveController
             'user_id' => $validate['user_id']
         ]);
 
-        if ($status === 'review') return redirect()->route('leave.review')->with('success', 'add data leave successfully');
+if ($status == 'draft') 
+            return redirect()->route('leave.draft')->with('success', [
+                'title' => 'Saved to draft!',
+                'message' => 'Your leave request has been saved to draft.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d H:i'),
+                ]);
+        
+
+        if ($status === 'review') return redirect()->route('leave.review')->with('success', [
+            'title' => 'Leave request Submitted!',
+            'message' => 'Please wait for admin approval.',
+            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d H:i'),
+            ]);
         else return redirect()->route('leave.draft')->with('success', 'data leave is draft');
     }
 

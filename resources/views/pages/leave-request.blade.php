@@ -84,6 +84,12 @@
 </x-request-layout>
 
 <script>
+  const showPicker = ['start', 'finish']
+  showPicker.forEach((e, i) => {
+    document.getElementById(e).addEventListener('click', () => {
+        document.getElementById(showPicker[i]).showPicker()
+    })
+  });  
 document.addEventListener("DOMContentLoaded", () => {
     const startInput = document.getElementById('start');
     const finishInput = document.getElementById('finish');
