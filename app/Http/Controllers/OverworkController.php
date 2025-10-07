@@ -73,12 +73,18 @@ class OverworkController
             return redirect()->back()->withErrors(['err' => $e->getMessage()]);
         }
 
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Draft saved successfully']);
-        }
+        if ($status == 'draft')
+            return redirect()->route('overwork.draft')->with('success', [
+                'title' => 'Saved to draft!',
+                'message' => 'Your overwork request has been saved to draft.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
 
-        if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'add data overwork successfully');
-        else return redirect()->route('overwork.draft')->with('success', 'data overwork is draft');
+        if ($status === 'review') return redirect()->route('overwork.review')->with('success', [
+            'title' => 'Overwork Submitted!',
+            'message' => 'Please wait for admin approval.',
+            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+        ]);
     }
 
     /**
@@ -151,8 +157,18 @@ class OverworkController
                 return response()->json(['success' => true, 'message' => 'Draft updated successfully']);
             }
 
-            if ($status === 'review') return redirect()->route('overwork.review')->with('success', 'overwork updated successfully');
-            else return redirect()->route('overwork.draft')->with('success', 'overwork draft updated');
+            if ($status == 'draft')
+                return redirect()->route('overwork.draft')->with('success', [
+                    'title' => 'Draft Updated!',
+                    'message' => 'Your overwork request has been draft updated.',
+                    'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+                ]);
+
+            if ($status === 'review') return redirect()->route('overwork.review')->with('success', [
+                'title' => 'Overwork Submitted!',
+                'message' => 'Please wait for admin approval.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
         } catch (Exception $e) {
             if ($request->ajax()) {
                 return response()->json(['success' => false, 'message' => $e->getMessage()]);

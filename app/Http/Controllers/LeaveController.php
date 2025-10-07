@@ -38,8 +38,18 @@ class LeaveController
             'user_id' => $validate['user_id']
         ]);
 
-        if ($status === 'review') return redirect()->route('leave.review')->with('success', 'add data leave successfully');
-        else return redirect()->route('leave.draft')->with('success', 'data leave is draft');
+        if ($status == 'draft')
+            return redirect()->route('leave.draft')->with('success', [
+                'title' => 'Saved to draft!',
+                'message' => 'Your leave request has been saved to draft.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
+
+        if ($status === 'review') return redirect()->route('leave.review')->with('success', [
+            'title' => 'Leave request Submitted!',
+            'message' => 'Please wait for admin approval.',
+            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+        ]);
     }
 
     /**
@@ -70,8 +80,18 @@ class LeaveController
             'request_status' => $status,
         ]);
 
-        if ($status === 'review') return redirect()->route('leave.review')->with('success', 'leave updated successfully');
-        else return redirect()->route('leave.draft')->with('success', 'leave draft updated');
+        if ($status == 'draft')
+            return redirect()->route('leave.draft')->with('success', [
+                'title' => 'Draft updated!',
+                'message' => 'Your leave request has been draft updated.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
+
+        if ($status === 'review') return redirect()->route('leave.review')->with('success', [
+            'title' => 'Leave request Submitted!',
+            'message' => 'Please wait for admin approval.',
+            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+        ]);
     }
 
     /**
