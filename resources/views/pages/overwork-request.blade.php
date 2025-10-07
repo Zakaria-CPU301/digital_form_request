@@ -124,20 +124,18 @@
                 <div class="w-full relative">
                     <x-input-label
                         for="date"
-                        class="font-black text-[16px] mb-1"
+                        class="font-black text-[16px] mb-2"
                     >
                         Overwork date: <span class="text-red-500">*</span>
                     </x-input-label>
-                    <div class="relative">
-                        <x-text-input
-                            type="date"
-                            name="date"
-                            id="date"
-                            value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-                            class="border border-gray-300 rounded px-3 py-1 w-full text-sm custom-datepicker cursor-pointer bg-white"
-                            required
-                        />
-                    </div>
+                    <x-text-input
+                        type="date"
+                        name="date"
+                        id="date"
+                        value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
+                        class=""
+                        required
+                    />
                 </div>
 
                 <div class="flex space-x-4 items-center w-full mt-4">
@@ -154,14 +152,14 @@
                                 name="start"
                                 id="start"
                                 value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
-                                class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+                                class=""
                                 required
                             />
                         </div>
                     </div>
 
                     <span class="mt-7 text-gray-500">
-                        <i class="bi bi-arrow-right text-2xl font-bold"></i>
+                        <i class="bi bi-arrow-righ  t text-2xl font-bold"></i>
                     </span>
 
                     <div class="w-full relative">
@@ -177,7 +175,7 @@
                                 name="finish"
                                 id="finish"
                                 value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-                                class="border border-gray-300 rounded px-2 py-1 text-sm w-full custom-timepicker cursor-pointer bg-white"
+                                class=""
                                 required
                             />
                         </div>
@@ -196,7 +194,7 @@
                         id="desc"
                         rows="4"
                         placeholder="Task you did for this overwork"
-                        class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
+                        class="border border-gray-300 rounded px-3 text-md w-full resize-none"
                         required
                     >
 {{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea

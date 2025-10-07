@@ -119,22 +119,23 @@
                     @php
                         $statusClass = match($r->request_status) {
                             'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm',
+                            'review' => 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm',
                             'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
                 </td>
-                    
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center items-center space-x-2">
-
                         <!-- Show Details Button -->
                         <button
                             class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
+                            data-overwork_date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
+                            data-start="{{ Carbon\Carbon::parse($r->start_overwork)->format('H : i') }}"
+                            data-finished="{{ Carbon\Carbon::parse($r->finished_overwork)->format('H : i') }}"
                             data-description="{{ $r->task_description }}"
                             data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"
@@ -278,6 +279,9 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const id = this.dataset.id;
         const date = this.dataset.date;
+        const overworkDate = this.dataset.overwork_date;
+        const start = this.dataset.start;
+        const finished = this.dataset.finished;
         const description = this.dataset.description;
         const duration = this.dataset.duration;
         const status = this.dataset.status;
@@ -285,8 +289,20 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
         const statusClass = getStatusClass(status);
         const body = `
             <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Date:</span>
+                <span class="font-extrabold text-gray-700">Requested At:</span>
                 <span class="text-gray-900 mt-2">${date}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Overwork Date:</span>
+                <span class="text-gray-900 mt-2 flex gap-5">${overworkDate}</span>
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-extrabold text-gray-700">Overwork Time:</span>
+                <span class="text-gray-900 mt-2 flex gap-5">
+                    ${start} 
+                        <i class="bi bi-arrow-right text-xl font-bold"></i>
+                    ${finished}
+                </span>
             </div>
             <div class="flex flex-col items-start">
                 <span class="font-extrabold text-gray-700 mr-4">Task Description:</span>
@@ -360,10 +376,10 @@ document.getElementById('next-evidence').addEventListener('click', function() {
 
 function getStatusClass(status) {
     switch(status) {
-        case 'accepted': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-        default: return 'bg-gray-400 text-gray-700 rounded-full px-3 py-1 text-sm font-semibold';
+        case 'accepted': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
+        case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm';
+        case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
+        default: return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
     }
 }
 </script>
