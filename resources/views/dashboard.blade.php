@@ -1,4 +1,6 @@
 <x-app-layout>
+    <x-modal-success />
+    
     @php
         if (auth()->user()->role === 'user') {
             $activeToggle = request('type', 'all');
@@ -218,8 +220,10 @@
                 @forelse ($data['requestData'] as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d - F - Y') }}</td>
-                    <td class="py-4 px-6">{{ $d->type }}</td>
+                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}</td>
+                    <td class="py-4 px-6">
+                        <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                    </td>
                     @if (auth()->user()->role === "admin")
                         <td class="py-4 px-6">{{ $d->user->name }}</td>
                     @endif
@@ -229,15 +233,15 @@
                     <td class="py-4 px-6 text-center">
                         @php
                             $statusClass = match($d->request_status) {
-                                'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                                'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
-                                'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                                default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 font-semibold',
+                                'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 font-semibold',
+                                'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 font-semibold',
+                                default => 'bg-yellow-500 text-white rounded-full px-3 py-1 font-semibold',
                             };
                         @endphp
                         <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                     </td>
-                    <td class="py-4 px-6 text-center flex justify-center gap-2">
+                    <td class="py-4 px-6 text-center">
                         {{-- View Details Button --}}
                         @php
                             $durationOverwork = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
@@ -252,46 +256,51 @@
                             }
                         @endphp
 
-                        <button
-                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                            title="Show Details"
-                            data-id="{{ $d->id }}"
-                            data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d - m - Y') }}"
-                            data-type="{{ $d->type }}"
-                            data-description="{{ $d->reason ?? $d->task_description }}"
-                            data-status="{{ $d->request_status }}"
-                            data-duration="{{ $duration }}"
-                            @if($d->type === 'overwork')
-                                data-evidences="{{ $d->evidence->toJson() }}"
-                            @endif
-                        >
+                        <div class="flex space-x-2">
+                            <button
+                                class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                title="Show Details"
+                                data-id="{{ $d->id }}"
+                                data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
+                                data-overwork_date="{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}"
+                                data-start="{{ $d->type === 'overwork' ? Carbon\Carbon::parse($d->start_overwork)->format('H : i') : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
+                                data-finished="{{ $d->type === 'overwork' ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i') : Carbon\Carbon::parse($d->finished_leave)->format('d F Y') }}"
+                                data-type="{{ $d->type }}"
+                                data-description="{{ $d->reason ?? $d->task_description }}"
+                                data-status="{{ $d->request_status }}"
+                                data-duration="{{ $duration }}"
+                                @if($d->type === 'overwork')
+                                    data-evidences="{{ $d->evidence->toJson() }}"
+                                @endif
+                            >
                                 <i class="bi bi-eye"></i>
                             </button>
                             @if (auth()->user()->role === 'admin')
-                            @php
-                                $status = request('status');
+                                @php
+                                    $status = request('status');
                                 @endphp
 
-                            <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between space-x-2">
-                                <button
-                                    type="submit" name="accepted" value="{{$d->type}}"
-                                    class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                    title="Accept"
-                                    onclick="return confirm('Are you sure want to accept this request?')"
-                                >
-                                    <i class="bi bi-check2-square"></i>
-                                </button>
+                                <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between gap-2">
+                                    <button
+                                        type="submit" name="accepted" value="{{$d->type}}"
+                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        title="Accept"
+                                        onclick="return confirm('Are you sure want to accept this request?')"
+                                    >
+                                        <i class="bi bi-check2-square"></i>
+                                    </button>
 
-                                <button
-                                    type="submit" name="rejected" value="{{$d->type}}"
-                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Reject"
-                                    onclick="return confirm('Are you sure want to reject this request?')"
-                                >
-                                <i class="bi bi-x"></i>
-                                </button>
-                            </form>
-                        @endif
+                                    <button
+                                        type="submit" name="rejected" value="{{$d->type}}"
+                                        class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                        title="Reject"
+                                        onclick="return confirm('Are you sure want to reject this request?')"
+                                    >
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -389,20 +398,41 @@
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
                     const date = this.dataset.date;
+                    const overworkDate = this.dataset.overwork_date;
+                    const start = this.dataset.start;
+                    const finish = this.dataset.finished;
                     const type = this.dataset.type;
                     const description = this.dataset.description;
                     const status = this.dataset.status;
                     const duration = this.dataset.duration;
                     const evidences = this.dataset.evidences ? JSON.parse(this.dataset.evidences) : [];
                     const statusClass = getStatusClass(status);
+                    let overworkOnly = ''
+                    if (type === 'overwork') {
+                        overworkOnly = `
+                            <div class="flex flex-col items-start">
+                                <span class="font-extrabold text-gray-700 capitalize">${type} Date:</span>
+                                <span class="text-gray-900 mt-2 capitalize">${overworkDate}</span>
+                            </div>
+                            `
+                    }
                     let body = `
                         <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Date:</span>
+                            <span class="font-extrabold text-gray-700">Requested At:</span>
                             <span class="text-gray-900 mt-2">${date}</span>
+                        </div>
+                        ${overworkOnly}
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700 capitalize">${type === 'overwork' ? `${type} time` : `${type} date`}:</span>
+                            <span class="text-gray-900 mt-2 flex gap-5">
+                                ${start} 
+                                    <i class="bi bi-arrow-right text-xl font-bold"></i>
+                                ${finish}
+                            </span>
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Type:</span>
-                            <span class="text-gray-900 mt-2">${type}</span>
+                            <span class="text-gray-900 mt-2 capitalize">${type}</span>
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Description:</span>
@@ -416,7 +446,7 @@
                         body += `
                             <div class="flex flex-col items-start">
                                 <span class="font-extrabold text-gray-700">Status:</span>
-                                <span class="${statusClass}">${status}</span>
+                                <span class="${statusClass} capitalize">${status}</span>
                             </div>
                         `;
                     if (type === 'overwork') {

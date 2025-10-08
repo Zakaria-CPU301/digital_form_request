@@ -74,7 +74,7 @@
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
 
                     <!-- Date -->
-                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d - F - Y') }}</td>
+                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}</td>
                     
                     <!-- Type -->
                     <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>

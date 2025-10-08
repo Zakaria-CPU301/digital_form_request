@@ -1,13 +1,7 @@
 @extends('layouts.leave')
 
 @section('content')
-@if (session('success'))
-<script>
-    window.addEventListener('load', function() {
-        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'success-modal' }));
-    });
-</script>
-@endif
+
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-[#012967]">Leave Data</h2>
@@ -77,7 +71,7 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
@@ -97,7 +91,7 @@
                     @php
                         $statusClass = match($r->request_status) {
                             'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
-                            'review' => 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm',
+                            'review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                             'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
@@ -109,10 +103,9 @@
                         <button
                             class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                             title="Show Details"
-                            data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}"
-                            data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d - F - Y') }}"
-                            data-finished="{{ Carbon\Carbon::parse($r->finished_leave)->format('d - F - Y') }}"
-                            data-type="{{ $r->type }}"
+                            data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
+                            data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}"
+                            data-finished="{{ Carbon\Carbon::parse($r->finished_leave)->format('d F Y') }}"
                             data-reason="{{ $r->reason }}"
                             data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"
@@ -200,52 +193,13 @@
                 &times;
             </button>
         </div>
-        <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1">
+    <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1">
             <!-- content -->
         </div>
     </div>
 </x-modal>
-<x-modal name="success-modal" maxWidth="2xl">
-    <div class="p-4">
-        <!-- Tombol close -->
-        <div class="flex justify-end">
-            <button
-                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'success-modal' }))"
-                class="text-red-500 hover:text-red-300 text-3xl font-bold"
-            >
-                &times;
-            </button>
-        </div>
 
-        <!-- Konten utama -->
-        <div class="flex items-center justify-center p-5">
-            <!-- Icon centang -->
-            <div class="flex-shrink-0">
-                <svg class="w-40 h-40 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-
-            <!-- Teks -->
-            <div class="ml-8">
-                @php
-                $success = session()->pull('success');
-                @endphp
-                @if ($success)
-                    <h2 class="text-3xl font-bold text-[#012967] mb-5">{{$success['title']}}</h2>
-                    <p class="text-lg text-[#1EB8CD] mb-2">{{$success['message']}}</p>
-                    <p class="text-sm text-gray-500">
-                        Submitted at:
-                        <span class="font-medium text-gray-700">
-                            {{$success['time']}}
-                        </span>
-                    </p>
-
-                @endif
-            </div>
-        </div>
-    </div>
-</x-modal>
+<x-modal-success />
 
 <script>
 document.getElementById('search').addEventListener('input', function() {
@@ -268,7 +222,6 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
         const date = this.dataset.date;
         const start = this.dataset.start;
         const finish = this.dataset.finished;
-        const leaveType = this.dataset.type;
         const reason = this.dataset.reason;
         const duration = this.dataset.duration;
         const status = this.dataset.status;
@@ -287,10 +240,6 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                 </span>
             </div>
             <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Leave Type:</span>
-                <span class="text-gray-900 mt-2">${leaveType}</span>
-            </div>
-            <div class="flex flex-col items-start">
                 <span class="font-extrabold text-gray-700">Reason:</span>
                 <span class="text-gray-900 mt-2">${reason.replace(/\n/g, '<br>')}</span>
             </div>
@@ -300,7 +249,7 @@ document.querySelectorAll('.eye-preview-btn').forEach(btn => {
             </div>
             <div class="flex flex-col items-start">
                 <span class="font-extrabold text-gray-700">Status:</span>
-                <span class="${statusClass}">${status}</span>
+                <span class="${statusClass} capitalize">${status}</span>
             </div>
         `;
         document.getElementById('leave-preview-body').innerHTML = body;

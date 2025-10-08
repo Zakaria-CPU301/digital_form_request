@@ -22,13 +22,17 @@ class ManageAccountController extends Controller
      */
     public function edit(string $id, string $status)
     {
-        if ($status === 'suspend') {
+        if ($status === 'suspended') {
             User::findOrFail($id)->update(['status_account' => 'suspended']);
-        } elseif ($status === 'unsuspend') {
+        } elseif ($status === 'unsuspended') {
             User::findOrFail($id)->update(['status_account' => 'active']);
         }
 
-        return redirect()->back()->with('success', 'Suspended account is successfully');
+        return redirect()->back()->with('success', [
+            'title' => User::findOrFail($id)->name . ' is ' . $status,
+            'message' => 'This overwork request has been accepted.',
+            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+        ]);
     }
 
     /**

@@ -134,8 +134,8 @@
                         id="date"
                         value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
                         class=""
-                        required
                     />
+                    <x-unvalid-input field="date" />
                 </div>
 
                 <div class="flex space-x-4 items-center w-full mt-4">
@@ -153,9 +153,9 @@
                                 id="start"
                                 value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
                                 class=""
-                                required
                             />
                         </div>
+                        <x-unvalid-input field="start" />
                     </div>
 
                     <span class="mt-7 text-gray-500">
@@ -176,9 +176,9 @@
                                 id="finish"
                                 value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
                                 class=""
-                                required
                             />
                         </div>
+                        <x-unvalid-input field="finish" />
                     </div>
                 </div>
 
@@ -195,17 +195,15 @@
                         rows="4"
                         placeholder="Task you did for this overwork"
                         class="border border-gray-300 rounded px-3 text-md w-full resize-none"
-                        required
                     >
 {{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea
                     >
+                    <x-unvalid-input field="desc" />
                 </div>
 
                 <div>
-                    <label
-                        >Foto (jpg/png):
-                        <span class="text-red-500">*</span></label
-                    ><br />
+                    <label>Photo Evidence:</label>
+                    <br />
                     <input
                         type="file"
                         name="photo[]"
@@ -213,9 +211,7 @@
                         id="photo-input"
                         accept="image/*"
                     />
-                    @error('photo')
-                    <div style="color: red">{{ $message }}</div>
-                    @enderror
+                    <x-unvalid-input field="photo" />
                 </div>
 
                 <div>

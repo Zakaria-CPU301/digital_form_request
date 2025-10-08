@@ -46,18 +46,31 @@ class ManageDataController extends Controller
     public function edit(Request $request, string $id)
     {
         if ($request->has('rejected')) {
-            $request->input('rejected') === 'overwork' ?
+            $status = $request->input('rejected');
+            $status === 'overwork' ?
                 Overwork::where('id', $id)->update(['request_status' => 'rejected'])
                 : Leave::where('id', $id)->update(['request_status' => 'rejected']);
-        }
 
+            return redirect()->back()->with('success', [
+                'title' => $status . ' Rejected!',
+                'message' => 'This overwork request has been rejected.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
+        }
+        
         if ($request->has('accepted')) {
-            $request->input('accepted') === 'overwork' ?
-                Overwork::where('id', $id)->update(['request_status' => 'accepted'])
-                : Leave::where('id', $id)->update(['request_status' => 'accepted']);
+            $status = $request->input('accepted');
+            $status === 'overwork' ?
+            Overwork::where('id', $id)->update(['request_status' => 'accepted'])
+            : Leave::where('id', $id)->update(['request_status' => 'accepted']);
+
+            return redirect()->back()->with('success', [
+                'title' => $status . ' Accepted!',
+                'message' => "This {$status} request has been accepted.",
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
         }
 
-        return redirect()->back()->with('success', 'Status updated');
     }
 
     /**

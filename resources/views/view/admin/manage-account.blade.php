@@ -1,6 +1,7 @@
 @extends('layouts.tables')
 
 @section('content')
+
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
     <div id="filter" class="flex items-center mb-8">
         <h2 class="text-2xl font-bold text-[#012967]">Manage Account</h2>
@@ -56,24 +57,31 @@
                         </span>
                     </td>
 
-                    <td class="py-4 px-6 text-center">
-                        <div class="flex space-x-2 justify-center">
-                            @php
-                                $status = request()->query('status');
-                            @endphp
-                            <form action="{{route('account.edit', ['id' => $d->id])}}" method="get" class="flex justify-between space-x-2">
-                                <button
-                                    type="submit" name="type" value="show-dialog"
-                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Show"
-                                >
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </form>
+                     <td class="py-4 px-6 text-center">
+                        <div class="flex space-x-2 justify-center items-center">
+                            <button
+                                class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                title="Show Details"
+                                data-id="{{ $d->id }}"
+                                data-cration_account="{{ Carbon\Carbon::parse($d->created_at)->format('d - m - Y') }}"
+                                data-name="{{ $d->name }}"
+                                data-email="{{ $d->email }}"
+                                data-status="{{ $d->status_account }}"
+                                data-photo="{{ $d->profile_photo }}"
+                                data-phone="{{ $d->phone_number }}"
+                                data-position="{{ $d->position }}"
+                                data-department="{{ $d->department }}"
+                                data-role="{{ $d->role }}"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </button>
 
+                            @php
+                                $status = request('status');
+                            @endphp
                             @if ($d->email != 'superadmin@sangnila.com')
                                 @if ($d->status_account === 'active')
-                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspend'])}}"
+                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspended'])}}"
                                         class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Suspended"
                                         onclick="return confirm('are you sure want to suspend this account?')"
@@ -81,7 +89,7 @@
                                         <i class="bi bi-ban"></i>
                                     </a>
                                 @elseif ($d->status_account === 'suspended')
-                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspend'])}}"
+                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspended'])}}"
                                         class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Unsuspended"
                                         onclick="return confirm('are you sure want to unsuspend this account?')"
@@ -116,4 +124,91 @@
         </tbody>
     </table>
 </div>
+
+<x-modal name="leave-preview-modal" maxWidth="lg">
+    <div class="p-6 flex flex-col max-h-[80vh]">
+        <div class="flex justify-center items-center mb-4 relative flex-shrink-0">
+            <h3 class="text-xl font-extrabold text-[#012967]">
+                Leave Preview
+            </h3>
+            <button
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'leave-preview-modal' }))"
+                class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
+            >
+                &times;
+            </button>
+        </div>
+    <div id="leave-preview-account" class="space-y-3 overflow-y-auto flex-1">
+            <!-- content -->
+        </div>
+    </div>
+</x-modal>
+
+<x-modal-success />
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.eye-preview-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    
+                    const id = this.dataset.id;
+                    const date = this.dataset.cration_account;
+                    const name = this.dataset.name;
+                    const email = this.dataset.email;
+                    const status = this.dataset.status;
+                    const photo = this.dataset.photo;
+                    const phone = this.dataset.phone;
+                    const position = this.dataset.position;
+                    const department = this.dataset.department;
+                    const role = this.dataset.role;
+                    const statusClass = getStatusClass(status);
+                    let body = `
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Cration Date Account:</span>
+                            <span class="text-gray-900 mt-2">${date}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Name:</span>
+                            <span class="text-gray-900 mt-2 capitalize">${name}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Email:</span>
+                            <span class="text-gray-900 mt-2">${email}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Phone Number:</span>
+                            <span class="text-gray-900 mt-2">${phone}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Position:</span>
+                            <span class="text-gray-900 mt-2">${position}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Position:</span>
+                            <span class="text-gray-900 mt-2">${department}</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Position:</span>
+                            <span class="text-gray-900 mt-2">${role}</span>
+                        </div>
+                        `;
+                        body += `
+                            <div class="flex flex-col items-start">
+                                <span class="font-extrabold text-gray-700">Status:</span>
+                                <span class="${statusClass} capitalize">${status}</span>
+                            </div>
+                        `;
+                    document.getElementById('leave-preview-account').innerHTML = body;
+                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'leave-preview-modal' }));
+                });
+            });
+        });
+
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case 'active': return 'bg-blue-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+                case 'suspended': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+            }
+        }
+
+</script>
 @endsection

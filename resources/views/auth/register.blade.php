@@ -5,25 +5,21 @@
     }
     
     .ts-wrapper .ts-control {
-        padding-inline: 10px;
-        padding-block: 11px;
+        padding-inline: 11px;
+        padding-block: 13px;
         border-radius: 6px;
-        border: 1px solid black;
-        font-size: 16px;
+        border: 1px solid #d1d5db;
     }
 
     .ts-wrapper.focus .ts-control {
         border-color: #6366f1;
         border-width: 2px;
-        input {
-            font-size:16px;
-        }
     }
 
-    .ts-wrapper .ts-control .item,
+    /* .ts-wrapper .ts-control .item,
     .ts-wrapper .ts-control div {
         font-size: 16px;
-    }
+    } */
 
 </style>
 @endpush @extends('layouts.tables') @section('content') @if ($errors->any())
@@ -71,6 +67,7 @@
                                     >Name</label
                                 >
                                 <x-text-input
+                                    placeholder="New User's Fullname"
                                     id="name"
                                     type="text"
                                     name="name"
@@ -93,6 +90,7 @@
                                     >Email</label
                                 >
                                 <x-text-input
+                                    placeholder="New User's Email"
                                     id="email"
                                     type="email"
                                     name="email"
@@ -114,6 +112,7 @@
                                     >Password</label
                                 >
                                 <x-text-input
+                                    placeholder="Create Password"
                                     id="password"
                                     type="password"
                                     name="password"
@@ -134,6 +133,7 @@
                                     >Confirm Password</label
                                 >
                                 <x-text-input
+                                    placeholder="confirm the password"
                                     id="password_confirmation"
                                     type="password"
                                     name="password_confirmation"
@@ -154,6 +154,7 @@
                                     >Phone Number</label
                                 >
                                 <x-text-input
+                                    placeholder="New User's Phone Number"
                                     id="phone"
                                     type="text"
                                     name="phone_number"
@@ -181,10 +182,11 @@
                                     >Position</label
                                 >
                                 <select
+                                    placeholder="Select New User Position"
                                     id="position"
                                     name="position"
                                     required
-                                    class="text-lg w-full rounded border border-black px-0 py-0"
+                                    class="text-lg w-full rounded border border-black px-0 py-0 shadow-sm"
                                 >
                                     <option disabled hidden selected></option>
                                     <option value="Admin">Admin</option>
@@ -206,10 +208,11 @@
                                     >Department</label
                                 >
                                 <select
+                                    placeholder="Select New User Department"
                                     id="department"
                                     name="department"
                                     required
-                                    class="w-full rounded border border-black px-0 py-0"
+                                    class="w-full rounded border border-black px-0 py-0 shadow-sm"
                                 >
                                     <option disabled hidden selected></option>
                                     <option value="Admin">Admin</option>
@@ -233,10 +236,11 @@
                                     >Role</label
                                 >
                                 <select
+                                    placeholder="Select New User Role"
                                     id="role"
                                     name="role"
                                     required
-                                    class="w-full rounded border border-black px-0 py-0"
+                                    class="w-full rounded border border-black px-0 py-0 shadow-sm"
                                 >
                                     <option disabled hidden selected></option>
                                     <option value="admin">admin</option>

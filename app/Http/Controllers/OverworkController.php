@@ -29,6 +29,11 @@ class OverworkController
             'finish' => ['required'],
             'desc' => ['required'],
             'user_id' => ['required'],
+            'photo' => 'required_without:video|array',
+            'video' => 'required_without:photo|array'
+        ], [
+            'photo.required_without' => 'Please upload a photo or video',
+            'video.required_without' => 'Please upload a photo or video'
         ]);
 
         $status = $request->action === 'submit' ? 'review' : 'draft';
