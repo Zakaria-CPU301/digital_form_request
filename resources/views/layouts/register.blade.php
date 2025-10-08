@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
+        <title>Sangnila E-form</title>
             <style>
         body {
             font-family: 'Geologica', sans-serif;
@@ -54,6 +54,14 @@
       document.addEventListener('submit', function () {
         showLoading();
       });
+      document.querySelectorAll('a[href]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+      showLoading();
+    }
+  });
+});
     </script>
     </body>
 </html>

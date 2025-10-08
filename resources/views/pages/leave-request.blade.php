@@ -17,7 +17,7 @@
       {{-- Leave Request Section --}}
       <div class="flex-1 flex flex-col space-y-4">
         <h3 class="text-[#042E66] font-extrabold text-lg">Leave Informations</h3>
-        <div class="flex w-full space-x-4">
+        <div class="flex flex-col w-full">
           <div class="rangeTime flex flex-col w-full">
             <x-input-label for="leave_type" class="font-bold text-md mb-1">Start: <span class="text-red-500">*</span></x-input-label>
             <x-text-input
@@ -29,21 +29,43 @@
               required
               />
             </div>
-            <span class="mt-7 text-gray-500">
-              <i class="bi bi-arrow-right text-3xl font-bold"></i>
-            </span>
-          <div class="rangeTime flex flex-col w-full">
-            <x-input-label for="leave_type" class="font-bold text-md mb-1">Finish: <span class=" text-red-500">*</span></x-input-label>
+        <div class="flex flex-col mt-3">
+          <div class="rangeTime flex w-full">
+            <x-input-label for="leave_type" class="font-bold text-md mb-1">How Many Days? <span class=" text-red-500">*</span></x-input-label>
+            </div>
+           <div class="flex flex-row h-10">
             <x-text-input
-              type="date"
+              type="number"
               name="finish"
               id="finish"
-              value="{{ old('finish', isset($leave) ? $leave->finished_leave : '') }}"
-              class="border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
-              required disabled
-            />
-          </div>
-        </div>
+              value="{{ old('finish', isset($leave) ? $leave->finished_leave : '0') }}"
+              class="border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer w-20"
+              required
+              /> 
+            <span class=" text-gray-500 mt-2 ml-2">
+                Day(s)
+              </span> 
+           </div>
+         </div>
+        <div>
+        <div class="flex flex-col mt-3">
+          <div class="rangeTime flex w-full">
+            <x-input-label for="leave_type" class="font-bold text-md mb-1">How Many Hours? <span class=" text-red-500">*</span></x-input-label>
+            </div>
+           <div class="flex flex-row h-10">
+            <x-text-input
+              type="number"
+              name="finish"
+              id="finish"
+              value="{{ old('finish', isset($leave) ? $leave->finished_leave : '0') }}"
+              class="border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer w-20"
+              required
+              /> 
+            <span class=" text-gray-500 mt-2 ml-2">
+                Hour(s)
+              </span> 
+           </div>
+         </div>
         <div>
           <x-input-label for="reason" class="font-bold text-md mb-1">Leave Reason: <span class="text-red-500">*</span></x-input-label>
           <textarea

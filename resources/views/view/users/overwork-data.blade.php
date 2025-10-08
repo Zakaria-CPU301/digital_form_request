@@ -60,7 +60,7 @@
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Task Description</th>
+                <th class="py-3 px-6 font-semibold w-[250px]">Task Description</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
                             Name

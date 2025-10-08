@@ -58,7 +58,7 @@
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Reason</th>
+                <th class="py-3 px-6 font-semibold w-[400px]">Reason</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
                         Name
@@ -77,7 +77,7 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->created_at)->format('d - F - Y') }}
+                    {{ Carbon\Carbon::parse($r->start_leave)->format('d - F - Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
