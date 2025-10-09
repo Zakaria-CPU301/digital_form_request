@@ -146,6 +146,29 @@
 
 <x-modal-success />
 <script>
+    document.getElementById('search').addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase()
+        const rows = document.querySelectorAll('tbody tr')
+        rows.forEach(row => {
+            if (row.cells.length > 2) {
+                const dataAccount = row.cells;
+                let colls = ''
+
+                for (let i = 0; i < dataAccount.length; i++) {
+                    if (i === 1) {
+                        colls += dataAccount[i].textContent.toLowerCase()
+                    }
+                }
+
+                if (colls.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        })
+    })
+    
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -188,7 +211,7 @@
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Position:</span>
-                            <span class="text-gray-900 mt-2">${role}</span>
+                            <span class="text-gray-900 mt-2 capitalize">${role}</span>
                         </div>
                         `;
                         body += `

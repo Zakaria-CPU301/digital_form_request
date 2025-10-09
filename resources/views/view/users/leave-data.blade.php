@@ -71,7 +71,7 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}
+                    {{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}
                 </td>
                 <td class="py-4 px-6" title="{{ $r->reason }}">
                     {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
@@ -206,8 +206,10 @@ document.getElementById('search').addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
-        if (row.cells.length > 1) {
+        if (row.cells.length > 2) {
             const reason = row.cells[2].textContent.toLowerCase();
+            console.log(reason.includes(searchTerm));
+            
             if (reason.includes(searchTerm)) {
                 row.style.display = '';
             } else {
@@ -274,8 +276,8 @@ document.getElementById('search').addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
-        if (row.cells.length > 3) {
-            const reason = row.cells[3].textContent.toLowerCase();
+        if (row.cells.length > 2) {
+            const reason = row.textContent.toLowerCase();
             if (reason.includes(searchTerm)) {
                 row.style.display = '';
             } else {

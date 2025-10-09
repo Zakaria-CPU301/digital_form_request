@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Leave;
+use App\Models\Overwork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RequestController;
-use App\Models\Leave;
-use App\Models\Overwork;
 
 class DashboardController extends Controller
 {
@@ -16,12 +17,12 @@ class DashboardController extends Controller
         $requestData = $controller->showRecent(request());
 
         $totalOverwork = Overwork::selectRaw('SUM(TIMESTAMPDIFF(HOUR, start_overwork, finished_overwork)) AS total_hours')
-        ->where('user_id', Auth::id())
-        ->get();
+            ->where('user_id', Auth::id())
+            ->get();
 
         $totalLeave = Leave::selectRaw('SUM(TIMESTAMPDIFF(DAY, start_leave, finished_leave)) AS total_days')
-        ->where('user_id', Auth::id())
-        ->get();
+            ->where('user_id', Auth::id())
+            ->get();
 
         $approved = $requestData->where('request_status', 'accepted');
         $rejected = $requestData->where('request_status', 'rejected');
@@ -35,7 +36,6 @@ class DashboardController extends Controller
     {
         $data = $this->dataSubmitted();
         $month = $request->input('month');
-        $search = $request->input('search');
 
         if (Auth::user()->role === 'user') {
             $filter = $request->input('type');
@@ -49,21 +49,16 @@ class DashboardController extends Controller
             $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
         }
 
-        if ($month && $month !== 'all') {
+         if ($month && $month !== 'all') {
             $data['requestData'] = $data['requestData']->filter(function ($item) use ($month) {
-                return $item->created_at->format('m-Y') === $month;
+                if ($item->type === 'overwork') {
+                    return Carbon::parse($item->overwork_date)->format('m-Y') === $month;
+                } else {
+                    return Carbon::parse($item->start_leave)->format('m-Y') === $month;
+                }
             });
         }
 
-        if ($search) {
-            $data['requestData'] = $data['requestData']->filter(function ($item) use ($search) {
-                $searchLower = strtolower($search);
-                $reason = $item->reason ?? $item->task_description ?? '';
-
-                return str_contains(strtolower($reason), $searchLower);
-            });
-        }
-
-        return view('dashboard', compact('data', 'filter', 'month', 'search'));
+        return view('dashboard', compact('data', 'filter', 'month'));
     }
 }

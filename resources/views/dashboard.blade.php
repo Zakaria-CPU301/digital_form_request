@@ -220,7 +220,7 @@
                 @forelse ($data['requestData'] as $d)
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 hover:bg-gray-100 transition">
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}</td>
+                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</td>
                     <td class="py-4 px-6">
                         <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                     </td>
@@ -365,6 +365,7 @@
             document.getElementById('month').value = 'all';
 
             const allDataButtons = document.querySelectorAll('button[name="type"][value="all"]');
+            
             if (allDataButtons.length > 0) {
                 allDataButtons[0].click();
             }
@@ -383,8 +384,8 @@
                 const reasonIndex = isAdmin ? 4 : 3;
 
                 rows.forEach(row => {
-                    if (row.cells.length > reasonIndex) {
-                        const reason = row.cells[reasonIndex].textContent.toLowerCase();
+                    if (row.cells.length > 1) {
+                        const reason = row.textContent.toLowerCase();
                         if (reason.includes(searchTerm)) {
                             row.style.display = '';
                         } else {

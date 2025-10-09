@@ -7,6 +7,7 @@ use App\Models\Evidence;
 use App\Models\Overwork;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -32,15 +33,18 @@ class RequestController extends Controller
     {
         if ($month && $month !== 'all') {
             $data = $data->filter(function ($item) use ($month) {
-                return $item->created_at->format('m-Y') === $month;
+                if ($item->type === 'overwork') {
+                    return Carbon::parse($item->overwork_date)->format('m-Y') === $month;
+                } else {
+                    return Carbon::parse($item->start_leave)->format('m-Y') === $month;
+                }
             });
         }
 
         if ($search) {
             $searchLower = strtolower($search);
             $data = $data->filter(function ($item) use ($searchLower) {
-                $reason = $item->reason ?? $item->task_description ?? '';
-                return str_contains(strtolower($reason), $searchLower);
+                return str_contains(strtolower($item), $searchLower);
             });
         }
 

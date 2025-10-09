@@ -396,7 +396,7 @@ document.getElementById('search').addEventListener('input', function() {
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
         if (row.cells.length > 2) {
-            const taskDesc = row.cells[2].textContent.toLowerCase();
+            const taskDesc = row.textContent.toLowerCase();
             if (taskDesc.includes(searchTerm)) {
                 row.style.display = '';
             } else {
