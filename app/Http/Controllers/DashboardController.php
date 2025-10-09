@@ -20,7 +20,7 @@ class DashboardController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
-        $totalLeave = Leave::selectRaw('SUM(TIMESTAMPDIFF(DAY, start_leave, finished_leave)) AS total_days')
+        $totalLeave = Leave::selectRaw('SUM(many_days) AS total_days, SUM(many_hours) AS total_hours')
             ->where('user_id', Auth::id())
             ->get();
 

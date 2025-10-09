@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
+    <title>Sangnila E-form</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -38,22 +38,38 @@
 
     <!-- Script -->
     <script>
-      function showLoading() {
-        document.getElementById('global-loading').classList.remove('hidden');
-      }
-      function hideLoading() {
-        document.getElementById('global-loading').classList.add('hidden');
-      }
+       const loader = document.getElementById('global-loading');
 
-      // Spinner hilang setelah semua resource selesai dimuat
-      window.addEventListener('load', () => {
-        hideLoading();
-      });
+  function showLoading() {
+    loader.classList.remove('hidden');
+  }
+  function hideLoading() {
+    loader.classList.add('hidden');
+  }
 
-      // Spinner muncul saat submit form
-      document.addEventListener('submit', function () {
-        showLoading();
-      });
+  // === 1. Tampilin spinner secepat mungkin pas halaman mulai load
+  document.addEventListener('DOMContentLoaded', () => {
+    showLoading();
+  });
+
+  // === 2. Hilangin pas semua resource udah siap
+  window.addEventListener('load', () => {
+    hideLoading();
+  });
+
+  // === 3. Tampil lagi kalau user submit form
+  document.addEventListener('submit', (e) => {
+    // biar gak bentrok sama ajax / validation JS
+    setTimeout(() => showLoading(), 50);
+  });
+      document.querySelectorAll('a[href]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+      showLoading();
+    }
+  });
+});
     </script>
     </body>
 </html>

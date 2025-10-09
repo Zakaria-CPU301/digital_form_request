@@ -38,7 +38,7 @@
     </div>
     @if(auth()->user()->role === 'user')
         <a href="{{ route('leave.form-view') }}" 
-           class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
+            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
             </svg>
@@ -52,12 +52,12 @@
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Date</th>
-                <th class="py-3 px-6 font-semibold">Reason</th>
+                <th class="py-3 px-6 font-semibold w-[400px]">Reason</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
                         Name
                     </th>
-                @endif
+                    @endif
                 <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
@@ -83,8 +83,14 @@
                 @endif
                 <td class="py-4 px-6 font-semibold capitalize">
                     @php
-                        $duration = \Carbon\Carbon::parse($r->start_leave)->diff(\Carbon\Carbon::parse($r->finished_leave));
-                        echo $duration->format('%d days');
+                        if ($r->many_hours == '0') {
+                            $duration = $r->many_days . ' days';
+                        } elseif ($r->many_days == '0') {
+                            $duration = $r->many_hours . ' hours';
+                        } else {
+                            $duration = $r->many_days . ' days ' . $r->many_hours . ' hours';
+                        }
+                        echo $duration;
                     @endphp
                 </td>
                 <td class="py-4 px-6">
@@ -105,7 +111,7 @@
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
                             data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}"
-                            data-finished="{{ Carbon\Carbon::parse($r->finished_leave)->format('d F Y') }}"
+                            data-finished="{{ Carbon\Carbon::parse($r->start_leave)->copy()->addDays((int) $r->many_days == '0' ? $r->many_days : $r->many_days - 1)->format('d F Y') }}"
                             data-reason="{{ $r->reason }}"
                             data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->date('start_leave');
-            $table->date('finished_leave');
+            $table->integer('many_days')->default(0);
+            $table->integer('many_hours')->default(0);
             $table->text('reason');
             $table->enum('request_status', ['draft', 'review', 'accepted', 'rejected']);
 

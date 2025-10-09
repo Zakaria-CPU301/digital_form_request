@@ -6,6 +6,8 @@ use App\Models\Leave;
 use Exception;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isNull;
+
 class LeaveController
 {
     /**
@@ -21,18 +23,39 @@ class LeaveController
      */
     public function store(Request $request)
     {
+        // $arr = [
+        //     $request->startDate,
+        //     (float) $request->manyDays
+        // ];
+        // dump($arr);
+        // dump($request->all());
+        // dd();
         $validate = $request->validate([
-            'start' => ['required'],
-            'finish' => ['required'],
+            'start_leave' => ['required'],
+            'many_days' => 'nullable|numeric|required_without_all:many_hours',
+            'many_hours' => 'nullable|numeric|required_without_all:many_days',
             'reason' => ['required'],
             'user_id' => ['required'],
+        ], [
+            'many_days.required_without_all' => 'Please fill at least one of Days or Hours.',
+            'many_hours.required_without_all' => 'Please fill at least one of Days or Hours.',
         ]);
 
+        if ($validate['many_days'] == '0' && $validate['many_hours'] == '0') {
+            return back()
+                ->withErrors(['many_days' => 'Either days or hours must be greater than 0.'])
+                ->withErrors(['many_hours' => 'Either days or hours must be greater than 0.'])
+                ->withInput();
+        }
+
+        $manyConverter = (float) $validate['many_days'];
+        $hourInDays = ($manyConverter - floor($manyConverter)) * 10;
         $status = $request->action === 'submit' ? 'review' : 'draft';
 
         Leave::create([
-            'start_leave' => $validate['start'],
-            'finished_leave' => $validate['finish'],
+            'start_leave' => $validate['start_leave'],
+            'many_days' => (int) $validate['many_days'],
+            'many_hours' => (int) $hourInDays + $validate['many_hours'],
             'reason' => $validate['reason'],
             'request_status' => $status,
             'user_id' => $validate['user_id']

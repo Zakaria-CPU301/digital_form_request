@@ -37,7 +37,7 @@
                         {{ __('Total Leave') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days ?? 0}} {{__('Days')}}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days . ' days ' . $data['totalLeave'][0]->total_hours . ' hours' ?? 0 . ' days'}}</h1>
                     <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
                 </div>
 
@@ -244,11 +244,16 @@
                     <td class="py-4 px-6 text-center">
                         {{-- View Details Button --}}
                         @php
-                            $durationOverwork = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
-                            $durationLeave = \Carbon\Carbon::parse($d->start_leave)->diff(\Carbon\Carbon::parse($d->finished_leave));
+                            $durationOverwork = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->overwork));
 
                             if ($d->type == 'leave') {
-                                $duration = $durationLeave->format('%d days');
+                                if ($d->many_hours == '0') {
+                                    $duration = $d->many_days . ' days';
+                                } elseif ($d->many_days == '0') {
+                                    $duration = $d->many_hours . ' hours';
+                                } else {
+                                    $duration = $d->many_days . ' days ' . $d->many_hours . ' hours';
+                                }
                             } elseif ($durationOverwork->format('%i') == '0') {
                                 $duration = $durationOverwork->format('%h hours');
                             } else {
@@ -264,7 +269,7 @@
                                 data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
                                 data-overwork_date="{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}"
                                 data-start="{{ $d->type === 'overwork' ? Carbon\Carbon::parse($d->start_overwork)->format('H : i') : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
-                                data-finished="{{ $d->type === 'overwork' ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i') : Carbon\Carbon::parse($d->finished_leave)->format('d F Y') }}"
+                                data-finished="{{ Carbon\Carbon::parse($d->start_leave)->copy()->addDays((int) $d->many_days == '0' ? $d->many_days : $d->many_days - 1)->format('d F Y') }}"
                                 data-type="{{ $d->type }}"
                                 data-description="{{ $d->reason ?? $d->task_description }}"
                                 data-status="{{ $d->request_status }}"

@@ -151,7 +151,7 @@
                                 type="time"
                                 name="start"
                                 id="start"
-                                value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '') }}"
+                                value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '17:00') }}"
                                 class=""
                             />
                         </div>
@@ -301,7 +301,7 @@
 </x-request-layout>
 
 <script>
-  const showPicker = ['date', 'start', 'finish']
+  const showPicker = ['date']
   showPicker.forEach((e, i) => {
     document.getElementById(e).addEventListener('click', () => {
         document.getElementById(showPicker[i]).showPicker()
