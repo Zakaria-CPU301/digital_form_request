@@ -83,12 +83,15 @@
                 @endif
                 <td class="py-4 px-6 font-semibold capitalize">
                     @php
-                        if ($r->many_hours == '0') {
-                            $duration = $r->many_days . ' days';
-                        } elseif ($r->many_days == '0') {
-                            $duration = $r->many_hours . ' hours';
+                        $periodDays = $r->leave_period / 8;
+                        $periodHours = ($periodDays - floor($periodDays) ) * 8;
+
+                        if (floor($periodDays) == '0') {
+                            $duration = $periodHours . ' hours';
+                        } elseif ($periodHours == '0') {
+                            $duration = floor($periodDays) . ' days';
                         } else {
-                            $duration = $r->many_days . ' days ' . $r->many_hours . ' hours';
+                            $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
                         }
                         echo $duration;
                     @endphp
@@ -111,7 +114,7 @@
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
                             data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}"
-                            data-finished="{{ Carbon\Carbon::parse($r->start_leave)->copy()->addDays((int) $r->many_days == '0' ? $r->many_days : $r->many_days - 1)->format('d F Y') }}"
+                            data-finished="{{ Carbon\Carbon::parse($r->start_leave)->copy()->addDays((int) floor($periodDays) == '0' ? floor($periodDays) : floor($periodDays) - 1)->format('d F Y') }}"
                             data-reason="{{ $r->reason }}"
                             data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"

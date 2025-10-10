@@ -37,7 +37,20 @@
                         {{ __('Total Leave') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalLeave'][0]->total_days . ' days ' . $data['totalLeave'][0]->total_hours . ' hours' ?? 0 . ' days'}}</h1>
+                    @php
+                        $leavePeriod = (int) $data['totalLeave'][0]->leave_period / 8;
+                        $periodDays = floor($leavePeriod);
+                        $periodHours = ($leavePeriod - floor($leavePeriod)) * 8;
+
+                        if (floor($periodDays) == '0') {
+                            $duration = $periodHours . ' hours';
+                        } elseif ($periodHours == '0') {
+                            $duration = floor($periodDays) . ' days';
+                        } else {
+                            $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
+                        }
+                    @endphp
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$duration ?? 0 . ' days'}}</h1>
                     <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
                 </div>
 
@@ -46,7 +59,7 @@
                         {{ __('Leave Balance') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance - (int) $data['totalLeave'][0]->total_days }} {{ __('Hours') }}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance - (int) $data['totalLeave'][0]->leave_period }} {{ __('Hours') }}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
             @elseif (auth()->user()->role === 'admin')

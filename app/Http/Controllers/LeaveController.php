@@ -48,14 +48,12 @@ class LeaveController
                 ->withInput();
         }
 
-        $manyConverter = (float) $validate['many_days'];
-        $hourInDays = ($manyConverter - floor($manyConverter)) * 10;
+        $totalPeriod = (float) ($validate['many_days'] * 8) + $validate['many_hours'];
         $status = $request->action === 'submit' ? 'review' : 'draft';
 
         Leave::create([
             'start_leave' => $validate['start_leave'],
-            'many_days' => (int) $validate['many_days'],
-            'many_hours' => (int) $hourInDays + $validate['many_hours'],
+            'leave_period' => (int) $totalPeriod,
             'reason' => $validate['reason'],
             'request_status' => $status,
             'user_id' => $validate['user_id']

@@ -36,7 +36,7 @@
               name="start_leave"
               id="startDate"
               value="{{ old('start_leave', isset($leave) ? $leave->start_leave : '') }}"
-              class="border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+              class="w-full border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
               />
             <x-unvalid-input field="start_leave" />
           </div>
@@ -54,9 +54,9 @@
               name="many_days"
               id="manyDays"
               value="{{ old('many_days', isset($leave) ? $leave->finished_leave : '0') }}"
-              class="border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer w-20"
+              class="w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
               /> 
-              <span class=" text-gray-500 mt-2 ml-2">
+              <span id="daysLabel" class="text-gray-500 mt-2 ml-2">
                 Day(s)
               </span> 
             </div>
@@ -77,9 +77,9 @@
               name="many_hours"
               id="manyHours"
               value="{{ old('many_hours', isset($leave) ? $leave->finished_leave : '0') }}"
-              class="border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer w-20"
+              class="w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
               /> 
-            <span class=" text-gray-500 mt-2 ml-2">
+            <span id="hoursLabel" class="text-gray-500 mt-2 ml-2">
                 Hour(s)
               </span> 
             </div>
@@ -128,16 +128,37 @@
 <script>
   
     document.addEventListener('DOMContentLoaded', () => {
+      const daysLabel= document.getElementById('daysLabel');
+      const hoursLabel= document.getElementById('hoursLabel');
       const manyDays = document.getElementById('manyDays');
       const manyHours = document.getElementById('manyHours');
-
+      
+      
+      manyHours.addEventListener('input', () => {
+        hoursLabel.textContent = `${manyHours.value} Hour(s)`
+      })
       manyDays.addEventListener('input', () => {
+        let dayValue = manyDays.value
+        let integer = parseFloat(dayValue)
+        let decimal = dayValue - Math.floor(dayValue)
+        
+        
+        if (decimal === 0 && integer > 1) {
+          daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
+        } else if (decimal == .5 && integer > 1) {
+          daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s) ${decimal * 8} Hour(s)`
+        } else if (decimal === 0 && integer <= 1) {
+          daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
+        } else if (decimal == .5 && integer <= 1) {
+          daysLabel.textContent = `${decimal * 8} Hour(s)`
+        }
+
         const value = parseFloat(manyDays.value) || 0;
         const decimalPart = value - Math.floor(value); 
 
         if (decimalPart > 0) {
           const remainingHours = 8 - (decimalPart * 8); 
-          manyHours.max = remainingHours - 2; 
+          manyHours.max = remainingHours - 1; 
         } else {
           manyHours.max = 7; 
         }
