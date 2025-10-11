@@ -12,14 +12,6 @@ use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-Route::prefix('info')->name('info.')->group(function () {
-    Route::get('/account-suspended', function () {
-        return view('suspended');
-    })->name('account-suspended');
-    // Route::get('contact-admin', function () {
-    //     return view('contact-admin');
-    // })->name('contact-admin');
-});
 
 Route::get('/', function () {
     $view = Auth::id() === null ? route('login') : route('dashboard');
@@ -29,6 +21,14 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+
+Route::middleware(['active'])->group(function () {
+    Route::prefix('info')->name('info.')->group(function () {
+        Route::get('/account-suspended', function () {
+            return view('suspended');
+        })->name('account-suspended');
+    });
+});
 
 Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     //! dashboard
@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         Route::delete('/delete', [ProfileController::class, 'destroy'])->name('destroy');
     });
 
+    //! manage data
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::prefix('request')->name('request.')->group(function () {
             Route::get('/data', [ManageDataController::class, 'show'])->name('show');

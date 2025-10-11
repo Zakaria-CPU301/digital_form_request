@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckSuspended
+class ActiveAccount
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,13 @@ class CheckSuspended
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->status_account === 'suspended') {
-            return redirect()->route('info.account-suspended')->withErrors(['Your account has been suspended. Please contact support.']);
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
-
+        
+        if (Auth::user()->status_account !== 'suspended') {
+            return redirect()->back();
+        }
         return $next($request);
     }
 }

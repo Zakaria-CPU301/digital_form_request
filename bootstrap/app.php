@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ActiveAccount;
 use App\Http\Middleware\CheckLeaveBalance;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckRole::class,
             'suspended' => CheckSuspended::class,
             'balance' => CheckLeaveBalance::class,
+            'active' => ActiveAccount::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
