@@ -114,7 +114,7 @@
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
                             data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}"
-                            data-finished="{{ Carbon\Carbon::parse($r->start_leave)->copy()->addDays((int) floor($periodDays) == '0' ? floor($periodDays) : floor($periodDays) - 1)->format('d F Y') }}"
+                            data-finished="{{ Carbon\Carbon::parse($r->start_leave)->copy()->addDays($periodHours == '0' ? floor($periodDays) - 1 : floor($periodDays))->format('d F Y') }}"
                             data-reason="{{ $r->reason }}"
                             data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"

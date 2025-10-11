@@ -29,7 +29,7 @@
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalOverwork'][0]->total_hours ?? 0}} {{__('Hours')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Overwork') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total Overwork Accepted') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -39,19 +39,28 @@
                     </small>
                     @php
                         $leavePeriod = (int) $data['totalLeave'][0]->leave_period / 8;
+                        $leaveBalance = auth()->user()->overwork_allowance - $leavePeriod;
                         $periodDays = floor($leavePeriod);
                         $periodHours = ($leavePeriod - floor($leavePeriod)) * 8;
 
                         if (floor($periodDays) == '0') {
-                            $duration = $periodHours . ' hours';
+                            $totalLeave = $periodHours . ' hours';
                         } elseif ($periodHours == '0') {
-                            $duration = floor($periodDays) . ' days';
+                            $totalLeave = floor($periodDays) . ' days';
                         } else {
-                            $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
+                            $totalLeave = floor($periodDays) . ' days ' . $periodHours . ' hours';
+                        }
+
+                        if (floor($leaveBalance) == 0) {
+                            $balance = ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
+                        } elseif ($leaveBalance - floor($leaveBalance) == 0) {
+                            $balance = floor($leaveBalance) . ' days';
+                        } else {
+                            $balance = floor($leaveBalance) . ' days ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
                         }
                     @endphp
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$duration ?? 0 . ' days'}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$totalLeave ?? 0 . ' days'}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total Leave Accepted') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -59,7 +68,7 @@
                         {{ __('Leave Balance') }}
                         <i class="bi bi-journal-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ auth()->user()->overwork_allowance - (int) $data['totalLeave'][0]->leave_period }} {{ __('Hours') }}</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $balance }}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
             @elseif (auth()->user()->role === 'admin')
@@ -257,22 +266,21 @@
                     <td class="py-4 px-6 text-center">
                         {{-- View Details Button --}}
                         @php
-                            $durationOverwork = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->overwork));
-
-                            if ($d->type == 'leave') {
-                                if ($d->many_hours == '0') {
-                                    $duration = $d->many_days . ' days';
-                                } elseif ($d->many_days == '0') {
-                                    $duration = $d->many_hours . ' hours';
-                                } else {
-                                    $duration = $d->many_days . ' days ' . $d->many_hours . ' hours';
-                                }
-                            } elseif ($durationOverwork->format('%i') == '0') {
-                                $duration = $durationOverwork->format('%h hours');
+                        if ($d->type === 'leave') {
+                            $periodDays = $d->leave_period / 8;
+                            $periodHours = ($periodDays - floor($periodDays) ) * 8;
+                            
+                            if (floor($periodDays) == '0') {
+                                $duration = $periodHours . ' hours';
+                            } elseif ($periodHours == '0') {
+                                $duration = floor($periodDays) . ' days';
                             } else {
-                                $duration = $durationOverwork->format('%h hours %i minutes');
+                                $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
                             }
-                        @endphp
+                        } else {
+                            $duration = Carbon\Carbon::parse($d->start_overwork)->diff($d->finished_overwork);
+                        }
+                            @endphp
 
                         <div class="flex space-x-2">
                             <button
@@ -281,8 +289,12 @@
                                 data-id="{{ $d->id }}"
                                 data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
                                 data-overwork_date="{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}"
-                                data-start="{{ $d->type === 'overwork' ? Carbon\Carbon::parse($d->start_overwork)->format('H : i') : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
-                                data-finished="{{ Carbon\Carbon::parse($d->start_leave)->copy()->addDays((int) $d->many_days == '0' ? $d->many_days : $d->many_days - 1)->format('d F Y') }}"
+                                data-start="{{ $d->type === 'overwork' 
+                                ? Carbon\Carbon::parse($d->start_overwork)->format('H : i') 
+                                : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
+                                data-finished="{{ $d->type === 'overwork'
+                                ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
+                                : Carbon\Carbon::parse($d->start_leave)->copy()->addDays($periodHours == '0' ? floor($periodDays) - 1 : floor($periodDays))->format('d F Y') }}"
                                 data-type="{{ $d->type }}"
                                 data-description="{{ $d->reason ?? $d->task_description }}"
                                 data-status="{{ $d->request_status }}"
@@ -478,7 +490,7 @@
                                     if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
                                         return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
                                     } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                                        return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" loop autoplay controls></video>`;
+                                        return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
                                     }
                                     return '';
                                 }).join('')}

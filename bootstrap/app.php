@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckLeaveBalance;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\CheckSuspended;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => CheckRole::class,
             'suspended' => CheckSuspended::class,
+            'balance' => CheckLeaveBalance::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

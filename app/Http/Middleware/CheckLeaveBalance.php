@@ -3,11 +3,12 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\Leave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckSuspended
+class CheckLeaveBalance
 {
     /**
      * Handle an incoming request.
@@ -16,8 +17,9 @@ class CheckSuspended
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->status_account === 'suspended') {
-            Auth::logout();
+        $totalLeave = (int) Leave::where('user_id', Auth::user()->id)->sum('leave_period') / 8;
+        $annualLeaveBalance = (int) Auth::user()->overwork_allowance;
+        if ($totalLeave >= floor($annualLeaveBalance)) {
             return redirect()->route('info.account-suspended')->withErrors(['Your account has been suspended. Please contact support.']);
         }
 

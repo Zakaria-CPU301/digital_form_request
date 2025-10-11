@@ -18,10 +18,12 @@ class DashboardController extends Controller
 
         $totalOverwork = Overwork::selectRaw('SUM(TIMESTAMPDIFF(HOUR, start_overwork, finished_overwork)) AS total_hours')
             ->where('user_id', Auth::id())
+            ->where('request_status', 'accepted')
             ->get();
 
         $totalLeave = Leave::selectRaw('SUM(leave_period) AS leave_period')
             ->where('user_id', Auth::id())
+            ->where('request_status', 'accepted')
             ->get();
 
         $approved = $requestData->where('request_status', 'accepted');

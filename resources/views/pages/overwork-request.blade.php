@@ -133,7 +133,7 @@
                         name="date"
                         id="date"
                         value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-                        class=""
+                        class="w-full"
                     />
                     <x-unvalid-input field="date" />
                 </div>
@@ -152,7 +152,7 @@
                                 name="start"
                                 id="start"
                                 value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '17:00') }}"
-                                class=""
+                                class="w-full"
                             />
                         </div>
                         <x-unvalid-input field="start" />
@@ -175,7 +175,7 @@
                                 name="finish"
                                 id="finish"
                                 value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
-                                class=""
+                                class="w-full"
                             />
                         </div>
                         <x-unvalid-input field="finish" />

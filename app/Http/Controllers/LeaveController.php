@@ -23,13 +23,6 @@ class LeaveController
      */
     public function store(Request $request)
     {
-        // $arr = [
-        //     $request->startDate,
-        //     (float) $request->manyDays
-        // ];
-        // dump($arr);
-        // dump($request->all());
-        // dd();
         $validate = $request->validate([
             'start_leave' => ['required'],
             'many_days' => 'nullable|numeric|required_without_all:many_hours',

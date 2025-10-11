@@ -72,8 +72,10 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     //! leave
     Route::prefix('leave')->name('leave.')->group(function () {
         Route::middleware(['auth', 'role:user'])->group(function () {
-            Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
-            Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
+            Route::middleware(['auth', 'balance'])->group(function () {
+                Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
+                Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
+            });
             Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
             Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
             Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
@@ -84,6 +86,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         Route::get('/rejected', [RequestController::class, 'showRecent'])->name('rejected');
         Route::get('/draft', [RequestController::class, 'showRecent'])->name('draft');
     });
+
 
     //! draft
     Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
