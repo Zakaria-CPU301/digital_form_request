@@ -65,7 +65,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         });
         Route::get('/', [RequestController::class, 'showRecent'])->name('submitted');
         Route::get('/pending', [RequestController::class, 'showRecent'])->name('review');
-        Route::get('/accepted', [RequestController::class, 'showRecent'])->name('accepted');
+        Route::get('/approved', [RequestController::class, 'showRecent'])->name('approved');
         Route::get('/rejected', [RequestController::class, 'showRecent'])->name('rejected');
         Route::get('/draft', [RequestController::class, 'showRecent'])->name('draft');
     });
@@ -83,7 +83,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         });
         Route::get('/', [RequestController::class, 'showRecent'])->name('submitted');
         Route::get('/pending', [RequestController::class, 'showRecent'])->name('review');
-        Route::get('/accepted', [RequestController::class, 'showRecent'])->name('accepted');
+        Route::get('/approved', [RequestController::class, 'showRecent'])->name('approved');
         Route::get('/rejected', [RequestController::class, 'showRecent'])->name('rejected');
         Route::get('/draft', [RequestController::class, 'showRecent'])->name('draft');
     });

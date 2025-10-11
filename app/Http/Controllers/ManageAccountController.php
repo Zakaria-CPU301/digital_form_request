@@ -30,7 +30,7 @@ class ManageAccountController extends Controller
 
         return redirect()->back()->with('success', [
             'title' => User::findOrFail($id)->name . ' is ' . $status,
-            'message' => 'This overwork request has been accepted.',
+            'message' => 'This overwork request has been approved.',
             'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
         ]);
     }

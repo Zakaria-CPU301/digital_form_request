@@ -89,7 +89,7 @@
                     <td class="py-4 px-6">
                         @php
                             $statusClass = match($d->request_status) {
-                                'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
+                                'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                                 'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
                                 'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                                 default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
@@ -113,9 +113,9 @@
                             </button>
 
                             <button
-                                type="submit" name="accepted" value="{{$d->type}}"
-                                class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                title="Accepted"
+                                type="submit" name="approved" value="{{$d->type}}"
+                                class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                title="Approved"
                                 onclick="return confirm('yakin di terima?')"
                             >
                                 <i class="bi bi-check2-square"></i>

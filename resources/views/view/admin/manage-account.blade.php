@@ -82,7 +82,7 @@
                             @if ($d->email != 'superadmin@sangnila.com')
                                 @if ($d->status_account === 'active')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspended'])}}"
-                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Suspended"
                                         onclick="return confirm('are you sure want to suspend this account?')"
                                     >
@@ -90,7 +90,7 @@
                                     </a>
                                 @elseif ($d->status_account === 'suspended')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspended'])}}"
-                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Unsuspended"
                                         onclick="return confirm('are you sure want to unsuspend this account?')"
                                     >

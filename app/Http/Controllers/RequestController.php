@@ -82,14 +82,14 @@ class RequestController extends Controller
                 if (Str::before($routeName, '.') === 'overwork') {
                     $suffix = Str::after($routeName, 'overwork.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'overwork')->where('user_id', Auth::id());
-                    if (in_array($suffix, ['review', 'accepted', 'rejected', 'draft'])) {
+                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
                         $data = $data->where('request_status', $suffix);
                     }
                     return view('view.users.overwork-data', compact('data'));
                 } else {
                     $suffix = Str::after($routeName, 'leave.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('user_id', Auth::id());
-                    if (in_array($suffix, ['review', 'accepted', 'rejected', 'draft'])) {
+                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
                         $data = $data->where('request_status', $suffix);
                     }
                     return view('view.users.leave-data', compact('data'));
@@ -103,14 +103,14 @@ class RequestController extends Controller
                 if (Str::before($routeName, '.') === 'overwork') {
                     $suffix = Str::after($routeName, 'overwork.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'overwork')->where('request_status', '!=', 'draft');
-                    if (in_array($suffix, ['review', 'accepted', 'rejected', 'draft'])) {
+                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
                         $data = $data->where('request_status', $suffix);
                     }
                     return view('view.users.overwork-data', compact('data'));
                 } else {
                     $suffix = Str::after($routeName, 'leave.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('request_status', '!=', 'draft');
-                    if (in_array($suffix, ['review', 'accepted', 'rejected', 'draft'])) {
+                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
                         $data = $data->where('request_status', $suffix);
                     }
                     return view('view.users.leave-data', compact('data'));

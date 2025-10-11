@@ -18,15 +18,15 @@ class DashboardController extends Controller
 
         $totalOverwork = Overwork::selectRaw('SUM(TIMESTAMPDIFF(HOUR, start_overwork, finished_overwork)) AS total_hours')
             ->where('user_id', Auth::id())
-            ->where('request_status', 'accepted')
+            ->where('request_status', 'approved')
             ->get();
 
         $totalLeave = Leave::selectRaw('SUM(leave_period) AS leave_period')
             ->where('user_id', Auth::id())
-            ->where('request_status', 'accepted')
+            ->where('request_status', 'approved')
             ->get();
 
-        $approved = $requestData->where('request_status', 'accepted');
+        $approved = $requestData->where('request_status', 'approved');
         $rejected = $requestData->where('request_status', 'rejected');
         $pending = $requestData->where('request_status', 'review');
 
@@ -51,7 +51,7 @@ class DashboardController extends Controller
             $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
         }
 
-         if ($month && $month !== 'all') {
+        if ($month && $month !== 'all') {
             $data['requestData'] = $data['requestData']->filter(function ($item) use ($month) {
                 if ($item->type === 'overwork') {
                     return Carbon::parse($item->overwork_date)->format('m-Y') === $month;

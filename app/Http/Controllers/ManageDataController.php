@@ -57,20 +57,19 @@ class ManageDataController extends Controller
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
         }
-        
-        if ($request->has('accepted')) {
-            $status = $request->input('accepted');
+
+        if ($request->has('approved')) {
+            $status = $request->input('approved');
             $status === 'overwork' ?
-            Overwork::where('id', $id)->update(['request_status' => 'accepted'])
-            : Leave::where('id', $id)->update(['request_status' => 'accepted']);
+                Overwork::where('id', $id)->update(['request_status' => 'approved'])
+                : Leave::where('id', $id)->update(['request_status' => 'approved']);
 
             return redirect()->back()->with('success', [
-                'title' => $status . ' Accepted!',
-                'message' => "This {$status} request has been accepted.",
+                'title' => $status . ' Approved!',
+                'message' => "This {$status} request has been approved.",
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
         }
-
     }
 
     /**

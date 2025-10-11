@@ -29,7 +29,7 @@
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalOverwork'][0]->total_hours ?? 0}} {{__('Hours')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Overwork Accepted') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total Overwork Approved') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -60,7 +60,7 @@
                         }
                     @endphp
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$totalLeave ?? 0 . ' days'}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Leave Accepted') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total Leave Approved') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -77,8 +77,8 @@
                         {{ __('Total Overwork') }}
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['result']->where('type', 'overwork')->count()}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Overwork') }}</span>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'overwork')->count()}} {{__('Data')}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total Overwork Approved') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -86,8 +86,8 @@
                         {{ __('Total Leave ') }}
                         <i class="bi bi-calendar-check text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['result']->where('type', 'leave')->count()}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Leave') }}</span>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'leave')->count()}} {{__('Data')}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total Leave Approved') }}</span>
                 </div>
             @endif
         </div>
@@ -255,7 +255,7 @@
                     <td class="py-4 px-6 text-center">
                         @php
                             $statusClass = match($d->request_status) {
-                                'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 font-semibold',
+                                'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 font-semibold',
                                 'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 font-semibold',
                                 'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 font-semibold',
                                 default => 'bg-yellow-500 text-white rounded-full px-3 py-1 font-semibold',
@@ -312,8 +312,8 @@
 
                                 <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between gap-2">
                                     <button
-                                        type="submit" name="accepted" value="{{$d->type}}"
-                                        class="{{$status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        type="submit" name="approved" value="{{$d->type}}"
+                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                         title="Accept"
                                         onclick="return confirm('Are you sure want to accept this request?')"
                                     >
@@ -512,7 +512,7 @@
         function getStatusClass(status) {
             switch(status.toLowerCase()) {
                 case 'approved':
-                case 'accepted': return 'bg-cyan-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
+                case 'approved': return 'bg-cyan-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
                 case 'under review':
                 case 'pending': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
                 case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';

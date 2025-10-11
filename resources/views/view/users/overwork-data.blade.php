@@ -118,7 +118,7 @@
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
-                            'accepted' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
+                            'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
                             'review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                             'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
@@ -147,8 +147,8 @@
                         @if (auth()->user()->role === 'admin')
                             <form action="{{route('request.edit', ['id' => $r->id])}}" method="get" class="flex gap-2">
                                 <button
-                                    type="submit" name="accepted" value="{{$r->type}}"
-                                    class="{{$r->request_status === 'accepted' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                    type="submit" name="approved" value="{{$r->type}}"
+                                    class="{{$r->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                     title="Accept"
                                     onclick="return confirm('Are you sure want to accept this request?')"
                                 >
@@ -378,7 +378,7 @@ document.getElementById('next-evidence').addEventListener('click', function() {
 
 function getStatusClass(status) {
     switch(status) {
-        case 'accepted': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
+        case 'approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
         case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm';
         case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
         default: return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';

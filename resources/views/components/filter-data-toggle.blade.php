@@ -14,8 +14,8 @@
             <li class="{{ $activeToggle === 'review' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="submit" name="status" value="review" class="hover:text-cyan-600 transition">Pending</button>
             </li>
-            <li class="{{ $activeToggle === 'accepted' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
-                <button type="submit" name="status" value="accepted" class="hover:text-cyan-600 transition">Accepted</button>
+            <li class="{{ $activeToggle === 'approved' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
+                <button type="submit" name="status" value="approved" class="hover:text-cyan-600 transition">Approved</button>
             </li>
             <li class="{{ $activeToggle === 'rejected' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="submit" name="status" value="rejected" class="hover:text-cyan-600 transition">Rejected</button>
