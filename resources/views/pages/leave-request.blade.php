@@ -126,52 +126,61 @@
 </x-request-layout>
 
 <script>
-  
-    document.addEventListener('DOMContentLoaded', () => {
-      const daysLabel= document.getElementById('daysLabel');
-      const hoursLabel= document.getElementById('hoursLabel');
-      const manyDays = document.getElementById('manyDays');
-      const manyHours = document.getElementById('manyHours');
-      
-      
-      manyHours.addEventListener('input', () => {
-        hoursLabel.textContent = `${manyHours.value} Hour(s)`
+  document.addEventListener('DOMContentLoaded', () => {
+    const daysLabel= document.getElementById('daysLabel');
+    const hoursLabel= document.getElementById('hoursLabel');
+    const manyDays = document.getElementById('manyDays');
+    const manyHours = document.getElementById('manyHours');
+    
+    fetch('/leave_allowance')
+      .then(response => response.json())
+      .then(data => {
+        let allowance = data.leave_allowance * 8
+        let total = data.leave_period
+        const res = (allowance - total) / 8
+        manyDays.max = res
+
+        manyHours.addEventListener('input', () => {
+          hoursLabel.textContent = `${manyHours.value} Hour(s)`
+        })
+
+        manyDays.addEventListener('input', () => {
+          let dayValue = manyDays.value
+          let numeric = parseFloat(dayValue)
+          let decimal = dayValue - Math.floor(dayValue)
+
+          if (decimal === 0 && numeric > 1) {
+            daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
+          } else if (decimal == .5 && numeric > 1) {
+            daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s) ${decimal * 8} Hour(s)`
+          } else if (decimal === 0 && numeric <= 1) {
+            daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
+          } else if (decimal == .5 && numeric <= 1) {
+            daysLabel.textContent = `${decimal * 8} Hour(s)`
+          }
+
+          const decimalPart = numeric - Math.floor(numeric);
+
+          if (numeric === res) {
+            manyHours.max = 0
+          } else if (decimalPart > 0) {
+            const remainingHours = 8 - (decimalPart * 8); 
+            manyHours.max = remainingHours - 1; 
+          } else {
+            manyHours.max = 7;
+          }
+
+          if (parseFloat(manyHours.value) > parseFloat(manyHours.max)) {
+            manyHours.value = manyHours.max;
+          }
+        });
       })
-      manyDays.addEventListener('input', () => {
-        let dayValue = manyDays.value
-        let integer = parseFloat(dayValue)
-        let decimal = dayValue - Math.floor(dayValue)
-        
-        
-        if (decimal === 0 && integer > 1) {
-          daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
-        } else if (decimal == .5 && integer > 1) {
-          daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s) ${decimal * 8} Hour(s)`
-        } else if (decimal === 0 && integer <= 1) {
-          daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
-        } else if (decimal == .5 && integer <= 1) {
-          daysLabel.textContent = `${decimal * 8} Hour(s)`
-        }
-
-        const value = parseFloat(manyDays.value) || 0;
-        const decimalPart = value - Math.floor(value); 
-
-        if (decimalPart > 0) {
-          const remainingHours = 8 - (decimalPart * 8); 
-          manyHours.max = remainingHours - 1; 
-        } else {
-          manyHours.max = 7; 
-        }
-
-        if (parseFloat(manyHours.value) > parseFloat(manyHours.max)) {
-          manyHours.value = manyHours.max;
-        }
+      .catch(error => {
+          console.error("Terjadi error:", error);
       });
     });
   
   document.getElementById('startDate').addEventListener('click', () => {
-    console.log('click');
-    
-      document.getElementById('startDate').showPicker()
+    document.getElementById('startDate').showPicker()
   })
 </script>

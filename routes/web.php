@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use App\Models\Leave;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
@@ -31,6 +33,17 @@ Route::middleware(['active'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
+    Route::get('leave_allowance', function () {
+        $user = Auth::user()->id;
+        $allowance = User::findOrFail($user)->overwork_allowance;
+        $total = Leave::where('user_id', $user)->whereIn('request_status', ['review'])->sum('leave_period');
+        
+        return response()->json([
+            'leave_allowance' => $allowance,
+            'leave_period' => $total
+        ]);
+    });
+    
     //! dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 

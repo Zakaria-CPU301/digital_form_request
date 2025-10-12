@@ -23,7 +23,7 @@ class CheckLeaveBalance
         $annualLeaveBalance = (int) Auth::user()->overwork_allowance;
 
         if ($totalLeave >= floor($annualLeaveBalance)) {
-            return redirect()->route('info.account-suspended')->withErrors(['Your account has been suspended. Please contact support.']);
+            return redirect()->route('dashboard')->withErrors(['Your account has been suspended. Please contact support.']);
         }
 
         return $next($request);
