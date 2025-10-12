@@ -172,6 +172,7 @@
 
           if (parseFloat(manyHours.value) > parseFloat(manyHours.max)) {
             manyHours.value = manyHours.max;
+            hoursLabel.textContent = `${manyHours.max} Hour(s)`
           }
         });
       })
