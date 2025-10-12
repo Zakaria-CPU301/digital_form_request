@@ -88,7 +88,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         Route::middleware(['auth', 'role:user'])->group(function () {
             Route::middleware(['auth', 'balance'])->group(function () {
                 Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
-                Route::post('/proccess', [LeaveController::class, 'store'])->name('insert');
+                Route::match(['get', 'post'], '/proccess', [LeaveController::class, 'store'])->name('insert');
             });
             Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
             Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');

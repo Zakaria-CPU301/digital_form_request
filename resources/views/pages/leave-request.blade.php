@@ -22,7 +22,7 @@
       {{-- Submission Section --}}
       <div class="flex-1">
         <h3 class="text-[#042E66] font-extrabold text-lg mb-4">Submission Informations</h3>
-        <x-submisson />
+        <x-submisson :allowance="$allowance" :leave_period="$leave_period" />
       </div>
 
       {{-- Leave Request Section --}}
@@ -71,7 +71,6 @@
             <x-text-input
               type="number"
               min="0"
-              max="7"
               oninput="if(this.value < 0) this.value = 0;"
               onblur="if(this.value === '') this.value = 0;"
               name="many_hours"
@@ -138,39 +137,39 @@
         let allowance = data.leave_allowance * 8
         let total = data.leave_period
         const res = (allowance - total) / 8
-        manyDays.max = res
-
         manyHours.addEventListener('input', () => {
           hoursLabel.textContent = `${manyHours.value} Hour(s)`
         })
-
-        manyDays.addEventListener('input', () => {
-          let dayValue = manyDays.value
-          let numeric = parseFloat(dayValue)
+        
+        manyDays.max = Math.floor(res)
+        manyHours.max = (res - Math.floor(res)) * 8
+        manyDays.addEventListener('input', function () {
+          let dayValue = this.value ?? 0
+          let numericDecimal = parseFloat(dayValue)
+          let integer = Math.floor(dayValue)
           let decimal = dayValue - Math.floor(dayValue)
-
-          if (decimal === 0 && numeric > 1) {
-            daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
-          } else if (decimal == .5 && numeric > 1) {
-            daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s) ${decimal * 8} Hour(s)`
-          } else if (decimal === 0 && numeric <= 1) {
-            daysLabel.textContent = `${Math.floor(manyDays.value)} Day(s)`
-          } else if (decimal == .5 && numeric <= 1) {
+          
+          if (decimal === 0 && numericDecimal > 1) {
+            daysLabel.textContent = `${Math.floor(dayValue)} Day(s)`
+          } else if (decimal == .5 && numericDecimal > 1) {
+            daysLabel.textContent = `${Math.floor(dayValue)} Day(s) ${decimal * 8} Hour(s)`
+          } else if (decimal === 0 && numericDecimal <= 1) {
+            daysLabel.textContent = `${Math.floor(dayValue)} Day(s)`
+          } else if (decimal == .5 && numericDecimal <= 1) {
             daysLabel.textContent = `${decimal * 8} Hour(s)`
           }
 
-          const decimalPart = numeric - Math.floor(numeric);
+          const decimalPart = numericDecimal - Math.floor(numericDecimal);
 
-          if (numeric === res) {
-            manyHours.max = 0
-          } else if (decimalPart > 0) {
-            const remainingHours = 8 - (decimalPart * 8); 
-            manyHours.max = remainingHours - 1; 
-          } else {
-            manyHours.max = 7;
+          if (integer === Math.floor(res)) { //paling mendekati angka sisa cuti
+            manyHours.max = res * 8 - numericDecimal * 8; 
+          } else if (integer !== Math.floor(res) && decimalPart > 0) {
+            manyHours.max = (decimalPart * 8) - 1
+          } else if (integer !== Math.floor(res) && decimalPart === 0) {
+            manyHours.max = 7
           }
 
-          if (parseFloat(manyHours.value) > parseFloat(manyHours.max)) {
+          if (parseFloat(manyHours.value) >= parseFloat(manyHours.max)) {
             manyHours.value = manyHours.max;
             hoursLabel.textContent = `${manyHours.max} Hour(s)`
           }

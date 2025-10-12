@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
         $totalLeave = Leave::selectRaw('SUM(leave_period) AS leave_period')
             ->where('user_id', Auth::id())
-            ->where('request_status', 'approved')
+            ->where('request_status', 'review')
             ->get();
 
         $approved = $requestData->where('request_status', 'approved');

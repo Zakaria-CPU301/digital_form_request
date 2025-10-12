@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Leave;
 use Exception;
+use App\Models\Leave;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isNull;
 
 class LeaveController
@@ -15,7 +16,9 @@ class LeaveController
      */
     public function create()
     {
-        return view('pages.leave-request');
+        $allowance = Auth::user()->overwork_allowance;
+        $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'review')->sum('leave_period') / 8;
+        return view('pages.leave-request', compact('allowance', 'leave_period'));
     }
 
     /**

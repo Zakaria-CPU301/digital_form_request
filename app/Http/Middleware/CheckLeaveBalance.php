@@ -18,12 +18,12 @@ class CheckLeaveBalance
     public function handle(Request $request, Closure $next): Response
     {
         $totalLeave = (int) Leave::where('user_id', Auth::user()->id)
-            ->where('request_status', 'approved')
+            ->where('request_status', 'review')
             ->sum('leave_period') / 8;
         $annualLeaveBalance = (int) Auth::user()->overwork_allowance;
 
         if ($totalLeave >= floor($annualLeaveBalance)) {
-            return redirect()->route('dashboard')->withErrors(['Your account has been suspended. Please contact support.']);
+            return redirect()->back()->withErrors(['Your account has been suspended. Please contact support.']);
         }
 
         return $next($request);
