@@ -17,7 +17,7 @@ class LeaveController
     public function create()
     {
         $allowance = Auth::user()->overwork_allowance;
-        $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'review')->sum('leave_period') / 8;
+        $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'approved')->sum('leave_period') / 8;
         return view('pages.leave-request', compact('allowance', 'leave_period'));
     }
 
@@ -74,7 +74,9 @@ class LeaveController
      */
     public function edit(Leave $leave)
     {
-        return view('pages.leave-request', compact('leave'));
+        $allowance = Auth::user()->overwork_allowance;
+        $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'approved')->sum('leave_period') / 8;
+        return view('pages.leave-request', compact('leave', 'allowance', 'leave_period'));
     }
 
     /**
@@ -83,16 +85,29 @@ class LeaveController
     public function update(Request $request, Leave $leave)
     {
         $validate = $request->validate([
-            'start' => ['required'],
-            'finish' => ['required'],
+            'start_leave' => ['required'],
+            'many_days' => 'nullable|numeric|required_without_all:many_hours',
+            'many_hours' => 'nullable|numeric|required_without_all:many_days',
             'reason' => ['required'],
+            'user_id' => ['required'],
+        ], [
+            'many_days.required_without_all' => 'Please fill at least one of Days or Hours.',
+            'many_hours.required_without_all' => 'Please fill at least one of Days or Hours.',
         ]);
 
+        if ($validate['many_days'] == '0' && $validate['many_hours'] == '0') {
+            return back()
+                ->withErrors(['many_days' => 'Either days or hours must be greater than 0.'])
+                ->withErrors(['many_hours' => 'Either days or hours must be greater than 0.'])
+                ->withInput();
+        }
+
+        $totalPeriod = (float) ($validate['many_days'] * 8) + $validate['many_hours'];
         $status = $request->action === 'submit' ? 'review' : 'draft';
 
         $leave->update([
-            'start_leave' => $validate['start'],
-            'finished_leave' => $validate['finish'],
+            'start_leave' => $validate['start_leave'],
+            'leave_period' => (int) $totalPeriod,
             'reason' => $validate['reason'],
             'request_status' => $status,
         ]);

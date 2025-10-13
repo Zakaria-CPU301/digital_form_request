@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     Route::get('leave_allowance', function () {
         $user = Auth::user()->id;
         $allowance = User::findOrFail($user)->overwork_allowance;
-        $total = Leave::where('user_id', $user)->whereIn('request_status', ['review'])->sum('leave_period');
+        $total = Leave::where('user_id', $user)->where('request_status', 'approved')->sum('leave_period');
         
         return response()->json([
             'leave_allowance' => $allowance,
