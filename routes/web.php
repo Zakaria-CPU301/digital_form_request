@@ -57,7 +57,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::prefix('request')->name('request.')->group(function () {
             Route::get('/data', [ManageDataController::class, 'show'])->name('show');
-            Route::get('edit/{id}', [ManageDataController::class, 'edit'])->name('edit');
+            Route::match(['get', 'post'], 'edit/{id}/{userId}', [ManageDataController::class, 'edit'])->name('edit');
         });
         Route::prefix('account')->name('account.')->group(function () {
             Route::get('/', [ManageAccountController::class, 'show'])->name('show');

@@ -123,7 +123,9 @@
                         </button>
 
                         @if (auth()->user()->role === 'admin')
-                            <form action="{{route('request.edit', ['id' => $r->id])}}" method="get" class="flex gap-2">
+                            <form action="{{route('request.edit', ['id' => $r->id, 'userId' => $r->user_id])}}" method="post" class="flex gap-2">
+                                @csrf
+                                <input type="text" name="this_leave_period" value="{{$r->leave_period}}">
                                 <button
                                     type="submit" name="approved" value="{{$r->type}}"
                                     class="{{$r->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"

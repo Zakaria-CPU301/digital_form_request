@@ -310,7 +310,9 @@
                                     $status = request('status');
                                 @endphp
 
-                                <form action="{{route('request.edit', ['id' => $d->id])}}#data" method="get" class="flex justify-between gap-2">
+                                <form action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}#data" method="post" class="flex justify-between gap-2">
+                                    @csrf
+                                    <input type="text" name="this_leave_period" value="{{$d->leave_period}}">
                                     <button
                                         type="submit" name="approved" value="{{$d->type}}"
                                         class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"

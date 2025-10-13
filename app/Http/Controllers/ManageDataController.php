@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Leave;
 use App\Models\Overwork;
 use Illuminate\Http\Request;
@@ -43,13 +44,13 @@ class ManageDataController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function edit(Request $request, string $id)
+    public function edit(Request $request, string $leaveId, string $userId)
     {
         if ($request->has('rejected')) {
             $status = $request->input('rejected');
             $status === 'overwork' ?
-                Overwork::where('id', $id)->update(['request_status' => 'rejected'])
-                : Leave::where('id', $id)->update(['request_status' => 'rejected']);
+                Overwork::where('id', $leaveId)->update(['request_status' => 'rejected'])
+                : Leave::where('id', $leaveId)->update(['request_status' => 'rejected']);
 
             return redirect()->back()->with('success', [
                 'title' => $status . ' Rejected!',
@@ -58,11 +59,18 @@ class ManageDataController extends Controller
             ]);
         }
 
+        $totalLeave = (int) Leave::where('user_id', $userId)->where('request_status', 'approved')->sum('leave_period');
+        $allowance = User::findOrFail($userId)->overwork_allowance;
+        $newApproval = (int) $request['this_leave_period'];
+        $validateBalanceApproval = $totalLeave + $newApproval;
+        if ($validateBalanceApproval > $allowance * 8) {
+            return redirect()->back();
+        }
         if ($request->has('approved')) {
             $status = $request->input('approved');
             $status === 'overwork' ?
-                Overwork::where('id', $id)->update(['request_status' => 'approved'])
-                : Leave::where('id', $id)->update(['request_status' => 'approved']);
+                Overwork::where('id', $leaveId)->update(['request_status' => 'approved'])
+                : Leave::where('id', $leaveId)->update(['request_status' => 'approved']);
 
             return redirect()->back()->with('success', [
                 'title' => $status . ' Approved!',
