@@ -61,6 +61,25 @@ class DashboardController extends Controller
             });
         }
 
+        $start = Carbon::parse($data['requestData']->where('id', '13')->first()->start_leave);
+        $leave_period = $data['requestData']->where('id', '13')->first()->leave_period / 8;
+
+        $finish = $start->copy();
+        $daysAdded = 0;
+
+        // while ($daysAdded < $leave_period - 1) {
+        //     if (!$finish->isWeekend()) {
+        //         $daysAdded++;
+        //     }
+        //     $finish->addDay();
+        // }
+
+
+        // dump($start);
+        // dump($leave_period);
+        // dump($finish->isWeekend());
+        // dd();
+
         return view('dashboard', compact('data', 'filter', 'month'));
     }
 }

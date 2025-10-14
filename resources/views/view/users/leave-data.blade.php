@@ -83,12 +83,24 @@
                 @endif
                 <td class="py-4 px-6 font-semibold capitalize">
                     @php
+                        $start = Carbon\Carbon::parse($r->start_leave);
+                        $finish = $start->copy();
                         $periodDays = $r->leave_period / 8;
-                        $periodHours = ($periodDays - floor($periodDays) ) * 8;
+                        $addDays = 0;
+                        
+                        while ($addDays < floor($periodDays)) {
+                            if (!$finish->isWeekend()) {
+                                $addDays++;
+                            }
+                            $finish->addDay();
+                        }
 
+                        $periodHours = ($periodDays - floor($periodDays) ) * 8;
+                        
                         if (floor($periodDays) == '0') {
                             $duration = $periodHours . ' hours';
                         } elseif ($periodHours == '0') {
+                            $finish = $finish->copy()->subDay();
                             $duration = floor($periodDays) . ' days';
                         } else {
                             $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
@@ -114,7 +126,7 @@
                             title="Show Details"
                             data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
                             data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}"
-                            data-finished="{{ Carbon\Carbon::parse($r->start_leave)->copy()->addDays($periodHours == '0' ? floor($periodDays) - 1 : floor($periodDays))->format('d F Y') }}"
+                            data-finished="{{ $finish->format('d F Y') }}"
                             data-reason="{{ $r->reason }}"
                             data-duration="{{ $duration }}"
                             data-status="{{ $r->request_status }}"

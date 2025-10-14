@@ -267,12 +267,24 @@
                         {{-- View Details Button --}}
                         @php
                         if ($d->type === 'leave') {
+                            $start = Carbon\Carbon::parse($d->start_leave);
+                            $finish = $start->copy();
                             $periodDays = $d->leave_period / 8;
+                            $addDays = 0;
+                            
+                            while ($addDays < floor($periodDays)) {
+                                if (!$finish->isWeekend()) {
+                                    $addDays++;
+                                }
+                                $finish->addDay();
+                            }
+
                             $periodHours = ($periodDays - floor($periodDays) ) * 8;
                             
                             if (floor($periodDays) == '0') {
                                 $duration = $periodHours . ' hours';
                             } elseif ($periodHours == '0') {
+                                $finish = $finish->copy()->subDay();
                                 $duration = floor($periodDays) . ' days';
                             } else {
                                 $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
@@ -294,7 +306,7 @@
                                 : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
                                 data-finished="{{ $d->type === 'overwork'
                                 ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
-                                : Carbon\Carbon::parse($d->start_leave)->copy()->addDays($periodHours == '0' ? floor($periodDays) - 1 : floor($periodDays))->format('d F Y') }}"
+                                : $finish->format('d F Y') }}"
                                 data-type="{{ $d->type }}"
                                 data-description="{{ $d->reason ?? $d->task_description }}"
                                 data-status="{{ $d->request_status }}"
@@ -513,9 +525,7 @@
 
         function getStatusClass(status) {
             switch(status.toLowerCase()) {
-                case 'approved':
                 case 'approved': return 'bg-cyan-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-                case 'under review':
                 case 'pending': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
                 case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
                 default: return 'bg-gray-500 text-white capitalize rounded-full px-3 py-1 text-sm font-semibold';
