@@ -41,7 +41,7 @@
                         $leavePeriod = (int) $data['totalLeave'][0]->leave_period / 8;
                         $leaveBalance = auth()->user()->overwork_allowance - $leavePeriod;
                         $periodDays = floor($leavePeriod);
-                        $periodHours = ($leavePeriod - floor($leavePeriod)) * 8;
+                        $periodHours = ($leavePeriod - $periodDays) * 8;
 
                         if (floor($periodDays) == '0') {
                             $totalLeave = $periodHours . ' hours';
@@ -324,7 +324,7 @@
 
                                 <form action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}#data" method="post" class="flex justify-between gap-2">
                                     @csrf
-                                    <input type="text" name="this_leave_period" value="{{$d->leave_period}}">
+                                    <input type="hidden" name="this_leave_period" value="{{$d->leave_period}}">
                                     <button
                                         type="submit" name="approved" value="{{$d->type}}"
                                         class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"

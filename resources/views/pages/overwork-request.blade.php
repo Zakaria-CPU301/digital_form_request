@@ -25,7 +25,7 @@
                     <div class="flex flex-wrap mb-4">
                         @foreach ($evidence as $e) @php $ext =
                         strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
-                        @endphp @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                        @endphp @if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp']))
                         <div
                             class="relative group mr-2 mb-2 rounded overflow-hidden"
                             style="width: 100px; height: 100px"

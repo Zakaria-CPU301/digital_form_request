@@ -124,7 +124,12 @@ class OverworkController
             'date' => ['required', 'date'],
             'start' => ['required'],
             'finish' => ['required'],
-            'desc' => ['required']
+            'desc' => ['required'],
+            'photo' => 'required_without:video|array',
+            'video' => 'required_without:photo|array'
+        ], [
+            'photo.required_without' => 'Please upload a photo or video',
+            'video.required_without' => 'Please upload a photo or video'
         ]);
 
         $status = $request->action === 'submit' ? 'review' : 'draft';
@@ -189,9 +194,13 @@ class OverworkController
     {
         try {
             $overwork->delete();
-            return redirect()->back()->with('success', 'Overwork draft deleted successfully');
+            return redirect()->back()->with('success', [
+                'title' => 'Overwork draft deleted successfully',
+                'message' => 'Your overwork draft has been deleted.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
         } catch (Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to delete overwork draft: ' . $e->getMessage()]);
+            return redirect()->route('dashboard')->withErrors(['error' => 'Failed to delete overwork draft: ' . $e->getMessage()]);
         }
     }
 

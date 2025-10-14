@@ -55,7 +55,6 @@ class ManageDataController extends Controller
             return redirect()->back()->with('success', [
                 'title' => $status . ' Rejected!',
                 'message' => 'This overwork request has been rejected.',
-                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
         }
 
@@ -64,7 +63,11 @@ class ManageDataController extends Controller
         $newApproval = (int) $request['this_leave_period'];
         $validateBalanceApproval = $totalLeave + $newApproval;
         if ($validateBalanceApproval > $allowance * 8) {
-            return redirect()->back();
+            return redirect()->back()->with('fail', [
+                'title' => 'Leave period exceeds allowance',
+                'message' => 'The total leave period including this request exceeds the user\'s leave allowance.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
         }
         if ($request->has('approved')) {
             $status = $request->input('approved');
@@ -75,7 +78,6 @@ class ManageDataController extends Controller
             return redirect()->back()->with('success', [
                 'title' => $status . ' Approved!',
                 'message' => "This {$status} request has been approved.",
-                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
         }
     }

@@ -133,7 +133,11 @@ class LeaveController
     {
         try {
             $leave->delete();
-            return redirect()->back()->with('success', 'Leave draft deleted successfully');
+            return redirect()->back()->with('success', [
+                'title' => 'Leave draft deleted successfully',
+                'message' => 'Your leave draft has been deleted.',
+                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            ]);
         } catch (Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to delete leave draft: ' . $e->getMessage()]);
         }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Leave;
 use Illuminate\Http\Request;
 
 class ManageAccountController extends Controller

@@ -171,9 +171,7 @@
                     </button>
                 </div>
             </div>
-            {{-- end Leave Request Section --}}
         </div>
-        {{-- end flex-row container --}}
     </form>
 
     {{-- SCRIPT --}}

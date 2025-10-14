@@ -58,6 +58,22 @@
                     </td>
 
                      <td class="py-4 px-6 text-center">
+                        @php
+                            $leavePeriod = \App\Models\Leave::where('user_id', $d->id)
+                                ->where('request_status', 'approved')
+                                ->sum('leave_period') / 8;
+                            $leaveBalance = auth()->user()->overwork_allowance - $leavePeriod;
+                            $periodDays = floor($leavePeriod);
+                            $periodHours = ($leavePeriod - $periodDays) * 8;
+
+                            if (floor($leaveBalance) == 0) {
+                                $balance = ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
+                            } elseif ($leaveBalance - floor($leaveBalance) == 0) {
+                                $balance = floor($leaveBalance) . ' days';
+                            } else {
+                                $balance = floor($leaveBalance) . ' days ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
+                            }
+                        @endphp
                         <div class="flex space-x-2 justify-center items-center">
                             <button
                                 class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
@@ -72,6 +88,7 @@
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
                                 data-role="{{ $d->role }}"
+                                data-balance="{{ $balance }}"
                             >
                                 <i class="bi bi-eye"></i>
                             </button>
@@ -172,12 +189,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    
                     const id = this.dataset.id;
                     const date = this.dataset.cration_account;
                     const name = this.dataset.name;
                     const email = this.dataset.email;
                     const status = this.dataset.status;
+                    const balance = this.dataset.balance;
                     const photo = this.dataset.photo;
                     const phone = this.dataset.phone;
                     const position = this.dataset.position;
@@ -215,10 +232,17 @@
                         </div>
                         `;
                         body += `
-                            <div class="flex flex-col items-start">
-                                <span class="font-extrabold text-gray-700">Status:</span>
-                                <span class="${statusClass} capitalize">${status}</span>
-                            </div>
+                        <div class="flex flex-col items-start">
+                            <span class="font-extrabold text-gray-700">Status:</span>
+                            <span class="${statusClass} capitalize">${status}</span>
+                        </div>
+                        ${role != 'admin' 
+                            ? ` <div class="flex flex-col items-start">
+                                    <span class="font-extrabold text-gray-700">Leave Balance:</span>
+                                    <span class="text-gray-900 mt-2">${balance}</span>
+                                </div>`
+                            : ''
+                        }
                         `;
                     document.getElementById('leave-preview-account').innerHTML = body;
                     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'leave-preview-modal' }));

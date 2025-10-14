@@ -66,6 +66,30 @@
 
         <tbody>
             @forelse($data as $r)
+                @php
+                    $start = Carbon\Carbon::parse($r->start_leave);
+                    $finish = $start->copy();
+                    $periodDays = $r->leave_period / 8;
+                    $addDays = 0;
+                    
+                    while ($addDays < floor($periodDays)) {
+                        if (!$finish->isWeekend()) {
+                            $addDays++;
+                        }
+                        $finish->addDay();
+                    }
+
+                    $periodHours = ($periodDays - floor($periodDays) ) * 8;
+                    
+                    if (floor($periodDays) == '0') {
+                        $duration = $periodHours . ' hours';
+                    } elseif ($periodHours == '0') {
+                        $finish = $finish->copy()->subDay();
+                        $duration = floor($periodDays) . ' days';
+                    } else {
+                        $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
+                    }
+                @endphp
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300">
                 <td class="py-4 px-6">
                     {{ $loop->iteration }}
@@ -81,33 +105,7 @@
                         {{ Str::words($r->user->name, 2) }}
                     </td>
                 @endif
-                <td class="py-4 px-6 font-semibold capitalize">
-                    @php
-                        $start = Carbon\Carbon::parse($r->start_leave);
-                        $finish = $start->copy();
-                        $periodDays = $r->leave_period / 8;
-                        $addDays = 0;
-                        
-                        while ($addDays < floor($periodDays)) {
-                            if (!$finish->isWeekend()) {
-                                $addDays++;
-                            }
-                            $finish->addDay();
-                        }
-
-                        $periodHours = ($periodDays - floor($periodDays) ) * 8;
-                        
-                        if (floor($periodDays) == '0') {
-                            $duration = $periodHours . ' hours';
-                        } elseif ($periodHours == '0') {
-                            $finish = $finish->copy()->subDay();
-                            $duration = floor($periodDays) . ' days';
-                        } else {
-                            $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
-                        }
-                        echo $duration;
-                    @endphp
-                </td>
+                <td class="py-4 px-6 font-semibold capitalize">{{ $duration }}</td>
                 <td class="py-4 px-6">
                     @php
                         $statusClass = match($r->request_status) {
@@ -137,7 +135,7 @@
                         @if (auth()->user()->role === 'admin')
                             <form action="{{route('request.edit', ['id' => $r->id, 'userId' => $r->user_id])}}" method="post" class="flex gap-2">
                                 @csrf
-                                <input type="text" name="this_leave_period" value="{{$r->leave_period}}">
+                                <input type="hidden" name="this_leave_period" value="{{$r->leave_period}}">
                                 <button
                                     type="submit" name="approved" value="{{$r->type}}"
                                     class="{{$r->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
@@ -216,9 +214,7 @@
                 &times;
             </button>
         </div>
-    <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1">
-            <!-- content -->
-        </div>
+        <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1"></div>
     </div>
 </x-modal>
 
