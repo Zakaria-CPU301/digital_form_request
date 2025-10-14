@@ -1,3 +1,4 @@
-- [x] Add logout button in sidebar below profile edit
-- [x] Add confirmation alert to logout button
-- [x] Change logout button SVG and text to red
+- [x] Update resources/views/components/header.blade.php to add the burger menu icon using the provided SVG (with solid fills since gradients are incomplete), wrapped as a dropdown trigger.
+- [x] Integrate the existing <x-dropdown> component for dropdown behavior, including links to profile and logout in the content.
+- [ ] Test the dropdown functionality in the browser to ensure it opens/closes and links work correctly.
+- [x] Change sidebar background to img/header-bg.webp, keep width w-72, allow zooming.

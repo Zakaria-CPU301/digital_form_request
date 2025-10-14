@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('img/icon.png') }}" type="image/png">
     <title>Sangnila E-form</title>
 
     <!-- Fonts -->
@@ -37,6 +37,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
+      <x-header />
+
 <body>
     <div class="container w-full min-h-screen flex justify-center items-center bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]">
         @yield('content')
