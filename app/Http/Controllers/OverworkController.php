@@ -30,7 +30,9 @@ class OverworkController
             'desc' => ['required'],
             'user_id' => ['required'],
             'photo' => 'required_without:video|array',
-            'video' => 'required_without:photo|array'
+            'video' => 'required_without:photo|array',
+            'photo*' => 'mimes:jpg,jpeg,png,webp|max:5120',
+            'video*' => 'mimes:mp4,mov,avi|max:10240'
         ], [
             'photo.required_without' => 'Please upload a photo or video',
             'video.required_without' => 'Please upload a photo or video'
@@ -125,8 +127,8 @@ class OverworkController
             'start' => ['required'],
             'finish' => ['required'],
             'desc' => ['required'],
-            'photo' => 'required_without:video|array',
-            'video' => 'required_without:photo|array'
+            'photo' => 'required_without:video|array|mimes:jpg,jpeg,png,webp|max:5120',
+            'video' => 'required_without:photo|array|mimes:mp4,mov,avi|max:10240'
         ], [
             'photo.required_without' => 'Please upload a photo or video',
             'video.required_without' => 'Please upload a photo or video'

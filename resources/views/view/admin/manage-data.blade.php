@@ -1,21 +1,33 @@
 @extends('layouts.tables')
 
 @section('content')
+<x-modal-success />
+
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
     <!-- Title -->
     <h2 class="text-2xl font-bold text-[#012967] mb-4">Submission</h2>
 
     <!-- Filter + Search -->
-    <div id="filter" class="flex items-center mb-6">
+    <div class="flex items-center mb-6">
         @php
             $activeToggle = request('status', 'review');
         @endphp
         {{-- Tabs --}}
-        <form id="type" action="{{route('request.show', ['type' => $activeToggle])}}" method="get" class="flex items-center space-x-4">
+        <form id="autoFilter" action="{{route('request.show', ['type' => $activeToggle])}}" method="get" class="w-full flex justify-between items-center space-x-4">
             @include('components.filter-data-toggle')
 
-            {{-- Month Filter --}}
             <div>
+                {{-- Search --}}
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    placeholder="Search..."
+                    value="{{ request('search') }}"
+                    class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                />
+
+                {{-- Month Filter --}}
                 <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
                     @php
@@ -32,25 +44,13 @@
                     @endforeach
                 </select>
             </div>
-
-            {{-- Search --}}
-            <div>
-                <input
-                    type="search"
-                    id="search"
-                    name="search"
-                    placeholder="Search..."
-                    value="{{ request('search') }}"
-                    class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                />
-            </div>
         </form>
     </div>
 
     <script>
-        document.getElementById('month').addEventListener('change', function() {
-            this.closest('form').submit();
-        });
+        // document.getElementById('month').addEventListener('change', function() {
+        //     this.closest('form').submit();
+        // });
     </script>
 
     <!-- Draft Table -->
@@ -58,7 +58,7 @@
         <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
-                <th class="py-3 px-6 font-semibold">Date</th>
+                <th class="py-3 px-6 font-semibold">Schedule</th>
                 <th class="py-3 px-6 font-semibold">Type</th>
                 <th class="py-3 px-6 font-semibold">Name</th>
                 <th class="py-3 px-6 font-semibold">Reason</th>
@@ -74,10 +74,16 @@
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
 
                     <!-- Date -->
-                    <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}</td>
+                    @if ($d->type === 'overwork')
+                        <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}</td>
+                    @else
+                        <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}</td>
+                    @endif
                     
                     <!-- Type -->
-                    <td class="py-4 px-6 font-semibold">{{ $d->type }}</td>
+                    <td class="py-4 px-6">
+                        <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                    </td>
 
                     <!-- Status -->
                     <td class="py-4 px-6"> {{ $d->user->name }} </td>
@@ -99,52 +105,22 @@
                     </td>
 
                     <!-- Action -->
-                    <td id="data" class="flex py-4 px-6 text-center space-x-2 items-center justify-center">
-                        @php
-                            $status = request()->query('status');
-                        @endphp
-                        <form action="{{route('request.edit', ['id' => $d->id])}}" method="get" class="flex space-x-2">
-                            <button
-                                type="submit" name="type" value="show-dialog"
-                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                title="Show"
-                            >
-                                <i class="bi bi-eye"></i>
-                            </button>
-
-                            <button
-                                type="submit" name="approved" value="{{$d->type}}"
-                                class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                title="Approved"
-                                onclick="return confirm('yakin di terima?')"
-                            >
-                                <i class="bi bi-check2-square"></i>
-                            </button>
-
-                            <button
-                                type="submit" name="rejected" value="{{$d->type}}"
-                                class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                title="Rejected"
-                                onclick="return confirm('yakin di tolak?')"
-                            >
-                            <i class="bi bi-x"></i>
-                            </button>
-                        </form>
+                    <td id="data" class="py-4 px-6 text-center">
+                        @include('view.admin.components.action-navigate')
                     </td>
                 </tr>
             @empty
             <tr>
                 <td colspan="7" class="py-8 px-6 text-center text-gray-500">
-                    <div class="flex flex-col items-center">
-                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <p>No data found</p>
-                    </div>
+                    @include('view.admin.components.status-data-empty')
                 </td>
             </tr>
             @endforelse
         </tbody>
     </table>
 </div>
+
+    @include('view.admin.components.preview-data')
+
+    @include('view.admin.components.manage-data')
 @endsection

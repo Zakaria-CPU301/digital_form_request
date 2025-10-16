@@ -37,6 +37,7 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
         $data = $this->dataSubmitted();
+        $search = $request->input('search');
         $month = $request->input('month');
 
         if (Auth::user()->role === 'user') {
@@ -52,12 +53,11 @@ class DashboardController extends Controller
         }
 
         if ($month && $month !== 'all') {
-            $data['requestData'] = $data['requestData']->filter(function ($item) use ($month) {
-                if ($item->type === 'overwork') {
-                    return Carbon::parse($item->overwork_date)->format('m-Y') === $month;
-                } else {
-                    return Carbon::parse($item->start_leave)->format('m-Y') === $month;
-                }
+            $data['requestData'] = $data['requestData']->filter(function ($item) use ($month, $search) {
+                    return stripos($item->start_leave ?? $item->overwork_date ?? '', $month) !== false ||
+                            stripos($item->leave ?? '', $search) !== false ||
+                            stripos($item->user->name ?? '', $search) !== false ||
+                            stripos($item->reason ?? $item->task_description ?? $item->reason ?? '', $search) !== false;
             });
         }
 

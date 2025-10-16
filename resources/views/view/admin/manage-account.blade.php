@@ -57,7 +57,7 @@
                         </span>
                     </td>
 
-                     <td class="py-4 px-6 text-center">
+                    <td class="py-4 px-6 text-center">
                         @php
                             $leavePeriod = \App\Models\Leave::where('user_id', $d->id)
                                 ->where('request_status', 'approved')

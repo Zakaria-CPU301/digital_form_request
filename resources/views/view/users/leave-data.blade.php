@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-[#012967]">Leave Data</h2>
         
-        <form action="{{ route('leave.submitted') }}" method="GET" class="flex items-center space-x-4 mb-6">
+        <form action="{{ route('leave.submitted') }}" method="GET" id="filter" class="flex items-center space-x-4 mb-6">
             <div>
                 <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
@@ -51,7 +51,7 @@
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
-                <th class="py-3 px-6 font-semibold">Date</th>
+                <th class="py-3 px-6 font-semibold">Start Date</th>
                 <th class="py-3 px-6 font-semibold w-[400px]">Reason</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
@@ -222,6 +222,7 @@
 
 <script>
 document.getElementById('search').addEventListener('input', function() {
+    document.getElementById('filter').submit();
     const searchTerm = this.value.toLowerCase();
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {

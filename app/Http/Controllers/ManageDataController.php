@@ -16,14 +16,13 @@ class ManageDataController extends Controller
     public function show(Request $request)
     {
         $requestData = new RequestController;
-        $filter = $request->input('status');
+        $status = $request->input('status');
         $month = $request->input('month');
         $search = $request->input('search');
         $data = $requestData->requestData()
             ->where('request_status', '!=', 'draft')
-            ->where('request_status', $filter ?? 'review');
+            ->where('request_status', $status ?? 'review');
 
-        // Apply filters
         if ($month && $month !== 'all') {
             $data = $data->filter(function ($item) use ($month) {
                 return $item->created_at->format('m-Y') === $month;
@@ -31,14 +30,20 @@ class ManageDataController extends Controller
         }
 
         if ($search) {
-            $searchLower = strtolower($search);
-            $data = $data->filter(function ($item) use ($searchLower) {
-                $reason = $item->reason ?? $item->task_description ?? '';
-                return str_contains(strtolower($reason), $searchLower);
+            $data = $data->filter(function ($item)  use ($search) {
+                return stripos($item->start_leave ?? $item->overwork_date ?? '', $search) !== false ||
+                stripos($item->type ?? '', $search) !== false ||
+                stripos($item->user->name ?? '', $search) !== false ||
+                stripos($item->reason ?? $item->task_description ?? '', $search) !== false || 
+                stripos($item->status ?? '', $search) !== false;
             });
         }
 
-        return view('view.admin.manage-data', compact('data', 'month', 'search'));
+        return view('view.admin.manage-data', [
+            'data' => $data,
+            'month' => $month,
+            'search' => $search,
+        ]);
     }
 
     /**

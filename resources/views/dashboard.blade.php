@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-modal-success />
-    
     @php
         if (auth()->user()->role === 'user') {
             $activeToggle = request('type', 'all');
@@ -116,7 +115,7 @@
                     {{ __('Pending Request') }}
                     <i class="bi bi-hourglass-split text-gray-500 text-lg animate-spin"></i>
                 </small>
-                <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['pending'] ->count() }}</h1>
+                <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['pending']->count() }}</h1>
                 <span class="text-sm text-gray-500">{{ __('Total submission which still under review') }}</span>
             </div>
         </div>
@@ -181,7 +180,10 @@
 <div id="data"  class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
         <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
 
-        <form action="{{ route('dashboard') }}#data" method="GET" class="mb-6">
+        @php
+            $activeToggle = request('status', 'review');
+        @endphp
+        <form id="autoFilter" action="{{ route('dashboard') }}#data" method="get" class="mb-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
                 {{-- Tabs --}}
                 <div>
@@ -194,11 +196,13 @@
                     type="search"
                     id="search"
                     name="search"
+                    value="{{request('search')}}"
                     placeholder="Search requests..."
                     value="{{ $currentSearch }}"
                     class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-64"
                     />
                 </div>
+
                 <div>
                     <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                         <option value="all" {{ $currentMonth === 'all' ? 'selected' : '' }}>All Months</option>
@@ -264,312 +268,19 @@
                         <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                     </td>
                     <td class="py-4 px-6 text-center">
-                        {{-- View Details Button --}}
-                        @php
-                        if ($d->type === 'leave') {
-                            $start = Carbon\Carbon::parse($d->start_leave);
-                            $finish = $start->copy();
-                            $periodDays = $d->leave_period / 8;
-                            $addDays = 0;
-                            
-                            while ($addDays < floor($periodDays)) {
-                                if (!$finish->isWeekend()) {
-                                    $addDays++;
-                                }
-                                $finish->addDay();
-                            }
-
-                            $periodHours = ($periodDays - floor($periodDays) ) * 8;
-                            
-                            if (floor($periodDays) == '0') {
-                                $duration = $periodHours . ' hours';
-                            } elseif ($periodHours == '0') {
-                                $finish = $finish->copy()->subDay();
-                                $duration = floor($periodDays) . ' days';
-                            } else {
-                                $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
-                            }
-                        } else {
-                            $duration = Carbon\Carbon::parse($d->start_overwork)->diff($d->finished_overwork);
-                        }
-                            @endphp
-
-                        <div class="flex space-x-2">
-                            <button
-                                class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                title="Show Details"
-                                data-id="{{ $d->id }}"
-                                data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
-                                data-overwork_date="{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}"
-                                data-start="{{ $d->type === 'overwork' 
-                                ? Carbon\Carbon::parse($d->start_overwork)->format('H : i') 
-                                : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
-                                data-finished="{{ $d->type === 'overwork'
-                                ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
-                                : $finish->format('d F Y') }}"
-                                data-type="{{ $d->type }}"
-                                data-description="{{ $d->reason ?? $d->task_description }}"
-                                data-status="{{ $d->request_status }}"
-                                data-duration="{{ $duration }}"
-                                @if($d->type === 'overwork')
-                                    data-evidences="{{ $d->evidence->toJson() }}"
-                                @endif
-                            >
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            @if (auth()->user()->role === 'admin')
-                                @php
-                                    $status = request('status');
-                                @endphp
-
-                                <form action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}#data" method="post" class="flex justify-between gap-2">
-                                    @csrf
-                                    <input type="hidden" name="this_leave_period" value="{{$d->leave_period}}">
-                                    <button
-                                        type="submit" name="approved" value="{{$d->type}}"
-                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                        title="Accept"
-                                        onclick="return confirm('Are you sure want to accept this request?')"
-                                    >
-                                        <i class="bi bi-check2-square"></i>
-                                    </button>
-
-                                    <button
-                                        type="submit" name="rejected" value="{{$d->type}}"
-                                        class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                        title="Reject"
-                                        onclick="return confirm('Are you sure want to reject this request?')"
-                                    >
-                                        <i class="bi bi-x"></i>
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
+                        @include('view.admin.components.action-navigate')
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="{{ auth()->user()->role === 'admin' ? 7 : 6 }}" class="py-8 px-6 text-center text-gray-500">
-                        <div class="flex flex-col items-center">
-                            <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                            <p>No data found</p>
-                        </div>
-                    </td>
+                    @include('view.admin.components.status-data-empty')
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <x-modal name="dashboard-preview-modal" maxWidth="3xl">
-        <div class="p-6 flex flex-col max-h-[80vh]">
-            <div class="flex justify-between items-center mb-4 flex-shrink-0">
-                <h3 class="text-xl font-extrabold text-[#012967] flex-1 text-center">
-                    Request Preview
-                </h3>
-                <button
-                    @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'dashboard-preview-modal' }))"
-                    class="text-red-500 hover:text-red-300 text-2xl"
-                >
-                    &times;
-                </button>
-            </div>
-            <div id="dashboard-preview-body" class="space-y-3 overflow-y-auto flex-1">
-                <!-- content -->
-            </div>
-        </div>
-    </x-modal>
+    @include('view.admin.components.preview-data')
 
-    <x-modal name="evidence-viewer-modal" maxWidth="6xl">
-        <div class="flex items-center justify-center relative p-6">
-                <button
-                    @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
-                    class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-2xl"
-                >
-                    &times;
-                </button>
-            <div id="evidence-viewer-body" class="flex items-center justify-center">
-                <!-- media content -->
-            </div>
-                <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                    &larr;
-                </button>
-                <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                    &rarr;
-                </button>
-            </div>
-        </div>
-    </x-modal>
-
-    <script>
-        function clearFilters() {
-            document.getElementById('search').value = '';
-            document.getElementById('month').value = 'all';
-
-            const allDataButtons = document.querySelectorAll('button[name="type"][value="all"]');
-            
-            if (allDataButtons.length > 0) {
-                allDataButtons[0].click();
-            }
-
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                row.style.display = '';
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('search').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('tbody tr');
-                const isAdmin = '{{ auth()->user()->role }}' === 'admin';
-                const reasonIndex = isAdmin ? 4 : 3;
-
-                rows.forEach(row => {
-                    if (row.cells.length > 1) {
-                        const reason = row.textContent.toLowerCase();
-                        if (reason.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            });
-
-            document.querySelectorAll('.eye-preview-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.dataset.id;
-                    const date = this.dataset.date;
-                    const overworkDate = this.dataset.overwork_date;
-                    const start = this.dataset.start;
-                    const finish = this.dataset.finished;
-                    const type = this.dataset.type;
-                    const description = this.dataset.description;
-                    const status = this.dataset.status;
-                    const duration = this.dataset.duration;
-                    const evidences = this.dataset.evidences ? JSON.parse(this.dataset.evidences) : [];
-                    const statusClass = getStatusClass(status);
-                    let overworkOnly = ''
-                    if (type === 'overwork') {
-                        overworkOnly = `
-                            <div class="flex flex-col items-start">
-                                <span class="font-extrabold text-gray-700 capitalize">${type} Date:</span>
-                                <span class="text-gray-900 mt-2 capitalize">${overworkDate}</span>
-                            </div>
-                            `
-                    }
-                    let body = `
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Requested At:</span>
-                            <span class="text-gray-900 mt-2">${date}</span>
-                        </div>
-                        ${overworkOnly}
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700 capitalize">${type === 'overwork' ? `${type} time` : `${type} date`}:</span>
-                            <span class="text-gray-900 mt-2 flex gap-5">
-                                ${start} 
-                                    <i class="bi bi-arrow-right text-xl font-bold"></i>
-                                ${finish}
-                            </span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Type:</span>
-                            <span class="text-gray-900 mt-2 capitalize">${type}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Description:</span>
-                            <span class="text-gray-900 mt-2">${description.replace(/\n/g, '<br>')}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Duration:</span>
-                            <span class="text-gray-900 mt-2">${duration}</span>
-                        </div>
-                        `;
-                        body += `
-                            <div class="flex flex-col items-start">
-                                <span class="font-extrabold text-gray-700">Status:</span>
-                                <span class="${statusClass} capitalize">${status}</span>
-                            </div>
-                        `;
-                    if (type === 'overwork') {
-                        body += `
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Evidences:</span>
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                ${evidences.map((e, index) => {
-                                    const ext = e.path.split('.').pop().toLowerCase();
-                                    if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-                                        return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
-                                    } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                                        return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
-                                    }
-                                    return '';
-                                }).join('')}
-                            </div>
-                        </div>
-                        `;
-                    }
-                    document.getElementById('dashboard-preview-body').innerHTML = body;
-                    currentEvidences = evidences;
-                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'dashboard-preview-modal' }));
-                });
-            });
-        });
-
-        document.getElementById('month').addEventListener('change', function() {
-            this.closest('form').submit();
-        });
-
-        function getStatusClass(status) {
-            switch(status.toLowerCase()) {
-                case 'approved': return 'bg-cyan-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-                case 'pending': return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm font-semibold';
-                case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
-                default: return 'bg-gray-500 text-white capitalize rounded-full px-3 py-1 text-sm font-semibold';
-            }
-        }
-
-        let currentEvidences = [];
-        let currentIndex = 0;
-
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('evidence-item')) {
-                const index = parseInt(e.target.dataset.index);
-                currentIndex = index;
-                showEvidence(currentIndex);
-                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
-            }
-        });
-
-        function showEvidence(index) {
-            const e = currentEvidences[index];
-            const ext = e.path.split('.').pop().toLowerCase();
-            let mediaHtml = '';
-            if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-                mediaHtml = `<img src="/storage/${e.path}" alt="Evidence" class="max-w-full h-[600px] rounded shadow-lg">`;
-            } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                mediaHtml = `<video src="/storage/${e.path}" class="max-w-full h-[600px] rounded shadow-lg" controls autoplay></video>`;
-            }
-            document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
-            document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
-            document.getElementById('next-evidence').style.display = index < currentEvidences.length - 1 ? 'block' : 'none';
-        }
-
-        document.getElementById('prev-evidence').addEventListener('click', function() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                showEvidence(currentIndex);
-            }
-        });
-
-        document.getElementById('next-evidence').addEventListener('click', function() {
-            if (currentIndex < currentEvidences.length - 1) {
-                currentIndex++;
-                showEvidence(currentIndex);
-            }
-        });
-    </script>
+    @include('view.admin.components.manage-data')
 </x-app-layout>

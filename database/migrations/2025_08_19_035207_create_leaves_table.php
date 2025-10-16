@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('leave_period')->default(0);
             $table->text('reason');
             $table->enum('request_status', ['draft', 'review', 'approved', 'rejected']);
+            $table->text('admin_note')->nullable();
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

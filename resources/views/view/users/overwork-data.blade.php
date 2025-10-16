@@ -52,7 +52,7 @@
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
-                <th class="py-3 px-6 font-semibold">Date</th>
+                <th class="py-3 px-6 font-semibold">Overwork Date</th>
                 <th class="py-3 px-6 font-semibold w-[250px]">Task Description</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
@@ -145,7 +145,7 @@
                         </button>
 
                         @if (auth()->user()->role === 'admin')
-                            <form action="{{route('request.edit', ['id' => $r->id])}}" method="get" class="flex gap-2">
+                            <form action="{{route('request.edit', ['id' => $r->id, 'userId' => $r->user_id])}}" method="get" class="flex gap-2">
                                 <button
                                     type="submit" name="approved" value="{{$r->type}}"
                                     class="{{$r->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
