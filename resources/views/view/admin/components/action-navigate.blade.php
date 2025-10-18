@@ -46,7 +46,6 @@
         @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif >
         <i class="bi bi-eye"></i>
     </button>
-    @if (auth()->user()->role === 'admin') @php $status = request('status'); @endphp
 
     <form
         action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}#data"
@@ -63,7 +62,7 @@
             type="submit"
             name="approved"
             value="{{$d->type}}"
-            class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+            class="{{$requestStatus === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
             title="Accept"
             onclick="return confirm('Are you sure want to accept this request?')"
         >
@@ -74,12 +73,11 @@
             type="submit"
             name="rejected"
             value="{{$d->type}}"
-            class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+            class="{{$requestStatus === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
             title="Reject"
             onclick="return confirm('Are you sure want to reject this request?')"
         >
             <i class="bi bi-x"></i>
         </button>
     </form>
-    @endif
 </div>

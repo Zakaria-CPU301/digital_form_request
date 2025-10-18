@@ -1,4 +1,6 @@
 <script>
+    console.log('hello');
+    
     function clearFilters() {
         document.getElementById("search").value = "";
         document.getElementById("month").value = "all";
@@ -19,16 +21,17 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         let filterForm = document.getElementById("autoFilter");
+        let search = document.getElementById('search')
 
-        document.getElementById("search").addEventListener("input", function () {
-            const query = new URLSearchParams(new FormData(filterForm)).toString();
-
-            const newUrl = new URL(window.location);
-            if (query) {
-                newUrl.search = query;
-            } else {
-                newUrl.search = "";
+        search.addEventListener("input", function () {
+            if (!this.value) {
+                filterForm.submit()
+                return
             }
+            
+            const query = new URLSearchParams(new FormData(filterForm)).toString();
+            const newUrl = new URL(window.location);
+            newUrl.search = query;
             window.history.pushState({}, "", newUrl);
             
             const searchTerm = this.value.toLowerCase();
@@ -46,15 +49,20 @@
                     }
                 }
             });
+            
+            if (rows[0].className === 'empty') {
+                console.log('ok');
+                
+                filterForm.submit();
+                return
+            }
         });
 
-        document.getElementById("month").addEventListener("change", function () {
-            filterForm.submit();
-        });
-
-        document.querySelectorAll('#statusToggle').forEach(s => {
+        document.querySelectorAll('.status-btn').forEach(s => {
             s.addEventListener('click', function() {
-                document.getElementById('statusHidden').value = this.value;
+                document.getElementById('buttonSubmit').value = this.value;
+                console.log('click');
+                
                 filterForm.submit();
             });
         });

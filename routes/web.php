@@ -76,11 +76,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
             Route::delete('/evidence/{evidence}', [OverworkController::class, 'deleteEvidence'])->name('evidence.delete');
         });
-        Route::get('/', [RequestController::class, 'showRecent'])->name('submitted');
-        Route::get('/pending', [RequestController::class, 'showRecent'])->name('review');
-        Route::get('/approved', [RequestController::class, 'showRecent'])->name('approved');
-        Route::get('/rejected', [RequestController::class, 'showRecent'])->name('rejected');
-        Route::get('/draft', [RequestController::class, 'showRecent'])->name('draft');
+        Route::get('/', [RequestController::class, 'showRecent'])->name('show');
     });
 
     //! leave
@@ -94,11 +90,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
             Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
         });
-        Route::get('/', [RequestController::class, 'showRecent'])->name('submitted');
-        Route::get('/pending', [RequestController::class, 'showRecent'])->name('review');
-        Route::get('/approved', [RequestController::class, 'showRecent'])->name('approved');
-        Route::get('/rejected', [RequestController::class, 'showRecent'])->name('rejected');
-        Route::get('/draft', [RequestController::class, 'showRecent'])->name('draft');
+        Route::get('/', [RequestController::class, 'showRecent'])->name('show');
     });
 
 

@@ -31,7 +31,7 @@
         x-on:open-sidebar.window="sidebarOpen = true"
         x-on:close-sidebar.window="sidebarOpen = false"
     >
-        @include('components.leave-navbar', ['sidebarOpen' => 'sidebarOpen'])
+        @include('components.navbar-request', ['sidebarOpen' => 'sidebarOpen'])
         @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
         <main 

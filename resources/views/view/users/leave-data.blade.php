@@ -1,41 +1,12 @@
-@extends('layouts.leave')
+@extends('layouts.request-data')
 
 @section('content')
-
+@php
+    $requestType = request('type', 'all');
+    $requestStatus = request('status', 'submitted');
+@endphp
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#012967]">Leave Data</h2>
-        
-        <form action="{{ route('leave.submitted') }}" method="GET" id="filter" class="flex items-center space-x-4 mb-6">
-            <div>
-                <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                    <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
-                    @php
-                        $months = [];
-                        for ($i = 0; $i < 12; $i++) {
-                            $date = now()->subMonths($i);
-                            $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
-                        }
-                    @endphp
-                    @foreach($months as $monthOption)
-                        <option value="{{ $monthOption['value'] }}" {{ request('month') === $monthOption['value'] ? 'selected' : '' }}>
-                            {{ $monthOption['label'] }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <input
-                    type="search"
-                    id="search"
-                    name="search"
-                    placeholder="Search leave..."
-                    value="{{ request('search') }}"
-                    class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
-                />
-            </div>
-        </form>
-    </div>
+    <x-form-filter-all-data title="leave date" route="leave.show" :status="$requestStatus" :type="$requestType" />
     @if(auth()->user()->role === 'user')
         <a href="{{ route('leave.form-view') }}" 
             class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
@@ -220,91 +191,6 @@
 
 <x-modal-success />
 
-<script>
-document.getElementById('search').addEventListener('input', function() {
-    document.getElementById('filter').submit();
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        if (row.cells.length > 2) {
-            const reason = row.cells[2].textContent.toLowerCase();
-            console.log(reason.includes(searchTerm));
-            
-            if (reason.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    });
-});
+<x-manage-data />
 
-document.querySelectorAll('.eye-preview-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const date = this.dataset.date;
-        const start = this.dataset.start;
-        const finish = this.dataset.finished;
-        const reason = this.dataset.reason;
-        const duration = this.dataset.duration;
-        const status = this.dataset.status;
-        const statusClass = getStatusClass(status);
-        const body = `
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Requested At:</span>
-                <span class="text-gray-900 mt-2">${date}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Leave Date:</span>
-                <span class="text-gray-900 mt-2 flex gap-5">
-                    ${start} 
-                        <i class="bi bi-arrow-right text-xl font-bold"></i>
-                    ${finish}
-                </span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Reason:</span>
-                <span class="text-gray-900 mt-2">${reason.replace(/\n/g, '<br>')}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Duration:</span>
-                <span class="text-gray-900 mt-2">${duration}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Status:</span>
-                <span class="${statusClass} capitalize">${status}</span>
-            </div>
-        `;
-        document.getElementById('leave-preview-body').innerHTML = body;
-        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'leave-preview-modal' }));
-    });
-});
-
-function getStatusClass(status) {
-    switch(status) {
-        case 'approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
-        case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm';
-        case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
-        default: return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
-    }
-}
-
-document.getElementById('month').addEventListener('change', function() {
-    this.closest('form').submit();
-});
-
-document.getElementById('search').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        if (row.cells.length > 2) {
-            const reason = row.textContent.toLowerCase();
-            if (reason.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    });
-});
-</script>
 @endsection

@@ -42,9 +42,11 @@ class RequestController extends Controller
         }
 
         if ($search) {
-            $searchLower = strtolower($search);
-            $data = $data->filter(function ($item) use ($searchLower) {
-                return str_contains(strtolower($item), $searchLower);
+            $data = $data->filter(function ($item) use ($search) {
+                return stripos($item->type ?? '', $search) !== false ||
+                    stripos($item->user->name ?? '', $search) !== false ||
+                    stripos($item->reason ?? $item->task_description ?? '', $search) !== false ||
+                    stripos($item->request_status ?? '', $search) !== false;
             });
         }
 
@@ -54,16 +56,15 @@ class RequestController extends Controller
     public function showDraft(Request $request)
     {
         $data = $this->requestData();
-        $keyValue = $request->input('type');
-
-        if (in_array($keyValue, ['leave', 'overwork'])) {
-            $data = $data->where('type', $keyValue)
-                ->where('request_status', 'draft')
-                ->where('user_id', Auth::id());
-        } else {
-            $data = $data->where('request_status', 'draft')
-                ->where('user_id', Auth::id())
-                ->sortByDesc('created_at');
+        $type = $request->input('type');
+        $month = $request->input('month');
+        $search = $request->input('search');
+        $data = $this->applyFilters($data, $month, $search)
+            ->where('request_status', 'draft')
+            ->where('user_id', Auth::id())
+            ->sortByDesc('created_at');
+        if ($type && $type != 'all') {
+            $data = $data->where('type', $type);
         }
 
         return view('view.users.draft', compact('data'));
@@ -73,24 +74,22 @@ class RequestController extends Controller
     {
         $data = $this->requestData();
         $routeName = Route::currentRouteName();
-        $keyValue = $request->input('type');
+        $status = $request->input('status');
         $month = $request->input('month');
         $search = $request->input('search');
 
         if (Auth::user()->role === 'user') {
             if ($routeName != 'dashboard') {
                 if (Str::before($routeName, '.') === 'overwork') {
-                    $suffix = Str::after($routeName, 'overwork.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'overwork')->where('user_id', Auth::id());
-                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
-                        $data = $data->where('request_status', $suffix);
+                    if ($status && $status != 'all') {
+                        $data = $data->where('request_status', $status);
                     }
                     return view('view.users.overwork-data', compact('data'));
                 } else {
-                    $suffix = Str::after($routeName, 'leave.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('user_id', Auth::id());
-                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
-                        $data = $data->where('request_status', $suffix);
+                    if ($status && $status != 'all') {
+                        $data = $data->where('request_status', $status);
                     }
                     return view('view.users.leave-data', compact('data'));
                 }
@@ -101,17 +100,15 @@ class RequestController extends Controller
         } elseif (Auth::user()->role === 'admin') {
             if ($routeName != 'dashboard') {
                 if (Str::before($routeName, '.') === 'overwork') {
-                    $suffix = Str::after($routeName, 'overwork.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'overwork')->where('request_status', '!=', 'draft');
-                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
-                        $data = $data->where('request_status', $suffix);
+                    if ($status && $status !== 'all') {
+                        $data = $data->where('request_status', $status);
                     }
                     return view('view.users.overwork-data', compact('data'));
                 } else {
-                    $suffix = Str::after($routeName, 'leave.');
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('request_status', '!=', 'draft');
-                    if (in_array($suffix, ['review', 'approved', 'rejected', 'draft'])) {
-                        $data = $data->where('request_status', $suffix);
+                    if ($status && $status !== 'all') {
+                        $data = $data->where('request_status', $status);
                     }
                     return view('view.users.leave-data', compact('data'));
                 }

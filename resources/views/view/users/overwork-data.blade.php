@@ -1,41 +1,14 @@
-@extends('layouts.overwork')
+@extends('layouts.request-data')
 
 @section('content')
 
-<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-[#012967]">Overwork Data</h2>
-        <form action="{{ route('overwork.submitted') }}" method="GET" class="flex items-center space-x-4 mb-6">
-            <div>
-                <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                    <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
-                    @php
-                        $months = [];
-                        for ($i = 0; $i < 12; $i++) {
-                            $date = now()->subMonths($i);
-                            $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
-                        }
-                    @endphp
-                    @foreach($months as $monthOption)
-                        <option value="{{ $monthOption['value'] }}" {{ request('month') === $monthOption['value'] ? 'selected' : '' }}>
-                            {{ $monthOption['label'] }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <input
-                    type="search"
-                    id="search"
-                    name="search"
-                    placeholder="Search overwork data..."
-                    value="{{ request('search') }}"
-                    class="border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full max-w-md"
-                />
-            </div>
-        </form>
-    </div>
+@php
+    $requestType = request('type', 'all');
+    $requestStatus = request('status', 'submitted');
+@endphp
 
+<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
+    <x-form-filter-all-data title="overwork data" route="overwork.show" :status="$requestStatus" :type="$requestType" />
             <!-- New Data Button -->
     @if (auth()->user()->role === 'user')
         <a href="{{ route('overwork.form-view') }}" 
@@ -254,156 +227,5 @@
 
 <x-modal-success />
 
-<script>
-document.getElementById('search').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase().trim();
-    const rows = document.querySelectorAll('tbody tr');
-
-    rows.forEach(row => {
-        // Gabungkan semua teks dari setiap kolom dalam satu string
-        const rowText = Array.from(row.cells)
-            .map(cell => cell.textContent.toLowerCase())
-            .join(' ');
-
-        // Jika baris mengandung kata yang dicari → tampilkan, kalau tidak → sembunyikan
-        if (rowText.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-
-let currentEvidences = [];
-let currentIndex = 0;
-
-document.querySelectorAll('.eye-preview-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const id = this.dataset.id;
-        const date = this.dataset.date;
-        const overworkDate = this.dataset.overwork_date;
-        const start = this.dataset.start;
-        const finished = this.dataset.finished;
-        const description = this.dataset.description;
-        const duration = this.dataset.duration;
-        const status = this.dataset.status;
-        const evidences = JSON.parse(this.dataset.evidences);
-        const statusClass = getStatusClass(status);
-        const body = `
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Requested At:</span>
-                <span class="text-gray-900 mt-2">${date}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Overwork Date:</span>
-                <span class="text-gray-900 mt-2 flex gap-5">${overworkDate}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Overwork Time:</span>
-                <span class="text-gray-900 mt-2 flex gap-5">
-                    ${start} 
-                        <i class="bi bi-arrow-right text-xl font-bold"></i>
-                    ${finished}
-                </span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700 mr-4">Task Description:</span>
-                <span class="text-gray-900 mt-2">${description.replace(/\n/g, '<br>')}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Duration:</span>
-                <span class="text-gray-900 mt-2">${duration}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Status:</span>
-                <span class="${statusClass} capitalize">${status}</span>
-            </div>
-            <div class="flex flex-col items-start">
-                <span class="font-extrabold text-gray-700">Evidences:</span>
-                <div class="mt-2 flex flex-wrap gap-2">
-                    ${evidences.map((e, index) => {
-                        const ext = e.path.split('.').pop().toLowerCase();
-                        if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-                            return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
-                        } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
-                        }
-                        return '';
-                    }).join('')}
-                </div>
-            </div>
-        `;
-        document.getElementById('overwork-preview-body').innerHTML = body;
-        currentEvidences = evidences;
-        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'overwork-preview-modal' }));
-    });
-});
-
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('evidence-item')) {
-        const index = parseInt(e.target.dataset.index);
-        currentIndex = index;
-        showEvidence(currentIndex);
-        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
-    }
-});
-
-function showEvidence(index) {
-    const e = currentEvidences[index];
-    const ext = e.path.split('.').pop().toLowerCase();
-    let mediaHtml = '';
-    if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) {
-        mediaHtml = `<img src="/storage/${e.path}" alt="Evidence" class="max-w-full h-[600px] rounded shadow-lg">`;
-    } else if (['mp4', 'mov', 'avi'].includes(ext)) {
-        mediaHtml = `<video src="/storage/${e.path}" class="max-w-full h-[600px] rounded shadow-lg" controls></video>`;
-    }
-    document.getElementById('evidence-viewer-body').innerHTML = mediaHtml;
-    document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
-    document.getElementById('next-evidence').style.display = index < currentEvidences.length - 1 ? 'block' : 'none';
-}
-
-document.getElementById('prev-evidence').addEventListener('click', function() {
-    if (currentIndex > 0) {
-        currentIndex--;
-        showEvidence(currentIndex);
-    }
-});
-
-document.getElementById('next-evidence').addEventListener('click', function() {
-    if (currentIndex < currentEvidences.length - 1) {
-        currentIndex++;
-        showEvidence(currentIndex);
-    }
-});
-
-function getStatusClass(status) {
-    switch(status) {
-        case 'approved': return 'bg-green-500 text-white rounded-full px-3 py-1 text-sm';
-        case 'review': return 'bg-gray-500 text-white rounded-full px-3 py-1 text-sm';
-        case 'rejected': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm';
-        default: return 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm';
-    }
-}
-</script>
-
-<script>
-document.getElementById('month').addEventListener('change', function() {
-    this.closest('form').submit();
-});
-
-document.getElementById('search').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        if (row.cells.length > 2) {
-            const taskDesc = row.textContent.toLowerCase();
-            if (taskDesc.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    });
-});
-</script>
+<x-manage-data />
 @endsection

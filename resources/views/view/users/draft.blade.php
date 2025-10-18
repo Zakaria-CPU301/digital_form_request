@@ -1,29 +1,12 @@
 @extends('layouts.tables')
 
 @section('content')
+@php
+    $requestType = request('type', 'all');
+    $requestStatus = request('status');
+@endphp
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
-    <h2 class="text-2xl font-bold text-[#012967] mb-4">Draft Request</h2>
-
-    <div id="filter" class="flex items-center mb-6">
-        @php
-            $activeToggle = request('type', 'all');
-        @endphp
-        {{-- Tabs --}}
-        <form id="type" action="{{route('draft', ['type' => $activeToggle])}}" method="get">
-            @include('components.filter-data-toggle')
-        </form>
-
-        {{-- Search --}}
-        <div class="ml-auto">
-            <input 
-                type="search" 
-                id="search" 
-                name="search" 
-                placeholder="Search..." 
-                class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400" 
-            />
-        </div>
-    </div>
+    <x-form-filter-all-data title="draft request" route="draft" :status="$requestStatus" :type="$requestType" />
 
     <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
@@ -38,7 +21,6 @@
                 @endif
                 <th class="py-3 px-6 font-semibold">Duration</th>
                 <th class="py-3 px-6 font-semibold">Type</th>
-                <th class="py-3 px-6 font-semibold">Evidence</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
         </thead>
@@ -76,29 +58,7 @@
                 </td>
                 
                 <td class="py-4 px-6">
-                    {{ $d->type }}
-                </td>
-
-                {{-- <td class="py-4 px-6">
-                    @php
-                        $totalEvidence = $d->evidence->count();
-                        $firstImage = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
-                        $firstVideo = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
-                    @endphp
-                    @if($totalEvidence > 0)
-                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-2 rounded-full flex">
-                        <svg class="w-3 h-3 mr-1 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ $totalEvidence }} Media
-                    </span>
-                    @else
-                        <span class="text-gray-500 text-sm">No evidence</span>
-                    @endif
-                </td> --}}
-
-                <td class="py-4 px-6 text-center">
-                    {{$d->user->name}}
+                    <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                 </td>
 
                 <td class="py-4 px-6 text-center">
@@ -135,7 +95,7 @@
                 </td>
             </tr>
             @empty
-            <tr>
+            <tr class="empty">
                 @php
                     $requestType = request('type', 'all');
                 @endphp
@@ -179,4 +139,7 @@
         </tbody>
     </table>
 </div>
+@include('view.admin.components.preview-data')
+
+<x-manage-data />
 @endsection

@@ -52,7 +52,7 @@
             </a>
 
             <a
-                href="{{ route('overwork.submitted') }}"
+                href="{{ route('overwork.show') }}"
                 class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'overwork') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
             >
                 <i class="bi bi-alarm text-2xl"></i>
@@ -60,7 +60,7 @@
             </a>
 
             <a
-                href="{{ route('leave.submitted') }}"
+                href="{{ route('leave.show') }}"
                 class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'leave') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
             >
                 <svg

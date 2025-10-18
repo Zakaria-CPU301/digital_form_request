@@ -18,7 +18,7 @@ class LeaveController
     {
         $allowance = Auth::user()->overwork_allowance;
         $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'approved')->sum('leave_period') / 8;
-        return view('pages.leave-request', compact('allowance', 'leave_period'));
+        return view('view.users.leave-request', compact('allowance', 'leave_period'));
     }
 
     /**
@@ -56,13 +56,13 @@ class LeaveController
         ]);
 
         if ($status == 'draft')
-            return redirect()->route('leave.draft')->with('success', [
+            return redirect()->route('leave.show')->with('success', [
                 'title' => 'Saved to draft!',
                 'message' => 'Your leave request has been saved to draft.',
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
 
-        if ($status === 'review') return redirect()->route('leave.review')->with('success', [
+        if ($status === 'review') return redirect()->route('leave.show')->with('success', [
             'title' => 'Leave request Submitted!',
             'message' => 'Please wait for admin approval.',
             'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
@@ -76,7 +76,7 @@ class LeaveController
     {
         $allowance = Auth::user()->overwork_allowance;
         $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'approved')->sum('leave_period') / 8;
-        return view('pages.leave-request', compact('leave', 'allowance', 'leave_period'));
+        return view('view.users.leave-request', compact('leave', 'allowance', 'leave_period'));
     }
 
     /**

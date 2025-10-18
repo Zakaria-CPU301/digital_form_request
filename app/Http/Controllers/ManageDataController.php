@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Leave;
 use App\Models\Overwork;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RequestController;
+use Illuminate\Validation\Rules\Exists;
 
 class ManageDataController extends Controller
 {
@@ -19,31 +21,26 @@ class ManageDataController extends Controller
         $status = $request->input('status');
         $month = $request->input('month');
         $search = $request->input('search');
-        $data = $requestData->requestData()
-            ->where('request_status', '!=', 'draft')
-            ->where('request_status', $status ?? 'review');
+        $data = $requestData->requestData()->where('request_status', '!=', 'draft');
 
+        if ($status && $status !== 'submitted') {
+            $data = $data->where('request_status', $status);
+        }
         if ($month && $month !== 'all') {
             $data = $data->filter(function ($item) use ($month) {
-                return $item->created_at->format('m-Y') === $month;
+                return Carbon::parse($item->start_leave ?? $item->overwork_date ?? '')->format('m-Y') === $month;
             });
         }
-
         if ($search) {
-            $data = $data->filter(function ($item)  use ($search) {
-                return stripos($item->start_leave ?? $item->overwork_date ?? '', $search) !== false ||
-                stripos($item->type ?? '', $search) !== false ||
-                stripos($item->user->name ?? '', $search) !== false ||
-                stripos($item->reason ?? $item->task_description ?? '', $search) !== false || 
-                stripos($item->status ?? '', $search) !== false;
+            $data = $data->filter(function ($item)  use ($search, $month) {
+                return stripos($item->type ?? '', $search) !== false ||
+                    stripos($item->user->name ?? '', $search) !== false ||
+                    stripos($item->reason ?? $item->task_description ?? '', $search) !== false ||
+                    stripos($item->request_status ?? '', $search) !== false;
             });
         }
 
-        return view('view.admin.manage-data', [
-            'data' => $data,
-            'month' => $month,
-            'search' => $search,
-        ]);
+        return view('view.admin.manage-data', compact('data'));
     }
 
     /**

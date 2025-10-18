@@ -15,7 +15,7 @@ class OverworkController
      */
     public function create()
     {
-        return view('pages.overwork-request');
+        return view('view.users.overwork-request');
     }
 
     /**
@@ -81,13 +81,13 @@ class OverworkController
         }
 
         if ($status == 'draft')
-            return redirect()->route('overwork.draft')->with('success', [
+            return redirect()->route('overwork.show')->with('success', [
                 'title' => 'Saved to draft!',
                 'message' => 'Your overwork request has been saved to draft.',
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
 
-        if ($status === 'review') return redirect()->route('overwork.review')->with('success', [
+        if ($status === 'review') return redirect()->route('overwork.show')->with('success', [
             'title' => 'Overwork Submitted!',
             'message' => 'Please wait for admin approval.',
             'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
@@ -170,13 +170,13 @@ class OverworkController
             }
 
             if ($status == 'draft')
-                return redirect()->route('overwork.draft')->with('success', [
+                return redirect()->route('overwork.show')->with('success', [
                     'title' => 'Draft Updated!',
                     'message' => 'Your overwork request has been draft updated.',
                     'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
                 ]);
 
-            if ($status === 'review') return redirect()->route('overwork.review')->with('success', [
+            if ($status === 'review') return redirect()->route('overwork.show')->with('success', [
                 'title' => 'Overwork Submitted!',
                 'message' => 'Please wait for admin approval.',
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),

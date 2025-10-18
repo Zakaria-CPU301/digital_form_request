@@ -1,11 +1,8 @@
 <x-app-layout>
     <x-modal-success />
     @php
-        if (auth()->user()->role === 'user') {
-            $activeToggle = request('type', 'all');
-        } else {
-            $activeToggle = request('status', 'review');
-        }
+        $requestType = request('type', 'all');
+        $requestStatus = request('status', 'review');
         $currentMonth = request('month', 'all');
         $currentSearch = request('search', '');
     @endphp
@@ -178,54 +175,7 @@
 
     {{-- Recent Request --}}
 <div id="data"  class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
-        <h3 class="font-bold text-2xl mb-4 text-[#012967]">Recent Request</h3>
-
-        @php
-            $activeToggle = request('status', 'review');
-        @endphp
-        <form id="autoFilter" action="{{ route('dashboard') }}#data" method="get" class="mb-6">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
-                {{-- Tabs --}}
-                <div>
-                    @include('components.filter-data-toggle')
-                </div>
-                
-                {{-- Search --}}
-                <div class="ml-auto">
-                    <input
-                    type="search"
-                    id="search"
-                    name="search"
-                    value="{{request('search')}}"
-                    placeholder="Search requests..."
-                    value="{{ $currentSearch }}"
-                    class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400 w-64"
-                    />
-                </div>
-
-                <div>
-                    <select name="month" id="month" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                        <option value="all" {{ $currentMonth === 'all' ? 'selected' : '' }}>All Months</option>
-                        @php
-                            $months = [];
-                            for ($i = 0; $i < 12; $i++) {
-                                $date = now()->subMonths($i);
-                                $months[] = [
-                                    'value' => $date->format('m-Y'),
-                                    'label' => $date->format('F Y')
-                                ];
-                            }
-                            @endphp
-                        @foreach($months as $monthOption)
-                            <option value="{{ $monthOption['value'] }}" {{ $currentMonth === $monthOption['value'] ? 'selected' : '' }}>
-                                {{ $monthOption['label'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-        </form>
-
+    <x-form-filter-all-data title="recent request" route="dashboard" :status="$requestStatus" :type="$requestType" />
 
         {{-- Table --}}
         <table class="min-w-full text-left border-collapse border-b border-gray-300">
@@ -282,5 +232,5 @@
 
     @include('view.admin.components.preview-data')
 
-    @include('view.admin.components.manage-data')
+    <x-manage-data />
 </x-app-layout>

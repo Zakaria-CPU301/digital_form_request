@@ -54,6 +54,14 @@
   // === 1. Tampilin spinner secepat mungkin pas halaman mulai load
   document.addEventListener('DOMContentLoaded', () => {
     showLoading();
+    if (new URLSearchParams(window.location.search).size > 0) {
+      setTimeout(() => {
+        const target = document.getElementById('data');
+        if (target) {
+          target.scrollIntoView({ behavior: "instant" });
+        }
+      }, 100);
+    }
   });
 
   // === 2. Hilangin pas semua resource udah siap

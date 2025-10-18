@@ -37,30 +37,29 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
         $data = $this->dataSubmitted();
+        $status = $request->input('status');
+        $type = $request->input('type');
         $search = $request->input('search');
         $month = $request->input('month');
 
         if (Auth::user()->role === 'user') {
-            $filter = $request->input('type');
-            if (in_array($filter, ['leave', 'overwork'])) {
-                $data['requestData'] = $data['requestData']->where('type', $filter)->take(4);
-            } else {
-                $data['requestData'] = $data['requestData']->take(4);
+            $data['requestData'] = $data['requestData']->take(4);
+            if ($type && $type != 'all') {
+                $data['requestData'] = $data['requestData']->where('type', $type)->take(4);
             }
         } elseif (Auth::user()->role === 'admin') {
-            $filter = $request->input('status');
-            $data['requestData'] = $data['requestData']->where('request_status', $filter ?? 'review')->take(8);
+            $data['requestData'] = $data['requestData']->where('request_status', $stuatus ?? 'review')->take(8);
         }
 
         if ($month && $month !== 'all') {
             $data['requestData'] = $data['requestData']->filter(function ($item) use ($month, $search) {
-                    return stripos($item->start_leave ?? $item->overwork_date ?? '', $month) !== false ||
-                            stripos($item->leave ?? '', $search) !== false ||
-                            stripos($item->user->name ?? '', $search) !== false ||
-                            stripos($item->reason ?? $item->task_description ?? $item->reason ?? '', $search) !== false;
+                return stripos($item->start_leave ?? $item->overwork_date ?? '', $month) !== false ||
+                    stripos($item->leave ?? '', $search) !== false ||
+                    stripos($item->user->name ?? '', $search) !== false ||
+                    stripos($item->reason ?? $item->task_description ?? $item->reason ?? '', $search) !== false;
             });
         }
 
-        return view('dashboard', compact('data', 'filter', 'month'));
+        return view('dashboard', compact('data'));
     }
 }
