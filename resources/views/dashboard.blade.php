@@ -222,7 +222,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr>
+                <tr class="empty">
                     @include('view.admin.components.status-data-empty')
                 </tr>
                 @endforelse

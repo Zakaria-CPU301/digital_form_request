@@ -67,7 +67,7 @@
                     </td>
                 </tr>
             @empty
-            <tr>
+            <tr class="empty">
                 <td colspan="7" class="py-8 px-6 text-center text-gray-500">
                     @include('view.admin.components.status-data-empty')
                 </td>

@@ -17,8 +17,8 @@
                 'draft' => 'draft',
             ];
         @endphp
-        <form id="autoFilter" action="{{route($type . '.show')}}" method="get">
-            <input type="hidden" id="buttonSubmit" name="status" value="{{request('status', 'all')}}">
+        <form action="{{route($type . '.show')}}" method="get">
+            <input type="hidden" class="buttonSubmit" name="status" value="{{request('status', 'all')}}">
             <input type="hidden" id="monthHidden" name="month" value="{{request('month') ?? 'all'}}">
             <input type="hidden" id="searchHidden" name="search" value="{{request('search') ?? ''}}">
             @foreach ($navStatus as $status)

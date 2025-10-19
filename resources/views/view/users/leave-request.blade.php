@@ -183,7 +183,11 @@
           const manyHours = document.getElementById('manyHours');
           const hasLeave = {{ isset($leave) ? 'true' : 'false' }};
 
-          fetch('/leave_allowance')
+          fetch('/leave_allowance', {
+            headers: {
+                'Accept': 'application/json'
+            }
+          })
             .then(response => response.json())
             .then(data => {
               let allowance = data.leave_allowance * 8;

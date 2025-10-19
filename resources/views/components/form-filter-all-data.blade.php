@@ -1,6 +1,6 @@
 <div class="flex {{$route === 'dashboard' || $route === 'draft' ? 'flex-col' : 'flex-row justify-between py-3'}} mb-6 w-full gap-5">
     <h2 class="text-2xl font-bold text-[#012967] capitalize">{{$title}}</h2>
-    <form id="autoFilter" action="{{route($route)}}" method="get">
+    <form action="{{route($route)}}" method="get">
         <div class="w-full flex justify-between items-center {{$route === 'dashboard' ? 'py-2' : ''}}">
             @if ($route === 'dashboard' || $route === 'draft')
                 <x-filter-data-toggle :status="$status" :type="$type" />

@@ -1,7 +1,7 @@
 <ul class="flex space-x-6 text-[#012967] font-semibold">
     @auth
         @if (auth()->user()->role === 'user')
-            <input type="hidden" name="type" id="buttonSubmit" value="{{ $type }}">
+            <input type="hidden" name="type" class="buttonSubmit" value="{{ $type }}">
             <li class="{{ $type === 'all' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="button" name="type" value="all" class="status-btn hover:text-cyan-600 transition">All Data</button>
             </li>
@@ -12,7 +12,7 @@
                 <button type="button" name="type" value="leave" class="status-btn hover:text-cyan-600 transition">Leave</button>
             </li>
         @elseif (auth()->user()->role === 'admin')
-            <input type="hidden" name="status" id="buttonSubmit" value="{{ $status }}">
+            <input type="hidden" name="status" class="buttonSubmit" value="{{ $status }}">
             <li class="{{ $status === 'review' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="button" name="status" value="review" class="status-btn hover:text-cyan-600 transition">Pending</button>
             </li>

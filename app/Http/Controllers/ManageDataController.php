@@ -23,7 +23,7 @@ class ManageDataController extends Controller
         $search = $request->input('search');
         $data = $requestData->requestData()->where('request_status', '!=', 'draft');
 
-        if ($status && $status !== 'submitted') {
+        if ($status && $status !== 'all') {
             $data = $data->where('request_status', $status);
         }
         if ($month && $month !== 'all') {

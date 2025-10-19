@@ -127,7 +127,7 @@
                     </td>
                 </tr>
             @empty
-            <tr>
+            <tr class="empty">
                 <td colspan="7" class="py-8 px-6 text-center text-gray-500">
                     <div class="flex flex-col items-center">
                         <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
