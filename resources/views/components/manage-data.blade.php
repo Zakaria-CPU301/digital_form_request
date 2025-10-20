@@ -122,7 +122,7 @@
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Duration:</span>
-                            <span class="text-gray-900 mt-2">${duration}</span>
+                            <span class="text-gray-900 mt-2 capitalize">${duration}</span>
                         </div>
                         `;
                 body += `

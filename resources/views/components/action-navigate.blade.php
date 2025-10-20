@@ -40,7 +40,7 @@
                                         ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
                                         : $finish->format('d F Y') }}"
             data-type="{{ $d->type }}"
-            data-description="{{ $d->reason ?? $d->task_description }}"
+            data-description="{{ ucfirst(strtolower($d->reason ?? $d->task_description)) }}"
             data-status="{{ $d->request_status }}"
             data-duration="{{ $duration }}"
             @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif >
