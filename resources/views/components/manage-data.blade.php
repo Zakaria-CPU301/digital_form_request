@@ -97,7 +97,7 @@
                     rejectedOnly = `
                             <div class="flex flex-col items-start">
                                 <span class="font-extrabold text-gray-700 capitalize">Reason For Rejection:</span>
-                                <span class="text-gray-900 mt-2 capitalize">${adminNote != null ? adminNote : 'This request was rejected without a specified reason. Please consult the admin if you wish to clarify further.'}</span>
+                                <span class="text-gray-900 mt-2 capitalize ${adminNote != '' ? '' : 'text-yellow-800'}">${adminNote != '' ? adminNote : '<i>(This request was rejected without a specified reason.</i> <br> <i>Please consult the admin if you wish to clarify further.)</i>'}</span>
                             </div>
                             `;
                 }
