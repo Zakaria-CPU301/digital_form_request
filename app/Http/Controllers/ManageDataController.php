@@ -50,9 +50,10 @@ class ManageDataController extends Controller
     {
         if ($request->has('rejected')) {
             $status = $request->input('rejected');
+            $adminNote = $request->input('admin_note');
             $status === 'overwork' ?
-                Overwork::where('id', $leaveId)->update(['request_status' => 'rejected'])
-                : Leave::where('id', $leaveId)->update(['request_status' => 'rejected']);
+                Overwork::where('id', $leaveId)->update(['request_status' => 'rejected', 'admin_note' => $adminNote])
+                : Leave::where('id', $leaveId)->update(['request_status' => 'rejected', 'admin_note' => $adminNote]);
 
             return redirect()->back()->with('success', [
                 'title' => $status . ' Rejected!',

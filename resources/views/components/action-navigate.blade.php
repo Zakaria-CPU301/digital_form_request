@@ -71,12 +71,11 @@
             </button>
 
             <button
-                type="submit"
-                name="rejected"
+                type="button"
                 value="{{$d->type}}"
-                class="{{$requestStatus === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                id="rejectButton"
+                class="rejectButton {{$requestStatus === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                 title="Reject"
-                onclick="return confirm('Are you sure want to reject this request?')"
             >
                 <i class="bi bi-x"></i>
             </button>

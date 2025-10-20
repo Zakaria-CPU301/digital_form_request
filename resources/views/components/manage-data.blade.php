@@ -236,4 +236,32 @@
                 showEvidence(currentIndex);
             }
         });
+
+    document.querySelectorAll('.rejectButton').forEach(b => {
+        b.addEventListener('click', function () {
+            const value = this.getAttribute('value');
+            let adminNote = document.createElement('input')
+            let statusData = document.createElement('input')
+
+            let note = prompt('Sing sebutkeun alesanna mang: ');
+            if (note === null) return;
+
+            adminNote.setAttribute('type', 'hidden')
+            adminNote.setAttribute('name', 'admin_note')
+            adminNote.setAttribute('value', note)
+            statusData.setAttribute('type', 'hidden')
+            statusData.setAttribute('name', 'rejected')
+            statusData.setAttribute('value', value)
+            
+            const form = this.closest('form')
+            form.appendChild(adminNote)
+            form.appendChild(statusData)
+
+            form.submit();
+            setTimeout(() => {
+                adminNote.remove();
+                statusData.remove();
+            }, 100);
+        })
+    });
 </script>
