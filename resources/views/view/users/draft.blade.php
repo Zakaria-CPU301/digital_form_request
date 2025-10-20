@@ -63,7 +63,7 @@
 
                 <td class="py-4 px-6 text-center">
                     <div class="flex space-x-2">
-                        <x-action-navigate :d="$d" :requestStatus="$requestStatus" /> />
+                        <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                         <a
                             href="{{ route('overwork.edit', $d->id) }}"
                             class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
@@ -131,6 +131,6 @@
     </table>
 </div>
 
-<x-preview-data />
+<x-preview-data title="draft" />
 <x-manage-data />
 @endsection

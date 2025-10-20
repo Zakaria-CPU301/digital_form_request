@@ -30,6 +30,8 @@
             
             const query = new URLSearchParams(new FormData(parentForm)).toString();
             const newUrl = new URL(window.location);
+            console.log(query);
+            console.log(newUrl);
             newUrl.search = query;
             window.history.pushState({}, "", newUrl);
             
@@ -52,19 +54,6 @@
                 parentForm.submit();
                 return
             }
-
-            fetch(newUrl + '?' + query, {
-                'Accept': 'application/json'
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                
-            })
-            .catch(error => {
-              console.error("Terjadi error:", error);
-            });
-            
         });
 
         document.querySelectorAll('.status-btn').forEach(s => {

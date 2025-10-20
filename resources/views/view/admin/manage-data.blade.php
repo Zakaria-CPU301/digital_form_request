@@ -4,7 +4,7 @@
 <x-modal-success />
 
     @php
-        $requestStatus = request('status', 'submitted');
+        $requestStatus = request('status', 'all');
     @endphp
 
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">

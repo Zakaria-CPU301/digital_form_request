@@ -4,7 +4,7 @@
 
 @php
     $requestType = request('type', 'all');
-    $requestStatus = request('status', 'submitted');
+    $requestStatus = request('status', 'all');
 @endphp
 
 <div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">

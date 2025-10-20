@@ -2,9 +2,9 @@
     <div class="p-6 flex flex-col max-h-[80vh]">
         <div class="flex justify-between items-center mb-4 flex-shrink-0">
             <h3
-                class="text-xl font-extrabold text-[#012967] flex-1 text-center"
+                class="text-xl font-extrabold text-[#012967] flex-1 text-center capitalize"
             >
-                Request Preview
+                {{$title}} preview
             </h3>
             <button
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'dashboard-preview-modal' }))"

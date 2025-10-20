@@ -3,11 +3,15 @@
     <form action="{{route($route)}}" method="get">
         <div class="w-full flex justify-between items-center {{$route === 'dashboard' ? 'py-2' : ''}}">
             @if ($route === 'dashboard' || $route === 'draft')
-                <x-filter-data-toggle :status="$status" :type="$type" />
+            <x-filter-data-toggle :status="$status" :type="$type" />
             @endif
-
+            
             <div class="flex items-center space-x-4">
-                {{-- Month Filter --}}
+
+                @if ($route !== 'dashboard' && $route !== 'draft')
+                    <input type="hidden" name="status" value="{{$status}}">
+                @endif
+
                 <select name="month" id="month" onchange="this.form.submit()" class="border border-gray-300 rounded-full w-[180px] py-1 px-3 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
                     @php
@@ -24,7 +28,6 @@
                     @endforeach
                 </select>
 
-                {{-- Search --}}
                 <input
                     type="search"
                     id="search"

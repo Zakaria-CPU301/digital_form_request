@@ -143,7 +143,7 @@
                         <i class="bi bi-file-earmark-text text-2xl"></i>
                         <span class="font-semibold text-lg">My draft</span>
                     </div>
-                    <small class="mt-1 text-cyan-200">Request that hasn't submitted yet</small>
+                    <small class="mt-1 text-cyan-200">Request that hasn't all yet</small>
                 </a>
             @elseif (auth()->user()->role === 'admin')
                 <a href="{{ route('register') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
