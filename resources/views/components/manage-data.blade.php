@@ -58,11 +58,10 @@
 
         document.querySelectorAll('.status-btn').forEach(s => {
             s.addEventListener('click', function() {
-                document.querySelectorAll('.buttonSubmit').forEach(b => {
-                b.value = this.value
-                b.closest('form').submit()
-            });
-
+                    document.querySelectorAll('.buttonSubmit').forEach(b => {
+                    b.value = this.value
+                    b.closest('form').submit()
+                });
             });
         });
 
@@ -79,16 +78,26 @@
                 const description = this.dataset.description;
                 const status = this.dataset.status;
                 const duration = this.dataset.duration;
+                const adminNote = this.dataset.admin_note;
                 const evidences = this.dataset.evidences
                     ? JSON.parse(this.dataset.evidences)
                     : [];
                 const statusClass = getStatusClass(status);
+                let rejectedOnly = ""
                 let overworkOnly = "";
                 if (type === "overwork") {
                     overworkOnly = `
                             <div class="flex flex-col items-start">
                                 <span class="font-extrabold text-gray-700 capitalize">${type} Date:</span>
                                 <span class="text-gray-900 mt-2 capitalize">${overworkDate}</span>
+                            </div>
+                            `;
+                }
+                if (status === "rejected") {
+                    rejectedOnly = `
+                            <div class="flex flex-col items-start">
+                                <span class="font-extrabold text-gray-700 capitalize">Reason For Rejection:</span>
+                                <span class="text-gray-900 mt-2 capitalize ${adminNote != '' ? '' : 'text-yellow-800'}">${adminNote != '' ? adminNote : '<i>(This request was rejected without a specified reason.</i> <br> <i>Please consult the admin if you wish to clarify further.)</i>'}</span>
                             </div>
                             `;
                 }
@@ -123,13 +132,14 @@
                         </div>
                         <div class="flex flex-col items-start">
                             <span class="font-extrabold text-gray-700">Duration:</span>
-                            <span class="text-gray-900 mt-2">${duration}</span>
+                            <span class="text-gray-900 mt-2 capitalize">${duration}</span>
                         </div>
+                        ${rejectedOnly}
                         `;
                 body += `
                             <div class="flex flex-col items-start">
                                 <span class="font-extrabold text-gray-700">Status:</span>
-                                <span class="${statusClass} capitalize">${status}</span>
+                                <span class="${statusClass} m-2 capitalize">${status}</span>
                             </div>
                         `;
                 if (type === "overwork") {
@@ -237,4 +247,32 @@
                 showEvidence(currentIndex);
             }
         });
+
+    document.querySelectorAll('.rejectButton').forEach(b => {
+        b.addEventListener('click', function () {
+            const value = this.getAttribute('value');
+            let adminNote = document.createElement('input')
+            let statusData = document.createElement('input')
+
+            let note = prompt('Sing sebutkeun alesanna mang: ');
+            if (note === null) return;
+
+            adminNote.setAttribute('type', 'hidden')
+            adminNote.setAttribute('name', 'admin_note')
+            adminNote.setAttribute('value', note)
+            statusData.setAttribute('type', 'hidden')
+            statusData.setAttribute('name', 'rejected')
+            statusData.setAttribute('value', value)
+            
+            const form = this.closest('form')
+            form.appendChild(adminNote)
+            form.appendChild(statusData)
+
+            form.submit();
+            setTimeout(() => {
+                adminNote.remove();
+                statusData.remove();
+            }, 100);
+        })
+    });
 </script>

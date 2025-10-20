@@ -174,8 +174,8 @@
     </div>
 
     {{-- Recent Request --}}
-<div id="data"  class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
-    <x-form-filter-all-data title="recent request" route="dashboard" :status="$requestStatus" :type="$requestType" />
+    <div id="data" class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6">
+        <x-form-filter-all-data title="recent request" route="dashboard" :status="$requestStatus" :type="$requestType" />
 
         {{-- Table --}}
         <table class="min-w-full text-left border-collapse border-b border-gray-300">
@@ -222,9 +222,11 @@
                     </td>
                 </tr>
                 @empty
-                <tr class="empty">
-                    @include('view.admin.components.status-data-empty')
-                </tr>
+                    <tr class="empty">
+                        <td colspan="7" class="py-8 px-6 text-center text-gray-500">
+                            @include('view.admin.components.status-data-empty')
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>

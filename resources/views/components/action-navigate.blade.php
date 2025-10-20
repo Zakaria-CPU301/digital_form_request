@@ -40,16 +40,17 @@
                                         ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
                                         : $finish->format('d F Y') }}"
             data-type="{{ $d->type }}"
-            data-description="{{ $d->reason ?? $d->task_description }}"
+            data-description="{{ ucfirst(strtolower($d->reason ?? $d->task_description)) }}"
             data-status="{{ $d->request_status }}"
             data-duration="{{ $duration }}"
+            data-admin_note="{{ ucfirst(strtolower($d->admin_note)) }}"
             @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif >
             <i class="bi bi-eye"></i>
     </button>
         
     @if (auth()->user()->role === 'admin')
         <form
-            action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}#data"
+            action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}"
             method="post"
             class="flex justify-between gap-2"
         >
@@ -63,7 +64,7 @@
                 type="submit"
                 name="approved"
                 value="{{$d->type}}"
-                class="{{$requestStatus === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                class="{{$d->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                 title="Accept"
                 onclick="return confirm('Are you sure want to accept this request?')"
             >
@@ -71,12 +72,11 @@
             </button>
 
             <button
-                type="submit"
-                name="rejected"
+                type="button"
                 value="{{$d->type}}"
-                class="{{$requestStatus === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                id="rejectButton"
+                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                 title="Reject"
-                onclick="return confirm('Are you sure want to reject this request?')"
             >
                 <i class="bi bi-x"></i>
             </button>
