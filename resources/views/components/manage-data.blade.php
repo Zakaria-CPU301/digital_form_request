@@ -78,16 +78,26 @@
                 const description = this.dataset.description;
                 const status = this.dataset.status;
                 const duration = this.dataset.duration;
+                const adminNote = this.dataset.admin_note;
                 const evidences = this.dataset.evidences
                     ? JSON.parse(this.dataset.evidences)
                     : [];
                 const statusClass = getStatusClass(status);
+                let rejectedOnly = ""
                 let overworkOnly = "";
                 if (type === "overwork") {
                     overworkOnly = `
                             <div class="flex flex-col items-start">
                                 <span class="font-extrabold text-gray-700 capitalize">${type} Date:</span>
                                 <span class="text-gray-900 mt-2 capitalize">${overworkDate}</span>
+                            </div>
+                            `;
+                }
+                if (status === "rejected") {
+                    rejectedOnly = `
+                            <div class="flex flex-col items-start">
+                                <span class="font-extrabold text-gray-700 capitalize">Reason For Rejection:</span>
+                                <span class="text-gray-900 mt-2 capitalize">${adminNote != null ? adminNote : 'This request was rejected without a specified reason. Please consult the admin if you wish to clarify further.'}</span>
                             </div>
                             `;
                 }
@@ -124,11 +134,12 @@
                             <span class="font-extrabold text-gray-700">Duration:</span>
                             <span class="text-gray-900 mt-2 capitalize">${duration}</span>
                         </div>
+                        ${rejectedOnly}
                         `;
                 body += `
                             <div class="flex flex-col items-start">
                                 <span class="font-extrabold text-gray-700">Status:</span>
-                                <span class="${statusClass} capitalize">${status}</span>
+                                <span class="${statusClass} m-2 capitalize">${status}</span>
                             </div>
                         `;
                 if (type === "overwork") {
