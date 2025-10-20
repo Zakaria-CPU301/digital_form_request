@@ -25,7 +25,7 @@
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['totalOverwork'][0]->total_hours ?? 0}} {{__('Hours')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Overwork Approved') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total overwork approved') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -56,7 +56,7 @@
                         }
                     @endphp
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$totalLeave ?? 0 . ' days'}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Leave Approved') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total leave approved') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -74,7 +74,7 @@
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'overwork')->count()}} {{__('Data')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Overwork Approved') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total overwork approved') }}</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -83,7 +83,7 @@
                         <i class="bi bi-calendar-check text-gray-500 text-lg"></i>
                     </small>
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'leave')->count()}} {{__('Data')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total Leave Approved') }}</span>
+                    <span class="text-sm text-gray-500">{{ __('Total leave approved') }}</span>
                 </div>
             @endif
         </div>
@@ -143,7 +143,7 @@
                         <i class="bi bi-file-earmark-text text-2xl"></i>
                         <span class="font-semibold text-lg">My draft</span>
                     </div>
-                    <small class="mt-1 text-cyan-200">Request that hasn't all yet</small>
+                    <small class="mt-1 text-cyan-200">Request that hasn't submitted yet</small>
                 </a>
             @elseif (auth()->user()->role === 'admin')
                 <a href="{{ route('register') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
