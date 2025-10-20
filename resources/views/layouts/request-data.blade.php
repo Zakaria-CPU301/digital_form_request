@@ -40,7 +40,7 @@
             :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'"
         >
             <div 
-                class="w-full max-w-[1400px] rounded-xl overflow-hidden bg-transparent mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10 transition-all duration-300 ease-in-out"
+                class="w-full max-w-[1400px] rounded-xl overflow-hidden bg-transparent mx-auto py-6 sm:py-8 lg:py-5 px-4 sm:px-6 lg:px-5 transition-all duration-300 ease-in-out"
             >
                 <div 
                     class="w-full"
