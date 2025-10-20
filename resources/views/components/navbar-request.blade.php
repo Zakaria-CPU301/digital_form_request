@@ -2,9 +2,7 @@
     class="bg-[#1EB8CD] px-8 py-4 ml-72 transition-all duration-300 ease-in-out flex justify-between items-center"
     :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'"
 >
-    <h1 class="text-white text-2xl font-bold">
-        {{ __(' Leave') }}
-    </h1>
+    <h1 class="text-white text-2xl font-bold capitalize">{{ request()->segment(1) }}</h1>
 
     <div class="flex space-x-2">
         @php

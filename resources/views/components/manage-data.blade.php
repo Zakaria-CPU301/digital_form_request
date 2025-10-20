@@ -58,11 +58,10 @@
 
         document.querySelectorAll('.status-btn').forEach(s => {
             s.addEventListener('click', function() {
-                document.querySelectorAll('.buttonSubmit').forEach(b => {
-                b.value = this.value
-                b.closest('form').submit()
-            });
-
+                    document.querySelectorAll('.buttonSubmit').forEach(b => {
+                    b.value = this.value
+                    b.closest('form').submit()
+                });
             });
         });
 
