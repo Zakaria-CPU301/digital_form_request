@@ -218,7 +218,7 @@
                         <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                     </td>
                     <td class="py-4 px-6 text-center">
-                        @include('view.admin.components.action-navigate')
+                        <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                     </td>
                 </tr>
                 @empty
@@ -230,7 +230,6 @@
         </table>
     </div>
 
-    @include('view.admin.components.preview-data')
-
+    <x-preview-data title="request" />
     <x-manage-data />
 </x-app-layout>

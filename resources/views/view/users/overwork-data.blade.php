@@ -40,29 +40,29 @@
         </thead>
 
         <tbody>
-            @forelse($data as $r)
+            @forelse($data as $d)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 items-center justify-center">
                 <td class="py-4 px-6">
                     {{ $loop->iteration }}
                 </td>
 
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->overwork_date)->format('d F Y') }}
+                    {{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}
                 </td>
 
-                <td class="py-4 px-6" title="{{ $r->task_description }}">
-                    {{ ucfirst(strtolower(Str::limit($r->task_description, 25))) }}
+                <td class="py-4 px-6" title="{{ $d->task_description }}">
+                    {{ ucfirst(strtolower(Str::limit($d->task_description, 25))) }}
                 </td>
 
                 @if (auth()->user()->role === 'admin')
                     <td class="py-4 px-6">
-                        {{ Str::words($r->user->name, 2) ?? 'N/A' }}
+                        {{ Str::words($d->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif
 
                 <td class="py-4 px-6">
                     @php
-                        $duration = \Carbon\Carbon::parse($r->start_overwork)->diff(\Carbon\Carbon::parse($r->finished_overwork));
+                        $duration = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
                         @endphp
                     @if ($duration->format('%i') == '0')
                         {{ $duration->format('%h hours') }}
@@ -73,9 +73,9 @@
 
                 <td class="py-4 px-6">
                     @php
-                        $totalEvidence = $r->evidence->count();
-                        $firstImage = $r->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
-                        $firstVideo = $r->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
+                        $totalEvidence = $d->evidence->count();
+                        $firstImage = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
+                        $firstVideo = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['mp4', 'mov', 'avi']));
                     @endphp
                     @if($totalEvidence >= 1)
                         <span class="text-sm bg-blue-100 text-blue-600 px-auto w-[90px] py-2 rounded-full justify-center flex items-center">
@@ -90,75 +90,19 @@
                 </td>
                 <td class="py-4 px-6">
                     @php
-                        $statusClass = match($r->request_status) {
+                        $statusClass = match($d->request_status) {
                             'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
                             'review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                             'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
-                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
+                    <span class="{{ $statusClass }} capitalize">{{ $d->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center items-center space-x-2">
                         <!-- Show Details Button -->
-                        <button
-                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                            title="Show Details"
-                            data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
-                            data-overwork_date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
-                            data-start="{{ Carbon\Carbon::parse($r->start_overwork)->format('H : i') }}"
-                            data-finished="{{ Carbon\Carbon::parse($r->finished_overwork)->format('H : i') }}"
-                            data-description="{{ $r->task_description }}"
-                            data-duration="{{ $duration }}"
-                            data-status="{{ $r->request_status }}"
-                            data-evidences="{{ $r->evidence->toJson() }}"
-                        >
-                            <i class="bi bi-eye"></i>
-                        </button>
-
-                        @if (auth()->user()->role === 'admin')
-                            <form action="{{route('request.edit', ['id' => $r->id, 'userId' => $r->user_id])}}" method="get" class="flex gap-2">
-                                <button
-                                    type="submit" name="approved" value="{{$r->type}}"
-                                    class="{{$r->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                    title="Accept"
-                                    onclick="return confirm('Are you sure want to accept this request?')"
-                                >
-                                    <i class="bi bi-check2-square"></i>
-                                </button>
-
-                                <button
-                                    type="submit" name="rejected" value="{{$r->type}}"
-                                    class="{{$r->request_status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Reject"
-                                    onclick="return confirm('Are you sure want to reject this request?')"
-                                >
-                                <i class="bi bi-x"></i>
-                                </button>
-                            </form>
-                        @endif
-                        
-                        @if ($r->request_status === 'draft')
-                            <a
-                            href="{{ route('overwork.edit', $r->id) }}"
-                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                title="Edit"
-                            >
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <form action="{{ route('overwork.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
-                                @csrf
-                                @method('DELETE')
-                                <button
-                                    type="submit"
-                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Delete"
-                                    >
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        @endif
+                        <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                     </div>
                 </td>
             </tr>
@@ -185,45 +129,7 @@
 
 </div>
 
-<x-modal name="overwork-preview-modal" maxWidth="3xl">
-    <div class="p-6 flex flex-col max-h-[80vh]">
-        <div class="flex justify-between items-center mb-4 flex-shrink-0">
-            <h3 class="text-xl font-extrabold text-[#012967] flex-1 text-center">
-                Overwork Preview
-            </h3>
-            <button
-                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'overwork-preview-modal' }))"
-                class="text-red-500 hover:text-red-300 text-2xl"
-            >
-                &times;
-            </button>
-        </div>
-        <div id="overwork-preview-body" class="space-y-3 overflow-y-auto flex-1">
-            <!-- content -->
-        </div>
-    </div>
-</x-modal>
-
-<x-modal name="evidence-viewer-modal" maxWidth="6xl">
-    <div class="flex items-center justify-center relative p-6">
-            <button
-                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
-                class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-2xl"
-            >
-                &times;
-            </button>
-        <div id="evidence-viewer-body" class="flex items-center justify-center">
-            <!-- media content -->
-        </div>
-            <button id="prev-evidence" class="absolute left-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                &larr;
-            </button>
-            <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                &rarr;
-            </button>
-        </div>
-    </div>
-</x-modal>
+<x-preview-data title="overwork" />
 
 <x-modal-success />
 

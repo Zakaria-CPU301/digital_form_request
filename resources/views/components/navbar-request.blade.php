@@ -14,8 +14,12 @@
                 'review' => 'review',
                 'approved' => 'approved',
                 'rejected' => 'rejected',
-                'draft' => 'draft',
             ];
+            if (auth()->user()->role === 'user') {
+                $navStatus += [
+                    'draft' => 'draft',
+                ];
+            }
         @endphp
         <form action="{{route($type . '.show')}}" method="get">
             <input type="hidden" class="buttonSubmit" name="status" value="{{request('status', 'all')}}">

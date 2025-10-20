@@ -36,11 +36,11 @@
         </thead>
 
         <tbody>
-            @forelse($data as $r)
+            @forelse($data as $d)
                 @php
-                    $start = Carbon\Carbon::parse($r->start_leave);
+                    $start = Carbon\Carbon::parse($d->start_leave);
                     $finish = $start->copy();
-                    $periodDays = $r->leave_period / 8;
+                    $periodDays = $d->leave_period / 8;
                     $addDays = 0;
                     
                     while ($addDays < floor($periodDays)) {
@@ -66,87 +66,31 @@
                     {{ $loop->iteration }}
                 </td>
                 <td class="py-4 px-6">
-                    {{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}
+                    {{ Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}
                 </td>
-                <td class="py-4 px-6" title="{{ $r->reason }}">
-                    {{ ucfirst(strtolower(Str::limit($r->reason, 25))) }}
+                <td class="py-4 px-6" title="{{ $d->reason }}">
+                    {{ ucfirst(strtolower(Str::limit($d->reason, 25))) }}
                 </td>
                 @if (auth()->user()->role === 'admin')
                     <td class="py-4 px-6">
-                        {{ Str::words($r->user->name, 2) }}
+                        {{ Str::words($d->user->name, 2) }}
                     </td>
                 @endif
                 <td class="py-4 px-6 font-semibold capitalize">{{ $duration }}</td>
                 <td class="py-4 px-6">
                     @php
-                        $statusClass = match($r->request_status) {
+                        $statusClass = match($d->request_status) {
                             'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
                             'review' => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm',
                             'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm',
                             default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-sm',
                         };
                     @endphp
-                    <span class="{{ $statusClass }} capitalize">{{ $r->request_status }}</span>
+                    <span class="{{ $statusClass }} capitalize">{{ $d->request_status }}</span>
                 </td>
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center items-center space-x-2">
-                        <button
-                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                            title="Show Details"
-                            data-date="{{ Carbon\Carbon::parse($r->created_at)->format('d F Y') }}"
-                            data-start="{{ Carbon\Carbon::parse($r->start_leave)->format('d F Y') }}"
-                            data-finished="{{ $finish->format('d F Y') }}"
-                            data-reason="{{ $r->reason }}"
-                            data-duration="{{ $duration }}"
-                            data-status="{{ $r->request_status }}"
-                        >
-                            <i class="bi bi-eye"></i>
-                        </button>
-
-                        @if (auth()->user()->role === 'admin')
-                            <form action="{{route('request.edit', ['id' => $r->id, 'userId' => $r->user_id])}}" method="post" class="flex gap-2">
-                                @csrf
-                                <input type="hidden" name="this_leave_period" value="{{$r->leave_period}}">
-                                <button
-                                    type="submit" name="approved" value="{{$r->type}}"
-                                    class="{{$r->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                    title="Accept"
-                                    onclick="return confirm('Are you sure want to accept this request?')"
-                                >
-                                    <i class="bi bi-check2-square"></i>
-                                </button>
-
-                                <button
-                                    type="submit" name="rejected" value="{{$r->type}}"
-                                    class="{{$r->request_status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Reject"
-                                    onclick="return confirm('Are you sure want to reject this request?')"
-                                >
-                                <i class="bi bi-x"></i>
-                                </button>
-                            </form>
-                        @endif
-
-                        @if ($r->request_status === 'draft')
-                            <a
-                            href="{{ route('leave.edit', $r->id) }}"
-                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
-                                title="Edit"
-                            >
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <form action="{{ route('leave.delete', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
-                                @csrf
-                                @method('DELETE')
-                                <button
-                                    type="submit"
-                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                                    title="Delete"
-                                >
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        @endif
+                        <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                     </div>
                 </td>
             </tr>
@@ -172,7 +116,8 @@
     </table>
 </div>
 
-<x-modal name="leave-preview-modal" maxWidth="lg">
+<x-preview-data title="leave" />
+{{-- <x-modal name="leave-preview-modal" maxWidth="lg">
     <div class="p-6 flex flex-col max-h-[80vh]">
         <div class="flex justify-center items-center mb-4 relative flex-shrink-0">
             <h3 class="text-xl font-extrabold text-[#012967]">
@@ -187,7 +132,7 @@
         </div>
         <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1"></div>
     </div>
-</x-modal>
+</x-modal> --}}
 
 <x-modal-success />
 

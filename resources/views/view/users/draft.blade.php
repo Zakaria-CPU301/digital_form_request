@@ -63,16 +63,7 @@
 
                 <td class="py-4 px-6 text-center">
                     <div class="flex space-x-2">
-                        <button
-                            class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
-                            title="Show Details"
-                            data-date="{{ Carbon\Carbon::parse($d->created_at)->format('h - F - Y') }}"
-                            data-description="{{ $d->task_description }}"
-                            data-duration="{{ $d->duration ?? 'N/A' }}"
-                            data-status="{{ $d->request_status }}"
-                        >
-                            <i class="bi bi-eye"></i>
-                        </button>
+                        <x-action-navigate :d="$d" :requestStatus="$requestStatus" /> />
                         <a
                             href="{{ route('overwork.edit', $d->id) }}"
                             class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
@@ -139,7 +130,7 @@
         </tbody>
     </table>
 </div>
-@include('view.admin.components.preview-data')
 
+<x-preview-data />
 <x-manage-data />
 @endsection

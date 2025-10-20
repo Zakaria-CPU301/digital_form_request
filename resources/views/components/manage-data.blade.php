@@ -79,6 +79,8 @@
 
         document.querySelectorAll(".eye-preview-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
+                console.log(this.dataset);
+                
                 const id = this.dataset.id;
                 const date = this.dataset.date;
                 const overworkDate = this.dataset.overwork_date;
@@ -173,8 +175,7 @@
                         </div>
                         `;
                 }
-                document.getElementById("dashboard-preview-body").innerHTML =
-                    body;
+                document.getElementById("dashboard-preview-body").innerHTML = body;
                 currentEvidences = evidences;
                 window.dispatchEvent(
                     new CustomEvent("open-modal", {
