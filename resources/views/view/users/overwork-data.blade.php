@@ -103,6 +103,26 @@
                     <div class="flex justify-center items-center space-x-2">
                         <!-- Show Details Button -->
                         <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
+                        @if ($d->request_status === 'draft')
+                            <a
+                            href="{{ route('overwork.edit', $d->id) }}"
+                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                title="Edit"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
+                                @csrf
+                                @method('DELETE')
+                                <button
+                                    type="submit"
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    title="Delete"
+                                    >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -134,4 +154,5 @@
 <x-modal-success />
 
 <x-manage-data />
+
 @endsection

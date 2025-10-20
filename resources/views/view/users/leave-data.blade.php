@@ -91,6 +91,26 @@
                 <td class="py-4 px-6 text-center">
                     <div class="flex justify-center items-center space-x-2">
                         <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
+                        @if ($d->request_status === 'draft')
+                            <a
+                            href="{{ route('leave.edit', $d->id) }}"
+                                class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                title="Edit"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('leave.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
+                                @csrf
+                                @method('DELETE')
+                                <button
+                                    type="submit"
+                                    class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    title="Delete"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -117,22 +137,6 @@
 </div>
 
 <x-preview-data title="leave" />
-{{-- <x-modal name="leave-preview-modal" maxWidth="lg">
-    <div class="p-6 flex flex-col max-h-[80vh]">
-        <div class="flex justify-center items-center mb-4 relative flex-shrink-0">
-            <h3 class="text-xl font-extrabold text-[#012967]">
-                Leave Preview
-            </h3>
-            <button
-                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'leave-preview-modal' }))"
-                class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
-            >
-                &times;
-            </button>
-        </div>
-        <div id="leave-preview-body" class="space-y-3 overflow-y-auto flex-1"></div>
-    </div>
-</x-modal> --}}
 
 <x-modal-success />
 

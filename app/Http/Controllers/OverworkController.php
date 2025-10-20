@@ -114,7 +114,7 @@ class OverworkController
                 break;
             }
         }
-        return view('pages.overwork-request', compact('evidence', 'overwork'));
+        return view('view.users.overwork-request', compact('evidence', 'overwork'));
     }
 
     /**
@@ -127,11 +127,8 @@ class OverworkController
             'start' => ['required'],
             'finish' => ['required'],
             'desc' => ['required'],
-            'photo' => 'required_without:video|array|mimes:jpg,jpeg,png,webp|max:5120',
-            'video' => 'required_without:photo|array|mimes:mp4,mov,avi|max:10240'
-        ], [
-            'photo.required_without' => 'Please upload a photo or video',
-            'video.required_without' => 'Please upload a photo or video'
+            'photo' => 'array|mimes:jpg,jpeg,png,webp|max:5120',
+            'video' => 'array|mimes:mp4,mov,avi|max:10240'
         ]);
 
         $status = $request->action === 'submit' ? 'review' : 'draft';

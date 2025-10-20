@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('img/icon.png') }}" type="image/png">
     <title>Sangnila E-form</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -20,6 +20,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
+      <x-header />
     <body class="font-geologica antialiased">
         <div class="min-h-screen w-full bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]" x-data="{ sidebarOpen: true }" x-on:open-sidebar.window="sidebarOpen = true" x-on:close-sidebar.window="sidebarOpen = false">
             @include('layouts.navbar', ['sidebarOpen' => 'sidebarOpen'])

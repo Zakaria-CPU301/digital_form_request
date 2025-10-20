@@ -48,7 +48,7 @@ class DashboardController extends Controller
                 $data['requestData'] = $data['requestData']->where('type', $type)->take(4);
             }
         } elseif (Auth::user()->role === 'admin') {
-            $data['requestData'] = $data['requestData']->where('request_status', $stuatus ?? 'review')->take(8);
+            $data['requestData'] = $data['requestData']->where('request_status', $status ?? 'review')->take(8);
         }
 
         if ($month && $month !== 'all') {

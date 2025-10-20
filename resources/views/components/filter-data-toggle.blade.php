@@ -14,7 +14,7 @@
         @elseif (auth()->user()->role === 'admin')
             <input type="hidden" name="status" class="buttonSubmit" value="{{ $status }}">
             <li class="{{ $status === 'review' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
-                <button type="button" name="status" value="review" class="status-btn hover:text-cyan-600 transition">Pending</button>
+                <button type="button" name="status" value="review" class="status-btn hover:text-cyan-600 transition">Review</button>
             </li>
             <li class="{{ $status === 'approved' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="button" name="status" value="approved" class="status-btn hover:text-cyan-600 transition">Approved</button>

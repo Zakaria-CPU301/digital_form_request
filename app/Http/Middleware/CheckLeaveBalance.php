@@ -23,7 +23,7 @@ class CheckLeaveBalance
         $annualLeaveBalance = (int) Auth::user()->overwork_allowance;
 
         if ($totalLeave >= floor($annualLeaveBalance)) {
-            return redirect()->back();
+            return response()->view('leave-limit');
         }
 
         return $next($request);

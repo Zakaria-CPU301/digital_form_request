@@ -113,13 +113,13 @@ class LeaveController
         ]);
 
         if ($status == 'draft')
-            return redirect()->route('leave.draft')->with('success', [
+            return redirect()->route('leave.show')->with('success', [
                 'title' => 'Draft updated!',
                 'message' => 'Your leave request has been draft updated.',
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
 
-        if ($status === 'review') return redirect()->route('leave.review')->with('success', [
+        if ($status === 'review') return redirect()->route('leave.show')->with('success', [
             'title' => 'Leave request Submitted!',
             'message' => 'Please wait for admin approval.',
             'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
