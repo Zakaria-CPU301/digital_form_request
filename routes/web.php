@@ -58,7 +58,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     });
 
     //! manage data
-    Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::middleware('role:admin')->group(function () {
         Route::prefix('request')->name('request.')->group(function () {
             Route::get('/data', [ManageDataController::class, 'show'])->name('show');
             Route::match(['get', 'post'], 'edit/{id}/{userId}', [ManageDataController::class, 'edit'])->name('edit');
@@ -69,6 +69,9 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
         });
     });
+
+    //! draft
+    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft')->middleware('role:user');
 
     //! overwork
     Route::prefix('overwork')->name('overwork.')->group(function () {
@@ -96,10 +99,6 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         });
         Route::get('/', [RequestController::class, 'showRecent'])->name('show');
     });
-
-
-    //! draft
-    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 });
 
 require __DIR__ . '/auth.php';

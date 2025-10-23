@@ -177,16 +177,17 @@
 
                 {{-- Upload Inputs --}}
                 <div class="mt-4 space-y-4">
-                    <div>
-                        <label>Foto (jpg/png): <span class="text-red-500">*</span></label><br />
+                    <label class="text-gray-500">Please upload a photo or video evidence <span class="text-red-500">*</span></label><br />
+                    <div class="pl-2">
+                        <label>Photo:</label><br />
                         <input type="file" name="photo[]" multiple id="photo-input" accept="image/*" />
                         @error('photo')
                             <div class="text-red-500 text-sm">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div>
-                        <label>Video (mp4/avi): <span class="text-red-500">*</span></label><br />
+                    <div class="pl-2">
+                        <label>Video:</label><br />
                         <input type="file" name="video[]" multiple id="video-input" accept="video/*" />
                         @error('video')
                             <div class="text-red-500 text-sm">{{ $message }}</div>

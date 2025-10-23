@@ -23,7 +23,7 @@
             <tr>
                 <th class="py-3 px-6 font-semibold">No</th>
                 <th class="py-3 px-6 font-semibold">Start Date</th>
-                <th class="py-3 px-6 font-semibold w-[400px]">Reason</th>
+                <th class="py-3 px-6 font-semibold {{$data->isEmpty() ? '' : 'w-[300px]'}}">Reason</th>
                 @if (auth()->user()->role === 'admin')
                     <th class="py-3 px-6 font-semibold">
                         Name
